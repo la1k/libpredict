@@ -40,3 +40,5 @@ install(TARGETS predict predict_static
   PUBLIC_HEADER DESTINATION include/predict
 )
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${libpredict_so_major}" DESTINATION lib)
+install(FILES predict.pc DESTINATION share/pkgconfig)
+install(FILES predict.pc DESTINATION lib/pkgconfig)
