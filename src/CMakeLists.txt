@@ -1,7 +1,10 @@
 add_library(predict SHARED orbit.c sdp4.c sgp4.c unsorted.c vec3.c)
+add_library(predict_static STATIC orbit.c sdp4.c sgp4.c unsorted.c vec3.c)
+set_target_properties(predict_static PROPERTIES OUTPUT_NAME predict)
 
 # VERSION and SOVERSION are the same, see comment in ../CMakeLists.txt
 set_target_properties(predict PROPERTIES SOVERSION ${PROJECT_VERSION})
+set_target_properties(predict_static PROPERTIES SOVERSION ${PROJECT_VERSION})
 
 # Header files needed to compile an application using libpredict
 set(predict_public_header)
@@ -28,14 +31,12 @@ target_include_directories(predict PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 set(libpredict_so_major "libpredict.so.${PROJECT_VERSION_MAJOR}")
 add_custom_command(
   TARGET predict POST_BUILD 
-#OUTPUT ${libpredict_so_major}
   COMMAND ${CMAKE_COMMAND} -E create_symlink "libpredict.so.${PROJECT_VERSION}" ${libpredict_so_major}
 )
 
-
-
-install(TARGETS predict
+install(TARGETS predict predict_static
   LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
   PUBLIC_HEADER DESTINATION include/predict
 )
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${libpredict_so_major}" DESTINATION lib)
