@@ -1,7 +1,7 @@
 libpredict
 ==========
 
-A satellite tracking library.
+A satellite orbit prediction library.
 
 Building
 --------
