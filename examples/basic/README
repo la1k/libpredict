@@ -1,0 +1,7 @@
+This example application shows how to calculate and print the position
+of the International Space Station (latitude, longitude and altitude)
+from a hard coded two-line element. The application will continue
+printing the updated position until it's aborted.
+
+The provided Makefile assumes libpredict and its development files are
+installed on the system.

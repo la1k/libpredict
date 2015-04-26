@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "orbit.h"
+#include <predict/orbit.h>
 
 int main(int argc, char **argv)
 {
