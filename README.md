@@ -3,10 +3,11 @@ libpredict
 
 A satellite orbit prediction library.
 
+
 Building
 --------
 
-We recommend using out-of-source builds, e.g., by creating a `build` directory in the source tree:
+We recommend using out-of-source builds.
 
 ```
 cd $SOURCEDIR
@@ -16,6 +17,7 @@ cmake ..
 make
 ```
 
+
 Installation
 ------------
 
@@ -23,7 +25,10 @@ Installation
 make install
 ```
 
-The install location is defined by `CMAKE_INSTALL_PREFIX`, which defaults to `/usr/local`. To relocate the whole installation (to make usr/local etc. inside another directory, e.g., if you want to make a tarball or package it afterwards), use `make DESTDIR=/foo/bar install`.
+The install location is defined by `CMAKE_INSTALL_PREFIX`, which
+defaults to `/usr/local`. To relocate the whole installation (to make
+usr/local etc. inside another directory, e.g., if you want to make a
+tarball or package it afterwards), use `make DESTDIR=/foo/bar install`.
 
 
 License
