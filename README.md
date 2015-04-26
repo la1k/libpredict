@@ -31,6 +31,14 @@ usr/local etc. inside another directory, e.g., if you want to make a
 tarball or package it afterwards), use `make DESTDIR=/foo/bar install`.
 
 
+Linking
+-------
+
+The library comes with pkg-config information, so the include and
+library paths and flags can be found using the `pkg-config` command or
+by using the `PKG_CHECK_MODULES` autotools macro or CMake command.
+
+
 License
 -------
 
