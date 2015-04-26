@@ -41,4 +41,7 @@ install(TARGETS predict predict_static
   ARCHIVE DESTINATION lib
   PUBLIC_HEADER DESTINATION include/predict
 )
-install(FILES predict.pc DESTINATION share/pkgconfig)
+
+# pkg-config file
+configure_file(predict.pc.in predict.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/predict.pc DESTINATION share/pkgconfig)

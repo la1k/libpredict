@@ -1,10 +1,10 @@
-prefix=/usr
+prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
 Name: predict
 Description: A satellite orbit prediction library
-Version: 0.0.0
+Version: @PROJECT_VERSION@
 Cflags: -I${includedir}
 Libs: -L${libdir} -lpredict
