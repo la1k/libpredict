@@ -19,12 +19,10 @@ set_target_properties(predict_static PROPERTIES SOVERSION ${PROJECT_VERSION_MAJO
 # Header files needed to compile an application using libpredict
 set(predict_public_header)
 list(APPEND predict_public_header
+  vec3.h
   observatory.h
   orbit.h
-  sdp4.h
-  sgp4.h
   unsorted.h
-  vec3.h
   tle.h
 )
 set_target_properties(predict PROPERTIES PUBLIC_HEADER "${predict_public_header}")
