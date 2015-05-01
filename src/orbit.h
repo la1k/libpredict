@@ -1,8 +1,7 @@
 #ifndef ORBIT_H_
 #define ORBIT_H_
 
-#include "sdp4.h"
-#include "sgp4.h"
+#include "tle.h"
 
 struct orbit {
 	char name[128];
@@ -53,16 +52,20 @@ struct orbit {
 	///Orbital number (line 2, field 9)
 	long orbitnum;
 
-	struct _sdp4 sdp4;
-	struct _sgp4 sgp4;
+	///Ephemeris data structure pointer
+	void *ephemeris_data;
 
 };
 
-int orbit_init(struct orbit *x, const char *tle[]);
-int orbit_predict(struct orbit *x, double utc);
-int orbit_is_geostationary(const struct orbit *x);
-double orbit_apogee(const struct orbit *x);
-double orbit_perigee(const struct orbit *x);
-int orbit_aos_happens(const struct orbit *x, double latitude);
+typedef struct orbit orbit_t;
+
+orbit_t *orbit_create(const char *tle[]);
+void orbit_destroy(orbit_t *orbit);
+
+int orbit_predict(orbit_t *x, double utc);
+int orbit_is_geostationary(const orbit_t *x);
+double orbit_apogee(const orbit_t *x);
+double orbit_perigee(const orbit_t *x);
+int orbit_aos_happens(const orbit_t *x, double latitude);
 
 #endif

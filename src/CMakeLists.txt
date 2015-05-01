@@ -25,6 +25,7 @@ list(APPEND predict_public_header
   sgp4.h
   unsorted.h
   vec3.h
+  tle.h
 )
 set_target_properties(predict PROPERTIES PUBLIC_HEADER "${predict_public_header}")
 target_include_directories(predict PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

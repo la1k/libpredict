@@ -2,20 +2,26 @@
 #include "defs.h"
 #include "vec3.h"
 
+#include "sdp4.h"
+#include "sgp4.h"
+
 #define EPHEMERIS_SGP4	0
 #define EPHEMERIS_SDP4	1
 #define EPHEMERIS_SGP8	2
 #define EPHEMERIS_SDP8	3
 
 /**
- * \brief Prepares internal data for use in prediction
- * functions.
+ * \brief Allocates memory and prepares internal data.
  *
  * This function is a combination of the original PreCalc() and
  * select_ephemeris() functions.
  **/
-int orbit_init(struct orbit *m, const char *tle[])
+orbit_t *orbit_create(const char *tle[])
 {
+	// Allocate memory for new orbit struct
+	struct orbit *m = (struct orbit*)malloc(sizeof(struct orbit));
+	if (m == NULL) return NULL;
+
 	//Parse TLE
 	double tempnum;
 	m->catnum = atol(SubString(tle[0],2,6));
@@ -63,15 +69,48 @@ int orbit_init(struct orbit *m, const char *tle[])
 	delo=temp/(ao*ao);
 	xnodp=m->tle.xno/(delo+1.0);
 
+		
 	/* Select a deep-space/near-earth ephemeris */
 	if (twopi/xnodp/xmnpda >= 0.15625) {
+		
 		m->ephemeris = EPHEMERIS_SDP4;
-		sdp4_init(&m->sdp4);
+
+		// Allocate memory for ephemeris data
+		m->ephemeris_data = malloc(sizeof(struct _sdp4));
+
+		if (m->ephemeris_data == NULL) {
+			orbit_destroy(m);
+			return NULL;
+		}
+		// Initialize ephemeris data structure
+		sdp4_init((struct _sdp4*)m->ephemeris_data);
+
 	}else {
 		m->ephemeris = EPHEMERIS_SGP4;
-		sgp4_init(&m->sgp4);
+		
+		// Allocate memory for ephemeris data
+		m->ephemeris_data = malloc(sizeof(struct _sgp4));
+
+		if (m->ephemeris_data == NULL) {
+			orbit_destroy(m);
+			return NULL;
+		}
+		// Initialize ephemeris data structure
+		sgp4_init((struct _sgp4*)m->ephemeris_data);
 	}
-	return 0;
+
+	return m;
+}
+
+void orbit_destroy(orbit_t *orbit)
+{
+	if (orbit == NULL) return;
+
+	if (orbit->ephemeris_data != NULL) {
+		free(orbit->ephemeris_data);
+	}
+
+	free(orbit);
 }
 
 /**
@@ -79,7 +118,7 @@ int orbit_init(struct orbit *m, const char *tle[])
  *
  * This function returns true if the satellite is geostationary.
  **/
-int orbit_is_geostationary(const struct orbit *m)
+int orbit_is_geostationary(const orbit_t *m)
 {
 	if (fabs(m->meanmo-1.0027)<0.0002) {
 		return 1;
@@ -88,13 +127,13 @@ int orbit_is_geostationary(const struct orbit *m)
 	}
 }
 
-double orbit_apogee(const struct orbit *m)
+double orbit_apogee(const orbit_t *m)
 {
 	double sma = 331.25*exp(log(1440.0/m->meanmo)*(2.0/3.0));
 	return sma*(1.0+m->eccn)-xkmper;
 }
 		
-double orbit_perigee(const struct orbit *m)
+double orbit_perigee(const orbit_t *m)
 {
 	double xno = m->meanmo*twopi/xmnpda;
 	double a1=pow(xke/xno,tothrd);
@@ -112,7 +151,7 @@ double orbit_perigee(const struct orbit *m)
 	return (aodp*(1-m->eccn)-ae)*xkmper;
 }
 
-int orbit_aos_happens(const struct orbit *m, double latitude)
+int orbit_aos_happens(const orbit_t *m, double latitude)
 {
 	/* This function returns a 1 if the satellite pointed to by
 	   "x" can ever rise above the horizon of the ground station. */
@@ -139,7 +178,7 @@ int orbit_aos_happens(const struct orbit *m, double latitude)
 
 /* This is the stuff we need to do repetitively while tracking. */
 /* This is the old Calc() function. */
-int orbit_predict(struct orbit *m, double utc)
+int orbit_predict(orbit_t *m, double utc)
 {
 	/* Set time to now if now time is provided: */
 	if (utc == 0) utc = CurrentDaynum();
@@ -168,14 +207,14 @@ int orbit_predict(struct orbit *m, double utc)
 	/* Call NORAD routines according to deep-space flag. */
 	switch (m->ephemeris) {
 		case EPHEMERIS_SDP4:
-			sdp4_predict(&m->sdp4, tsince, &m->tle, m->position, m->velocity);
+			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, &m->tle, m->position, m->velocity);
 			break;
 		case EPHEMERIS_SGP4:
-			sgp4_predict(&m->sgp4, tsince, &m->tle, m->position, m->velocity);
+			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, &m->tle, m->position, m->velocity);
 			break;
 		default:
-			//TODO: Panic!
-			break;
+			//Panic!
+			return -1;
 	}
 
 	/* TODO: Remove? Scale position and velocity vectors to km and km/sec */
@@ -188,6 +227,7 @@ int orbit_predict(struct orbit *m, double utc)
 	m->latitude = sat_geodetic.lat;
 	m->longitude = sat_geodetic.lon;
 	m->altitude = sat_geodetic.alt;
+
 
 	/* TODO: ?? Calculate squint angle */
 	//if (calc_squint) squint=(acos(-(ax*rx+ay*ry+az*rz)/obs_set.z))/deg2rad;
