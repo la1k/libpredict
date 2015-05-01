@@ -1,14 +1,8 @@
 #ifndef ORBIT_H_
 #define ORBIT_H_
 
-#include "vec3.h"
 #include "sdp4.h"
 #include "sgp4.h"
-
-#define EPHEMERIS_SGP4 		0
-#define EPHEMERIS_SDP4		1
-#define EPHEMERIS_SGP8		2
-#define EPHEMERIS_SDP8		3
 
 struct orbit {
 	char name[128];

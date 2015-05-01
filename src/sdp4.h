@@ -1,5 +1,5 @@
-#ifndef SDP4_H_
-#define SDP4_H_
+#ifndef _SDP4_H_
+#define _SDP4_H_
 
 #include "unsorted.h"
 
@@ -50,13 +50,8 @@ void sdp4_init(struct _sdp4 *m);
 /* velocity. Use Convert_Sat_State() to convert to km and km/s. */
 void sdp4_predict(struct _sdp4 *m, double tsince, tle_t * tle, double pos[3], double vel[3]);
 
-/// Entry points of deep()
-#define DPInit 		0
-#define DPSecular 	1
-#define DPPeriodic 	2
-
 ///This is the original Deep() function
 void sdp4_deep(struct _sdp4 *m, int ientry, tle_t * tle, deep_arg_t * deep_arg);
 
 
-#endif
+#endif // ifndef _SDP4_H_

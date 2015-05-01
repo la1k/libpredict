@@ -1,4 +1,10 @@
 #include "sdp4.h"
+#include "defs.h"
+
+/// Entry points of deep()
+#define DPInit		0
+#define DPSecular	1
+#define DPPeriodic	2
 
 void sdp4_init(struct _sdp4 *m)
 {

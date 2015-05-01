@@ -1,10 +1,11 @@
 #include "unsorted.h"
+#include "defs.h"
 
 /* Flow control flag definitions */
 #define DEEP_SPACE_EPHEM_FLAG  0x000040
 
 ///Phase
-double phase;
+//double phase;
 
 int Sign(double arg)
 {
@@ -35,13 +36,13 @@ double Cube(double arg)
 double Radians(double arg)
 {
 	/* Returns angle in radians from argument in degrees */
-	return (arg*deg2rad);
+	return (arg*M_PI/180.0);
 }
 
 double Degrees(double arg)
 {
 	/* Returns angle in degrees from argument in radians */
-	return (arg/deg2rad);
+	return (arg*180.0/M_PI);
 }
 
 double FixAngle(double x)
@@ -49,8 +50,8 @@ double FixAngle(double x)
 	/* This function reduces angles greater than
 	   two pi by subtracting two pi from the angle */
 
-	while (x>twopi)
-		x-=twopi;
+	while ( x > 2*M_PI )
+		x-=2*M_PI;
 
 	return x;
 }
@@ -164,7 +165,7 @@ double AcTan(double sinx, double cosx)
 			if (sinx>0.0)
 				return (atan(sinx/cosx));
 			else
-				return (twopi+atan(sinx/cosx));
+				return (2*M_PI+atan(sinx/cosx));
 		}
 
 		else
@@ -179,12 +180,12 @@ double FMod2p(double x)
 	int i;
 	double ret_val;
 
-	ret_val=x;
-	i=ret_val/twopi;
-	ret_val-=i*twopi;
+	ret_val = x;
+	i = ret_val / (2*M_PI);
+	ret_val -= i*(2*M_PI);
 
-	if (ret_val<0.0)
-		ret_val+=twopi;
+	if (ret_val < 0.0)
+		ret_val += (2*M_PI);
 
 	return ret_val;
 }
@@ -359,7 +360,7 @@ double Delta_ET(double year)
 
 	double delta_et;
 
-	delta_et=26.465+0.747622*(year-1950)+1.886913*sin(twopi*(year-1975)/33);
+	delta_et=26.465+0.747622*(year-1950)+1.886913*sin(2*M_PI*(year-1975)/33);
 
 	return delta_et;
 }
@@ -392,7 +393,7 @@ double ThetaG(double epoch, deep_arg_t *deep_arg)
 	TU=(jd-2451545.0)/36525;
 	GMST=24110.54841+TU*(8640184.812866+TU*(0.093104-TU*6.2E-6));
 	GMST=Modulus(GMST+secday*omega_E*UT,secday);
-	ThetaG=twopi*GMST/secday;
+	ThetaG = 2*M_PI*GMST/secday;
 	deep_arg->ds50=jd-2433281.5+UT;
 	ThetaG=FMod2p(6.3003880987*deep_arg->ds50+1.72944494);
 
@@ -411,7 +412,7 @@ double ThetaG_JD(double jd)
 	GMST=24110.54841+TU*(8640184.812866+TU*(0.093104-TU*6.2E-6));
 	GMST=Modulus(GMST+secday*omega_E*UT,secday);
 
-	return (twopi*GMST/secday);
+	return (2*M_PI*GMST/secday);
 }
 
 
@@ -491,7 +492,7 @@ void Calculate_LatLonAlt(double time, const double pos[3],  geodetic_t *geodetic
 	geodetic->alt=r/cos(geodetic->lat)-xkmper*c; /* kilometers */
 
 	if (geodetic->lat>pio2)
-		geodetic->lat-=twopi;
+		geodetic->lat-= 2*M_PI;
 }
 
 void Calculate_Obs(double time, const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set)
@@ -543,7 +544,7 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 		azim=azim+pi;
 
 	if (azim<0.0)
-		azim=azim+twopi;
+		azim = azim + 2*M_PI;
 
 	el=ArcSin(top_z/vec3_length(range));
 	obs_set->x=azim;	/* Azimuth (radians)   */
@@ -663,8 +664,8 @@ void Calculate_Solar_Position(double time, double solar_vector[3])
 	e=0.01675104-(0.0000418+0.000000126*T)*T;
 	C=Radians((1.919460-(0.004789+0.000014*T)*T)*sin(M)+(0.020094-0.000100*T)*sin(2*M)+0.000293*sin(3*M));
 	O=Radians(Modulus(259.18-1934.142*T,360.0));
-	Lsa=Modulus(L+C-Radians(0.00569-0.00479*sin(O)),twopi);
-	nu=Modulus(M+C,twopi);
+	Lsa=Modulus(L+C-Radians(0.00569-0.00479*sin(O)), 2*M_PI);
+	nu=Modulus(M+C, 2*M_PI);
 	R=1.0000002*(1.0-Sqr(e))/(1.0+e*cos(nu));
 	eps=Radians(23.452294-(0.0130125+(0.00000164-0.000000503*T)*T)*T+0.00256*cos(O));
 	R=AU*R;

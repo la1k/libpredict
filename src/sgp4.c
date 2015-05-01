@@ -1,5 +1,9 @@
 #include "sgp4.h"
 
+#include "defs.h"
+#include "unsorted.h"
+#include "vec3.h"
+
 void sgp4_init(struct _sgp4 *m)
 {
 	m->initialized = 0;
