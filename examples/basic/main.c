@@ -2,8 +2,7 @@
 #include <math.h>
 #include <unistd.h>
 
-#include <predict/orbit.h>
-#include <predict/unsorted.h>
+#include <predict/predict.h>
 
 int main(int argc, char **argv)
 {
@@ -14,7 +13,8 @@ int main(int argc, char **argv)
 
 	orbit_t *iss = orbit_create(tle);
 
-	for (;;) {
+	int i;
+	for (i=0;i<100;++i) {
 		
 		//Get current time:
 		double time = CurrentDaynum();
