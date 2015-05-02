@@ -1,7 +1,7 @@
 #ifndef SGP4_H_
 #define SGP4_H_
 
-#include "tle.h"
+#include <predict/tle.h>
 
 struct _sgp4 {
 	

@@ -1,7 +1,7 @@
 #ifndef ORBIT_H_
 #define ORBIT_H_
 
-#include "tle.h"
+#include <predict/tle.h>
 
 struct orbit {
 	char name[128];

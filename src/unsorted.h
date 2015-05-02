@@ -18,7 +18,7 @@
 #include <termios.h>
 
 #include "vec3.h"
-#include "tle.h"
+#include <predict/tle.h>
 
 /* Geodetic position structure used by SGP4/SDP4 code. */
 

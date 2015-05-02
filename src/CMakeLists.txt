@@ -19,13 +19,8 @@ set_target_properties(predict_static PROPERTIES SOVERSION ${PROJECT_VERSION_MAJO
 # Header files needed to compile an application using libpredict
 set(predict_public_header)
 list(APPEND predict_public_header
-  observatory.h
-  orbit.h
-  sdp4.h
-  sgp4.h
-  unsorted.h
-  vec3.h
-  tle.h
+  ${LIBPREDICT_INCLUDE_DIR}/predict/orbit.h
+  ${LIBPREDICT_INCLUDE_DIR}/predict/tle.h
 )
 set_target_properties(predict PROPERTIES PUBLIC_HEADER "${predict_public_header}")
 target_include_directories(predict PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
