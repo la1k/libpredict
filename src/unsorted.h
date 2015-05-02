@@ -34,18 +34,6 @@ typedef struct	{
 
 /* Common arguments between deep-space functions used by SGP4/SDP4 code. */
 
-typedef struct	{
-		   	   /* Used by dpinit part of Deep() */
-		   double  eosq, sinio, cosio, betao, aodp, theta2,
-			   sing, cosg, betao2, xmdot, omgdot, xnodot, xnodp;
-	   
-			   /* Used by dpsec and dpper parts of Deep() */
-		   double  xll, omgadf, xnode, em, xinc, xn, t;
-    
-		 	   /* Used by thetg and Deep() */
-		   double  ds50;
-		}  deep_arg_t;
-
 char *SubString(const char *string, int start, int end);
 
 /* Returns sign of a double */
@@ -167,18 +155,6 @@ void Date_Time(double julian_date, struct tm *cdate);
 	/* Values determined using data from 1950-1991 in the 1990 
 	Astronomical Almanac.  See DELTA_ET.WQ1 for details. */
 double Delta_ET(double year);
-
-	/* The function ThetaG calculates the Greenwich Mean Sidereal Time */
-	/* for an epoch specified in the format used in the NORAD two-line */
-	/* element sets. It has now been adapted for dates beyond the year */
-	/* 1999, as described above. The function ThetaG_JD provides the   */
-	/* same calculation except that it is based on an input in the     */
-	/* form of a Julian Date. */
-
-	/* Reference:  The 1992 Astronomical Almanac, page B6. */
-	/* Modification to support Y2K */
-	/* Valid 1957 through 2056     */
-double ThetaG(double epoch, deep_arg_t *deep_arg);
 
 /* Reference:  The 1992 Astronomical Almanac, page B6. */
 double ThetaG_JD(double jd);
