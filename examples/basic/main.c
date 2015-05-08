@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include <predict/predict.h>
+#include <predict/observer.h>
 
 int main(int argc, char **argv)
 {
@@ -18,6 +19,14 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
+	// Create observer object
+	observer_t *obs = observer_create("Me", 63.9*M_PI/180.0, 10.9*M_PI/180.0, 0);
+	if (!obs) {
+		fprintf(stderr, "Failed to initialize observer!");
+		exit(1);
+	}
+
+
 	// Predict orbit
 	int i;
 	for (i=0;i<100;++i) {
@@ -25,10 +34,20 @@ int main(int argc, char **argv)
 		//Get current time:
 		double time = CurrentDaynum();
 
+		// Predict ISS
 		orbit_predict(iss, time);
+		printf("ISS: lat=%f, lon=%f, alt=%f\n", iss->latitude*180.0/M_PI, iss->longitude*180.0/M_PI, iss->altitude);
+	
+		// Observe ISS
+		struct observation iss_obs;
+		observer_find_orbit(obs, iss, &iss_obs);
+		printf("ISS: %f, %f\n", iss_obs.azimut*180.0/M_PI, iss_obs.elevation*180.0/M_PI);
 
-		printf("%f, %f, %f\n", iss->latitude*180.0/M_PI, iss->longitude*180.0/M_PI, iss->altitude);
-		
+		// Predict and observe MOON
+		struct observation moon_obs;
+		observer_find_moon(obs, time, &moon_obs);
+		printf("MOON: %f, %f\n", moon_obs.azimut*180.0/M_PI, moon_obs.elevation*180.0/M_PI);
+
 		//Sleep
 		usleep(100000);
 	}

@@ -1,6 +1,6 @@
-add_library(predict SHARED orbit.c sdp4.c sgp4.c unsorted.c)
+add_library(predict SHARED orbit.c observer.c sdp4.c sgp4.c unsorted.c)
 
-add_library(predict_static STATIC orbit.c sdp4.c sgp4.c unsorted.c)
+add_library(predict_static STATIC orbit.c observer.c sdp4.c sgp4.c unsorted.c)
 set_target_properties(predict_static PROPERTIES OUTPUT_NAME predict)
 
 # The VERSION is the version number in the file name:
@@ -20,6 +20,7 @@ set_target_properties(predict_static PROPERTIES SOVERSION ${PROJECT_VERSION_MAJO
 set(predict_public_header)
 list(APPEND predict_public_header
   ${LIBPREDICT_INCLUDE_DIR}/predict/orbit.h
+  ${LIBPREDICT_INCLUDE_DIR}/predict/observer.h
   ${LIBPREDICT_INCLUDE_DIR}/predict/tle.h
 )
 set_target_properties(predict PROPERTIES PUBLIC_HEADER "${predict_public_header}")
