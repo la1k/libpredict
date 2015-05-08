@@ -1,5 +1,9 @@
+#define _XOPEN_SOURCE 600
+#include <math.h>
+#include <stdbool.h>
 #include "sdp4.h"
 #include "defs.h"
+#include "unsorted.h"
 
 /// Entry points of deep()
 #define DPInit		0
@@ -243,6 +247,42 @@ void sdp4_predict(struct _sdp4 *m, double tsince, tle_t * tle, double pos[3], do
 		m->phase+=twopi;
 
 	m->phase=FMod2p(m->phase);
+}
+
+	/* The function ThetaG calculates the Greenwich Mean Sidereal Time */
+	/* for an epoch specified in the format used in the NORAD two-line */
+	/* element sets. It has now been adapted for dates beyond the year */
+	/* 1999, as described above. The function ThetaG_JD provides the   */
+	/* same calculation except that it is based on an input in the     */
+	/* form of a Julian Date. */
+
+	/* Reference:  The 1992 Astronomical Almanac, page B6. */
+	/* Modification to support Y2K */
+	/* Valid 1957 through 2056     */
+double ThetaG(double epoch, deep_arg_t *deep_arg)
+{
+	double year, day, UT, jd, TU, GMST, ThetaG;
+
+	/* Modification to support Y2K */
+	/* Valid 1957 through 2056     */
+
+	day=modf(epoch*1E-3,&year)*1E3;
+
+	if (year<57)
+		year+=2000;
+	else
+		year+=1900;
+
+	UT=modf(day,&day);
+	jd=Julian_Date_of_Year(year)+day;
+	TU=(jd-2451545.0)/36525;
+	GMST=24110.54841+TU*(8640184.812866+TU*(0.093104-TU*6.2E-6));
+	GMST=Modulus(GMST+secday*omega_E*UT,secday);
+	ThetaG = 2*M_PI*GMST/secday;
+	deep_arg->ds50=jd-2433281.5+UT;
+	ThetaG=FMod2p(6.3003880987*deep_arg->ds50+1.72944494);
+
+	return ThetaG;
 }
 
 void sdp4_deep(struct _sdp4 *m, int ientry, tle_t * tle, deep_arg_t * deep_arg)

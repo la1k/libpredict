@@ -1,7 +1,14 @@
 #ifndef ORBIT_H_
 #define ORBIT_H_
 
-#include "tle.h"
+#include <predict/tle.h>
+
+typedef enum {
+  EPHEMERIS_SGP4 = 0,
+  EPHEMERIS_SDP4 = 1,
+  EPHEMERIS_SGP8 = 2,
+  EPHEMERIS_SDP8 = 3
+} ephemeris_t;
 
 struct orbit {
 	char name[128];
@@ -13,7 +20,7 @@ struct orbit {
 	double longitude;
 	double altitude;
 	int eclipsed;
-	int ephemeris;
+	ephemeris_t ephemeris;
 	///Original TLE line number one:
 	char line1[70];
 	///Original TLE line number two:

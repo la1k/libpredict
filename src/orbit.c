@@ -1,14 +1,10 @@
-#include "orbit.h"
+#define _XOPEN_SOURCE 600
+#include <math.h>
+#include <predict/orbit.h>
 #include "defs.h"
-#include "vec3.h"
-
+#include "unsorted.h"
 #include "sdp4.h"
 #include "sgp4.h"
-
-#define EPHEMERIS_SGP4	0
-#define EPHEMERIS_SDP4	1
-#define EPHEMERIS_SGP8	2
-#define EPHEMERIS_SDP8	3
 
 /**
  * \brief Allocates memory and prepares internal data.

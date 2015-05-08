@@ -1,6 +1,6 @@
-add_library(predict SHARED orbit.c sdp4.c sgp4.c unsorted.c vec3.c)
+add_library(predict SHARED orbit.c sdp4.c sgp4.c unsorted.c)
 
-add_library(predict_static STATIC orbit.c sdp4.c sgp4.c unsorted.c vec3.c)
+add_library(predict_static STATIC orbit.c sdp4.c sgp4.c unsorted.c)
 set_target_properties(predict_static PROPERTIES OUTPUT_NAME predict)
 
 # The VERSION is the version number in the file name:
@@ -19,12 +19,8 @@ set_target_properties(predict_static PROPERTIES SOVERSION ${PROJECT_VERSION_MAJO
 # Header files needed to compile an application using libpredict
 set(predict_public_header)
 list(APPEND predict_public_header
-  predict.h
-  vec3.h
-  observatory.h
-  orbit.h
-  unsorted.h
-  tle.h
+  ${LIBPREDICT_INCLUDE_DIR}/predict/orbit.h
+  ${LIBPREDICT_INCLUDE_DIR}/predict/tle.h
 )
 set_target_properties(predict PROPERTIES PUBLIC_HEADER "${predict_public_header}")
 target_include_directories(predict PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

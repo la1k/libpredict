@@ -1,7 +1,19 @@
 #ifndef _SDP4_H_
 #define _SDP4_H_
 
-#include "unsorted.h"
+#include <predict/tle.h>
+
+typedef struct	{
+		   	   /* Used by dpinit part of Deep() */
+		   double  eosq, sinio, cosio, betao, aodp, theta2,
+			   sing, cosg, betao2, xmdot, omgdot, xnodot, xnodp;
+	   
+			   /* Used by dpsec and dpper parts of Deep() */
+		   double  xll, omgadf, xnode, em, xinc, xn, t;
+    
+		 	   /* Used by thetg and Deep() */
+		   double  ds50;
+		}  deep_arg_t;
 
 struct _sdp4 {
 	
