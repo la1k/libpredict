@@ -34,6 +34,8 @@ struct observation {
 };
 
 observer_t *observer_create(const char *name, double lat, double lon, double alt);
+void observer_destroy(observer_t *obs);
+
 void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs);
 void observer_find_moon(const observer_t *observer, double time, struct observation *obs);
 void observer_find_sun(const observer_t *observer, double time, struct observation *obs);

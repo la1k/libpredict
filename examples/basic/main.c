@@ -60,6 +60,7 @@ int main(int argc, char **argv)
 
 	// Free memory
 	orbit_destroy(iss);
+	observer_destroy(obs);
 
 	return 0;
 }
