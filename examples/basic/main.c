@@ -48,6 +48,12 @@ int main(int argc, char **argv)
 		observer_find_moon(obs, time, &moon_obs);
 		printf("MOON: %f, %f\n", moon_obs.azimut*180.0/M_PI, moon_obs.elevation*180.0/M_PI);
 
+		// Predict and observe SUN
+		struct observation sun_obs;
+		observer_find_sun(obs, time, &sun_obs);
+		printf("SUN: %f, %f\n", sun_obs.azimut*180.0/M_PI, sun_obs.elevation*180.0/M_PI);
+	
+
 		//Sleep
 		usleep(100000);
 	}

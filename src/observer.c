@@ -80,20 +80,17 @@ void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struc
 	obs->correctedElevation = obs->elevation+Radians((1.02/tan(Radians(Degrees(obs->elevation)+10.3/(Degrees(obs->elevation)+5.11))))/60);
 
 	//Above horizon?
-	if (obs->elevation >= 0.0) {
-		obs->visible = true;
-	}else {
-		obs->visible = false;
-	}
+	obs->visible = (obs->elevation >= 0);
 
 }
 
-void observer_find_sun(const observer_t *observer, double time)
+void observer_find_sun(const observer_t *observer, double time, struct observation *obs)
 {
 	
 	double mjd, year, T, M, L, e, C, O, Lsa, nu, R, eps;
 
-	mjd=time-2415020.0;
+	double jul_utc = time+2444238.5;
+	mjd=jul_utc-2415020.0;
 	year=1900+mjd/365.25;
 	T=(mjd+Delta_ET(year)/secday)/36525.0;
 	M=Radians(Modulus(358.47583+Modulus(35999.04975*T,360.0)-(0.000150+0.0000033*T)*Sqr(T),360.0));
@@ -113,7 +110,47 @@ void observer_find_sun(const observer_t *observer, double time)
 	solar_vector[2] = R*sin(Lsa)*sin(eps);
 
 	
+	/* Zero vector for initializations */
+	double zero_vector[3] = {0,0,0};
 
+	/* Solar observed azi and ele vector  */
+	vector_t solar_set;
+
+	/* Solar right ascension and declination vector */
+	vector_t solar_rad;
+
+	/* Solar lat, long, alt vector */
+	geodetic_t solar_latlonalt;
+
+	geodetic_t geodetic;
+	geodetic.lat = observer->latitude;
+	geodetic.lon = observer->longitude;
+	geodetic.alt = observer->altitude / 1000.0;
+	geodetic.theta = 0.0;
+	Calculate_Obs(jul_utc, solar_vector, zero_vector, &geodetic, &solar_set);
+	
+	double sun_azi = solar_set.x; 
+	double sun_ele = solar_set.y;
+
+	double sun_range = 1.0+((solar_set.z-AU)/AU);
+	double sun_range_rate = 1000.0*solar_set.w;
+
+	Calculate_LatLonAlt(jul_utc, solar_vector, &solar_latlonalt);
+
+	double sun_lat = Degrees(solar_latlonalt.lat);
+	double sun_lon = 360.0-Degrees(solar_latlonalt.lon);
+
+	Calculate_RADec(jul_utc, solar_vector, zero_vector, &geodetic, &solar_rad);
+
+	double sun_ra = solar_rad.x ;
+	double sun_dec = solar_rad.y;
+
+	obs->time = time;
+	obs->azimut = sun_azi;
+	obs->elevation = sun_ele;
+	obs->visible = (obs->elevation > 0);
+	obs->range = sun_range;
+	obs->rangeDot = sun_range_rate;
 }
 
 
