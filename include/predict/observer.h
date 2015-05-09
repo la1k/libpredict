@@ -40,4 +40,13 @@ void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struc
 void observer_find_moon(const observer_t *observer, double time, struct observation *obs);
 void observer_find_sun(const observer_t *observer, double time, struct observation *obs);
 
+/* Find next AOS from time start_utc (ignore previous AOS of current pass if satellite is in range) */
+double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double start_utc);
+
+/* Find next LOS from time start_utc (LOS of an upcoming pass or the current pass if satellite is in range) */
+double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double start_utc);
+
+/* calculate doppler shift of a given downlink frequency with respect to the observer */
+double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double frequency);
+
 #endif // ifndef _OBSERVER_H_
