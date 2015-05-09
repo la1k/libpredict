@@ -345,3 +345,64 @@ void observer_find_moon(const observer_t *observer, double time, struct observat
 	obs->elevation = moon_el;
 
 }
+
+double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double start_utc)
+{
+	double ret_aos_time = 0;
+	double curr_time = start_utc;
+	struct observation obs;
+	double time_step = 0;
+	
+	orbit_predict(orbit, curr_time);
+	observer_find_orbit(observer, orbit, &obs);
+
+	//check whether AOS can happen after specified start time
+	if (orbit_aos_happens(orbit, observer->latitude) && !orbit_is_geostationary(orbit) && !orbit_decayed(orbit, curr_time))
+	{
+		//TODO: I have based this on the function FindAOS() in flyby.c,
+		//which uses some formulas for calculating the time steps
+		//during iteration. These are probably based on some
+		//root-finding technique, possibly through established
+		//formulas. It would be nice to find the source for this and
+		//make this code more readable.   
+
+		//skip the rest of the pass if the satellite is currently in range, since we want the _next_ AOS. 
+		if (obs.elevation > 0.0)
+		{
+			curr_time = observer_get_next_los(observer, orbit, curr_time);
+			orbit_predict(orbit, curr_time);
+			observer_find_orbit(observer, orbit, &obs);
+		}
+
+		//iteration until the orbit is roughly in range again, before the satellite pass
+		while (obs.elevation*180.0/M_PI < -1.0)
+		{
+			time_step = 0.00035*(obs.elevation*180.0/M_PI*((orbit->altitude/8400.0)+0.46)-2.0);
+			curr_time -= time_step;
+			orbit_predict(orbit, curr_time);
+			observer_find_orbit(observer, orbit, &obs);
+		}
+
+		//fine tune the results until the elevation is approximately 0
+		while (fabs(obs.elevation*180/M_PI) > 0.3)
+		{
+			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/530000.0;
+			curr_time -= time_step;
+			orbit_predict(orbit, curr_time);
+			observer_find_orbit(observer, orbit, &obs);
+		}
+
+		ret_aos_time = curr_time;
+	}
+	return ret_aos_time;
+}
+
+double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double start_utc)
+{
+
+}
+
+double observer_get_doppler_shift(const observer_t *observer, orbit_t *orbit, double start_utc)
+{
+
+}

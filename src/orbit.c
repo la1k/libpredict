@@ -261,3 +261,11 @@ int orbit_predict(orbit_t *m, double utc)
 
 	return 0;
 }
+
+
+
+bool orbit_decayed(const orbit_t *x, double time)
+{
+	//TODO FIXME 
+	return false;
+}
