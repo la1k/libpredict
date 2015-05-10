@@ -347,7 +347,7 @@ void observer_find_moon(const observer_t *observer, double time, struct observat
 }
 
 
-#define ELEVATION_ZERO_THRESH 0.3 //threshold for fine-tuning of AOS/LOS
+#define ELEVATION_ZERO_TOLERANCE 0.3 //threshold for fine-tuning of AOS/LOS
 #define DAYNUM_MINUTE 1.0/(24*60) //number of days corresponding to a minute
 double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double start_utc)
 {
@@ -374,7 +374,7 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		if (obs.elevation > 0.0)
 		{
 			curr_time = observer_get_next_los(observer, orbit, curr_time);
-			curr_time += DAYNUM_MINUTE*20;
+			curr_time += DAYNUM_MINUTE*20; //skip 20 minutes. LOS might still be within the elevation threshold. (rough quickfix from predict) 
 			orbit_predict(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
 		}
@@ -389,7 +389,7 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		}
 
 		//fine tune the results until the elevation is within a low enough threshold
-		while (fabs(obs.elevation*180/M_PI) > ELEVATION_ZERO_THRESH)
+		while (fabs(obs.elevation*180/M_PI) > ELEVATION_ZERO_TOLERANCE)
 		{
 			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/530000.0;
 			curr_time -= time_step;
@@ -441,7 +441,7 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 			orbit_predict(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
 		}
-		while (fabs(obs.elevation*180.0/M_PI) > ELEVATION_ZERO_THRESH);
+		while (fabs(obs.elevation*180.0/M_PI) > ELEVATION_ZERO_TOLERANCE);
 
 		ret_los_time = curr_time;
 	}
