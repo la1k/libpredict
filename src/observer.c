@@ -348,6 +348,7 @@ void observer_find_moon(const observer_t *observer, double time, struct observat
 
 
 #define ELEVATION_ZERO_THRESH 0.3 //threshold for fine-tuning of AOS/LOS
+#define DAYNUM_MINUTE 1.0/(24*60) //number of days corresponding to a minute
 double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double start_utc)
 {
 	double ret_aos_time = 0;
@@ -364,13 +365,16 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		//TODO: Time steps have been found in FindAOS/LOS(). 
 		//Might be based on some pre-existing source, root-finding techniques
 		//or something. Find them, and improve readability of the code and so that
-		//the mathematical stability of the iteration can be checked. (Or, they are just
-		//purely empirical...)
+		//the mathematical stability of the iteration can be checked. 
+		//Bisection method, Brent's algorithm? Given a coherent root finding algorithm, 
+		//can rather have one function for iterating the orbit and then let get_next_aos/los 
+		//specify bounding intervals for the root finding. 
 
 		//skip the rest of the pass if the satellite is currently in range, since we want the _next_ AOS. 
 		if (obs.elevation > 0.0)
 		{
 			curr_time = observer_get_next_los(observer, orbit, curr_time);
+			curr_time += DAYNUM_MINUTE*20;
 			orbit_predict(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
 		}
@@ -422,7 +426,7 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 		//step through the pass
 		do 
 		{
-			time_step = cos(obs.elevation - 1.0)*sqrt(orbit->altitude)/25000.0; //cos(obs.elevation - 1.0) should be positive even though the elevation might not be strictly above the horizon, so sign of timestep should be ok. 
+			time_step = cos(obs.elevation - 1.0)*sqrt(orbit->altitude)/25000.0; 
 			curr_time += time_step;
 			orbit_predict(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
