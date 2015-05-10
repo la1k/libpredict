@@ -444,11 +444,11 @@ double CurrentDaynum()
 	/* Read the system clock and return the number
 	   of days since 31Dec79 00:00:00 UTC (daynum 0) */
 
-	int x;
+	/* int x; */
 	struct timeval tptr;
 	double usecs, seconds;
 
-	x=gettimeofday(&tptr,NULL);
+	/*x=*/gettimeofday(&tptr,NULL);
 
 	usecs=0.000001*(double)tptr.tv_usec;
 	seconds=usecs+(double)tptr.tv_sec;

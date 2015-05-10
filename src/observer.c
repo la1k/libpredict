@@ -137,14 +137,18 @@ void observer_find_sun(const observer_t *observer, double time, struct observati
 
 	Calculate_LatLonAlt(jul_utc, solar_vector, &solar_latlonalt);
 
+	/*
 	double sun_lat = Degrees(solar_latlonalt.lat);
 	double sun_lon = 360.0-Degrees(solar_latlonalt.lon);
+	*/
 
 	Calculate_RADec(jul_utc, solar_vector, zero_vector, &geodetic, &solar_rad);
 
+	/*
 	double sun_ra = solar_rad.x ;
 	double sun_dec = solar_rad.y;
-
+	*/
+	
 	obs->time = time;
 	obs->azimut = sun_azi;
 	obs->elevation = sun_ele;
