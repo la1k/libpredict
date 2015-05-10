@@ -10,7 +10,8 @@ observer_t *observer_create(const char *name, double lat, double lon, double alt
 	observer_t *obs = (observer_t*)malloc(sizeof(observer_t));
 	if (obs == NULL) return NULL;
 
-	snprintf(obs->name, 128, name);
+	strncpy(obs->name, name, 128);
+	obs->name[127] = '\0';
 	obs->latitude = lat;
 	obs->longitude = lon;
 	obs->altitude = alt;
