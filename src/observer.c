@@ -10,7 +10,8 @@ observer_t *observer_create(const char *name, double lat, double lon, double alt
 	observer_t *obs = (observer_t*)malloc(sizeof(observer_t));
 	if (obs == NULL) return NULL;
 
-	snprintf(obs->name, 128, name);
+	strncpy(obs->name, name, 128);
+	obs->name[127] = '\0';
 	obs->latitude = lat;
 	obs->longitude = lon;
 	obs->altitude = alt;
@@ -137,14 +138,18 @@ void observer_find_sun(const observer_t *observer, double time, struct observati
 
 	Calculate_LatLonAlt(jul_utc, solar_vector, &solar_latlonalt);
 
+	/*
 	double sun_lat = Degrees(solar_latlonalt.lat);
 	double sun_lon = 360.0-Degrees(solar_latlonalt.lon);
+	*/
 
 	Calculate_RADec(jul_utc, solar_vector, zero_vector, &geodetic, &solar_rad);
 
+	/*
 	double sun_ra = solar_rad.x ;
 	double sun_dec = solar_rad.y;
-
+	*/
+	
 	obs->time = time;
 	obs->azimut = sun_azi;
 	obs->elevation = sun_ele;
@@ -346,7 +351,6 @@ void observer_find_moon(const observer_t *observer, double time, struct observat
 
 }
 
-
 #define ELEVATION_ZERO_TOLERANCE 0.3 //threshold for fine-tuning of AOS/LOS
 #define DAYNUM_MINUTE 1.0/(24*60) //number of days corresponding to a minute
 double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double start_utc)
@@ -449,3 +453,11 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 
 }
 
+double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double frequency)
+{
+	struct observation obs;
+	observer_find_orbit(observer, orbit, &obs);
+
+	double sat_range_rate = obs.rangeDot*1000.0; //convert to m/s
+	return frequency*sat_range_rate/SPEED_OF_LIGHT; //assumes that sat_range <<<<< speed of light, which is very ok
+}

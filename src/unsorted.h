@@ -1,23 +1,15 @@
 #ifndef UNSORTED_H_
 #define UNSORTED_H_
 
-#include <math.h>
-#include <time.h>
-#include <sys/time.h>
-#include <curses.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <pthread.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <termios.h>
-
 #include <predict/tle.h>
+
+#include <math.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
 
 void vec3_set(double v[3], double x, double y, double z);
 double vec3_length(const double v[3]);

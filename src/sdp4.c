@@ -299,7 +299,7 @@ void sdp4_deep(struct _sdp4 *m, int ientry, tle_t * tle, deep_arg_t * deep_arg)
 	g533, gam, sinq, sinzf, sis, sl, sll, sls, stem, temp, temp1, x1,
 	x2, x2li, x2omi, x3, x4, x5, x6, x7, x8, xl, xldot, xmao, xnddt,
 	xndot, xno2, xnodce, xnoi, xomi, xpidot, z1, z11, z12, z13, z2,
-	z21, z22, z23, z3, z31, z32, z33, ze, zf, zm, zmo, zn, zsing,
+	  z21, z22, z23, z3, z31, z32, z33, ze, zf, zm, /*zmo,*/ zn, zsing,
 	zsinh, zsini, zcosg, zcosh, zcosi, delt=0, ft=0;
 
 	switch (ientry)
@@ -353,7 +353,7 @@ void sdp4_deep(struct _sdp4 *m, int ientry, tle_t * tle, deep_arg_t * deep_arg)
 		  cc=c1ss;
 		  zn=zns;
 		  ze=zes;
-		  zmo=m->zmos;
+		  /* zmo=m->zmos; */
 		  xnoi=1/m->xnq;
 
 		  /* Loop breaks when Solar terms are done a second */
@@ -456,7 +456,7 @@ void sdp4_deep(struct _sdp4 *m, int ientry, tle_t * tle, deep_arg_t * deep_arg)
 			zn=znl;
 			cc=c1l;
 			ze=zel;
-			zmo=m->zmol;
+			/* zmo=m->zmol; */
 			//Set lunarTermsDone flag:
 			m->lunarTermsDone = true;
 		}

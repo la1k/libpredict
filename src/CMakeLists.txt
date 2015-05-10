@@ -24,7 +24,6 @@ list(APPEND predict_public_header
   ${LIBPREDICT_INCLUDE_DIR}/predict/tle.h
 )
 set_target_properties(predict PROPERTIES PUBLIC_HEADER "${predict_public_header}")
-target_include_directories(predict PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # Maybe needed on Mac OS?
 #set_target_properties(predict PROPERTIES FRAMEWORK TRUE)
 

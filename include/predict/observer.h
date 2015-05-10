@@ -46,4 +46,7 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 /* Find next LOS from time start_utc (LOS of an upcoming pass or the current pass if satellite is in range) */
 double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double start_utc);
 
+/* Calculate doppler shift of a given downlink frequency with respect to the observer */
+double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
+
 #endif // ifndef _OBSERVER_H_

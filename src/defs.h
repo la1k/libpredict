@@ -57,5 +57,8 @@
 #define sr             6.96000E5       /* Solar radius - km (IAU 76) */
 #define AU             1.49597870691E8 /* Astronomical unit - km (IAU 76) */
 
+/* doppler calculation */
+#define SPEED_OF_LIGHT 299792458.0
+
 
 #endif
