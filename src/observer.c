@@ -449,7 +449,3 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 
 }
 
-double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double frequency)
-{
-
-}

@@ -262,10 +262,16 @@ int orbit_predict(orbit_t *m, double utc)
 	return 0;
 }
 
+int orbit_decayed(const orbit_t *orbit, double time)
+{	
+	double satepoch;
+	satepoch=DayNum(1,0,orbit->year)+orbit->refepoch;
+	printf("%d %d\n", satepoch, orbit->year);
 
-
-int orbit_decayed(const orbit_t *x, double time)
-{
-	//TODO FIXME 
-	return false;
+	int has_decayed = false;
+	if (satepoch + ((16.666666 - orbit->meanmo)/(10.0*fabs(orbit->drag))) < time)
+	{
+		has_decayed = true;
+	}
+	return has_decayed;
 }

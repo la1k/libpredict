@@ -166,6 +166,11 @@ double ThetaG_JD(double jd);
 
 double CurrentDaynum();
 
+
+/* Calculates the day number from m/d/y. 
+ * Needed for orbit_decay.*/
+long DayNum(int month, int day, int year);
+
 /* Procedure Calculate_LatLonAlt will calculate the geodetic  */
 /* position of an object given its ECI position pos and time. */
 /* It is intended to be used to determine the ground track of */
