@@ -345,3 +345,12 @@ void observer_find_moon(const observer_t *observer, double time, struct observat
 	obs->elevation = moon_el;
 
 }
+
+double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double frequency)
+{
+	struct observation obs;
+	observer_find_orbit(observer, orbit, &obs);
+
+	double sat_range_rate = obs.rangeDot*1000.0; //convert to m/s
+	return frequency*sat_range_rate/SPEED_OF_LIGHT; //assumes that sat_range <<<<< speed of light, which is very ok
+}

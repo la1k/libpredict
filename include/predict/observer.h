@@ -40,4 +40,7 @@ void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struc
 void observer_find_moon(const observer_t *observer, double time, struct observation *obs);
 void observer_find_sun(const observer_t *observer, double time, struct observation *obs);
 
+/* calculate doppler shift of a given downlink frequency with respect to the observer */
+double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
+
 #endif // ifndef _OBSERVER_H_
