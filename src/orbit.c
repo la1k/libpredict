@@ -114,12 +114,12 @@ void orbit_destroy(orbit_t *orbit)
  *
  * This function returns true if the satellite is geostationary.
  **/
-int orbit_is_geostationary(const orbit_t *m)
+bool orbit_is_geostationary(const orbit_t *m)
 {
 	if (fabs(m->meanmo-1.0027)<0.0002) {
-		return 1;
+		return true;
 	}else {
-		return 0;
+		return false;
 	}
 }
 
@@ -147,9 +147,9 @@ double orbit_perigee(const orbit_t *m)
 	return (aodp*(1-m->eccn)-ae)*xkmper;
 }
 
-int orbit_aos_happens(const orbit_t *m, double latitude)
+bool orbit_aos_happens(const orbit_t *m, double latitude)
 {
-	/* This function returns a 1 if the satellite pointed to by
+	/* This function returns true if the satellite pointed to by
 	   "x" can ever rise above the horizon of the ground station. */
 
 	double lin, sma, apogee;

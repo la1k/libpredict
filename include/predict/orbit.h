@@ -71,10 +71,10 @@ orbit_t *orbit_create(const char *tle[]);
 void orbit_destroy(orbit_t *orbit);
 
 int orbit_predict(orbit_t *x, double utc);
-int orbit_is_geostationary(const orbit_t *x);
+bool orbit_is_geostationary(const orbit_t *x);
 double orbit_apogee(const orbit_t *x);
 double orbit_perigee(const orbit_t *x);
-int orbit_aos_happens(const orbit_t *x, double latitude);
+bool orbit_aos_happens(const orbit_t *x, double latitude);
 
 /* return true if orbit has decayed */
 bool orbit_decayed(const orbit_t *x, double utc);
