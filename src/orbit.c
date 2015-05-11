@@ -267,7 +267,7 @@ bool orbit_decayed(const orbit_t *orbit, double time)
 	double satepoch;
 	satepoch=DayNum(1,0,orbit->year)+orbit->refepoch;
 
-	int has_decayed = false;
+	bool has_decayed = false;
 	if (satepoch + ((16.666666 - orbit->meanmo)/(10.0*fabs(orbit->drag))) < time)
 	{
 		has_decayed = true;
