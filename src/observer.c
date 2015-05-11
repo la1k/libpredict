@@ -386,7 +386,7 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		//iteration until the orbit is roughly in range again, before the satellite pass
 		while (obs.elevation*180.0/M_PI < -1.0)
 		{
-			time_step = 0.00035*(obs.elevation*180.0/M_PI*((orbit->altitude/8400.0)+0.46)-2.0); 
+			time_step = 0.00035*(obs.elevation*180.0/M_PI*((orbit->altitude/8400.0)+0.46)-2.0);
 			curr_time -= time_step;
 			orbit_predict(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
