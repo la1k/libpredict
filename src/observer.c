@@ -351,6 +351,108 @@ void observer_find_moon(const observer_t *observer, double time, struct observat
 
 }
 
+#define ELEVATION_ZERO_TOLERANCE 0.3 //threshold for fine-tuning of AOS/LOS
+#define DAYNUM_MINUTE 1.0/(24*60) //number of days corresponding to a minute
+double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double start_utc)
+{
+	double ret_aos_time = 0;
+	double curr_time = start_utc;
+	struct observation obs;
+	double time_step = 0;
+	
+	orbit_predict(orbit, curr_time);
+	observer_find_orbit(observer, orbit, &obs);
+
+	//check whether AOS can happen after specified start time
+	if (orbit_aos_happens(orbit, observer->latitude) && !orbit_is_geostationary(orbit) && !orbit_decayed(orbit, curr_time))
+	{
+		//TODO: Time steps have been found in FindAOS/LOS(). 
+		//Might be based on some pre-existing source, root-finding techniques
+		//or something. Find them, and improve readability of the code and so that
+		//the mathematical stability of the iteration can be checked. 
+		//Bisection method, Brent's algorithm? Given a coherent root finding algorithm, 
+		//can rather have one function for iterating the orbit and then let get_next_aos/los 
+		//specify bounding intervals for the root finding. 
+
+		//skip the rest of the pass if the satellite is currently in range, since we want the _next_ AOS. 
+		if (obs.elevation > 0.0)
+		{
+			curr_time = observer_get_next_los(observer, orbit, curr_time);
+			curr_time += DAYNUM_MINUTE*20; //skip 20 minutes. LOS might still be within the elevation threshold. (rough quickfix from predict) 
+			orbit_predict(orbit, curr_time);
+			observer_find_orbit(observer, orbit, &obs);
+		}
+
+		//iteration until the orbit is roughly in range again, before the satellite pass
+		while (obs.elevation*180.0/M_PI < -1.0)
+		{
+			time_step = 0.00035*(obs.elevation*180.0/M_PI*((orbit->altitude/8400.0)+0.46)-2.0);
+			curr_time -= time_step;
+			orbit_predict(orbit, curr_time);
+			observer_find_orbit(observer, orbit, &obs);
+		}
+
+		//fine tune the results until the elevation is within a low enough threshold
+		while (fabs(obs.elevation*180/M_PI) > ELEVATION_ZERO_TOLERANCE)
+		{
+			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/530000.0;
+			curr_time -= time_step;
+			orbit_predict(orbit, curr_time);
+			observer_find_orbit(observer, orbit, &obs);
+		}
+
+		ret_aos_time = curr_time;
+	}
+	return ret_aos_time;
+}
+
+double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double start_utc)
+{
+	double ret_los_time = 0;
+	double curr_time = start_utc;
+	struct observation obs;
+	double time_step = 0;
+
+	orbit_predict(orbit, curr_time);
+	observer_find_orbit(observer, orbit, &obs);
+
+	//check whether AOS/LOS can happen after specified start time
+	if (orbit_aos_happens(orbit, observer->latitude) && !orbit_is_geostationary(orbit) && !orbit_decayed(orbit, curr_time))
+	{
+		//iterate until next satellite pass
+		if (obs.elevation < 0.0)
+		{
+			curr_time = observer_get_next_aos(observer, orbit, curr_time);
+			orbit_predict(orbit, curr_time);
+			observer_find_orbit(observer, orbit, &obs);
+		}
+
+		//step through the pass
+		do 
+		{
+			time_step = cos(obs.elevation - 1.0)*sqrt(orbit->altitude)/25000.0; 
+			curr_time += time_step;
+			orbit_predict(orbit, curr_time);
+			observer_find_orbit(observer, orbit, &obs);
+		} 
+		while (obs.elevation >= 0.0);
+		
+		//fine tune to elevation threshold
+		do 
+		{
+			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/502500.0;
+			curr_time += time_step;
+			orbit_predict(orbit, curr_time);
+			observer_find_orbit(observer, orbit, &obs);
+		}
+		while (fabs(obs.elevation*180.0/M_PI) > ELEVATION_ZERO_TOLERANCE);
+
+		ret_los_time = curr_time;
+	}
+	return ret_los_time;
+
+}
+
 double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double frequency)
 {
 	struct observation obs;

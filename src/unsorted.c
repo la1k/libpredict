@@ -456,6 +456,27 @@ double CurrentDaynum()
 	return ((seconds/86400.0)-3651.0);
 }
 
+long DayNum(int m, int d, int y)
+{
+
+	long dn;
+	double mm, yy;
+
+	if (m<3) {
+		y--;
+		m+=12;
+	}
+
+	if (y<57)
+		y+=100;
+
+	yy=(double)y;
+	mm=(double)m;
+	dn=(long)(floor(365.25*(yy-80.0))-floor(19.0+yy/100.0)+floor(4.75+yy/400.0)-16.0);
+	dn+=d+30*m+(long)floor(0.6*mm-0.3);
+	return dn;
+}
+
 
 void Calculate_LatLonAlt(double time, const double pos[3],  geodetic_t *geodetic)
 {
