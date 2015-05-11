@@ -262,7 +262,7 @@ int orbit_predict(orbit_t *m, double utc)
 	return 0;
 }
 
-int orbit_decayed(const orbit_t *orbit, double time)
+bool orbit_decayed(const orbit_t *orbit, double time)
 {	
 	double satepoch;
 	satepoch=DayNum(1,0,orbit->year)+orbit->refepoch;

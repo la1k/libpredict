@@ -2,6 +2,7 @@
 #define ORBIT_H_
 
 #include <predict/tle.h>
+#include <stdbool.h>
 
 typedef enum {
   EPHEMERIS_SGP4 = 0,
@@ -76,7 +77,7 @@ double orbit_perigee(const orbit_t *x);
 int orbit_aos_happens(const orbit_t *x, double latitude);
 
 /* return true if orbit has decayed */
-int orbit_decayed(const orbit_t *x, double utc);
+bool orbit_decayed(const orbit_t *x, double utc);
 
 
 #endif
