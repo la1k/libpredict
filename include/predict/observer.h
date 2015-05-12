@@ -1,7 +1,7 @@
 #ifndef _OBSERVER_H_
 #define _OBSERVER_H_
 
-#include <predict/orbit.h>
+#include <predict/predict.h>
 
 typedef struct observer {
 	///Observatory name
@@ -37,14 +37,14 @@ observer_t *observer_create(const char *name, double lat, double lon, double alt
 void observer_destroy(observer_t *obs);
 
 void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs);
-void observer_find_moon(const observer_t *observer, double time, struct observation *obs);
-void observer_find_sun(const observer_t *observer, double time, struct observation *obs);
+void observer_find_moon(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
+void observer_find_sun(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
 /* Find next AOS from time start_utc (ignore previous AOS of current pass if satellite is in range) */
-double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double start_utc);
+predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
 /* Find next LOS from time start_utc (LOS of an upcoming pass or the current pass if satellite is in range) */
-double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double start_utc);
+predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
 /* Calculate doppler shift of a given downlink frequency with respect to the observer */
 double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);

@@ -1,6 +1,7 @@
 #ifndef ORBIT_H_
 #define ORBIT_H_
 
+#include <predict/predict.h>
 #include <predict/tle.h>
 #include <stdbool.h>
 
@@ -70,7 +71,7 @@ typedef struct orbit orbit_t;
 orbit_t *orbit_create(const char *tle[]);
 void orbit_destroy(orbit_t *orbit);
 
-int orbit_predict(orbit_t *x, double utc);
+int orbit_predict(orbit_t *x, predict_julian_date_t time);
 bool orbit_is_geostationary(const orbit_t *x);
 double orbit_apogee(const orbit_t *x);
 double orbit_perigee(const orbit_t *x);
