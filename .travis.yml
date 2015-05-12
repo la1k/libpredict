@@ -3,3 +3,9 @@ compiler:
   - gcc
   - clang
 script: cmake --version && cmake . && make
+notifications:
+  irc:
+    channels:
+      - "irc.oftc.net#libpredict"
+    use_notice: true
+    skip_join: true
