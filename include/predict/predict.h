@@ -5,7 +5,7 @@
 typedef double predict_julian_date_t;
 
 #include <predict/orbit.h>
-#include <predict/observatory.h>
+#include <predict/observer.h>
 #include <time.h>
 
 /* Convert time_t to julian date. */
