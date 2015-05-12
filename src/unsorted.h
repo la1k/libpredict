@@ -33,8 +33,9 @@ double vec3_length(const double v[3]);
  *
  * \param v Input vector. Overwritten by result
  * \param a Scalar to be multiplied into vector
+ * \paren r Resulting vector
  **/
-void vec3_mul_scalar(double v[3], double a);
+void vec3_mul_scalar(const double v[3], double a, double r[3]);
 
 /**
  * Subtract a vector 2 from vector 1.
@@ -358,18 +359,5 @@ double PrimeAngle(double x);
  **/
 void Calculate_User_PosVel(double time, geodetic_t *geodetic, double obs_pos[3], double obs_vel[3]);
 
-/**
- * Calculates solar position vector.
- *
- * \copyright GPLv2+
- **/
-void Calculate_Solar_Position(double time, double solar_vector[3]);
-
-/**
- * Calculates satellite's eclipse status and depth.
- *
- * \copyright GPLv2+
- **/
-bool Sat_Eclipsed(vector_t *pos, vector_t *sol, double *depth);
 
 #endif

@@ -22,11 +22,11 @@ double vec3_dot(const double v[3], const double u[3])
 	return (v[0]*u[0] + v[1]*u[1] + v[2]*u[2]);
 }
 
-void vec3_mul_scalar(double v[3], double a)
+void vec3_mul_scalar(const double v[3], double a, double r[3])
 {
-	v[0] *= a;
-	v[1] *= a;
-	v[2] *= a;
+	r[0] = v[0]*a;
+	r[1] = v[1]*a;
+	r[2] = v[2]*a;
 }
 
 void vec3_sub(const double v1[3], const double v2[3], double *r)
@@ -264,8 +264,8 @@ void Convert_Sat_State(double pos[3], double vel[3])
 //	Scale_Vector(xkmper, pos);
 //	Scale_Vector(xkmper*xmnpda/secday, vel);
 
-	vec3_mul_scalar(pos, xkmper);
-	vec3_mul_scalar(vel, xkmper*xmnpda/secday);
+	vec3_mul_scalar(pos, xkmper, pos);
+	vec3_mul_scalar(vel, xkmper*xmnpda/secday, vel);
 }
 
 double Julian_Date_of_Year(double year)
@@ -646,48 +646,5 @@ double PrimeAngle(double x)
 
 	x=x-360.0*floor(x/360.0);
 	return x;
-}
-
-/* Calculates solar position vector */
-void Calculate_Solar_Position(double time, double solar_vector[3])
-{
-
-	double mjd, year, T, M, L, e, C, O, Lsa, nu, R, eps;
-
-	mjd=time-2415020.0;
-	year=1900+mjd/365.25;
-	T=(mjd+Delta_ET(year)/secday)/36525.0;
-	M=Radians(Modulus(358.47583+Modulus(35999.04975*T,360.0)-(0.000150+0.0000033*T)*Sqr(T),360.0));
-	L=Radians(Modulus(279.69668+Modulus(36000.76892*T,360.0)+0.0003025*Sqr(T),360.0));
-	e=0.01675104-(0.0000418+0.000000126*T)*T;
-	C=Radians((1.919460-(0.004789+0.000014*T)*T)*sin(M)+(0.020094-0.000100*T)*sin(2*M)+0.000293*sin(3*M));
-	O=Radians(Modulus(259.18-1934.142*T,360.0));
-	Lsa=Modulus(L+C-Radians(0.00569-0.00479*sin(O)), 2*M_PI);
-	nu=Modulus(M+C, 2*M_PI);
-	R=1.0000002*(1.0-Sqr(e))/(1.0+e*cos(nu));
-	eps=Radians(23.452294-(0.0130125+(0.00000164-0.000000503*T)*T)*T+0.00256*cos(O));
-	R=AU*R;
-	solar_vector[0] = R*cos(Lsa);
-	solar_vector[1] = R*sin(Lsa)*cos(eps);
-	solar_vector[2] = R*sin(Lsa)*sin(eps);
-}
-
-/* Calculates satellite's eclipse status and depth */
-bool Sat_Eclipsed(vector_t *pos, vector_t *sol, double *depth)
-{
-	double sd_sun, sd_earth, delta;
-	vector_t Rho, earth;
-
-	/* Determine partial eclipse */
-	sd_earth=ArcSin(xkmper/pos->w);
-	Vec_Sub(sol,pos,&Rho);
-	sd_sun=ArcSin(sr/Rho.w);
-	Scalar_Multiply(-1,pos,&earth);
-	delta=Angle(sol,&earth);
-	*depth=sd_earth-sd_sun-delta;
-
-	if (sd_earth<sd_sun) return false;
-	else if (*depth>=0) return true;
-	else return false;
 }
 
