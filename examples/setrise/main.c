@@ -5,7 +5,7 @@
 #include <predict/predict.h>
 #include <predict/observer.h>
 
-double observer_next_sunset(const observer_t *observer, double time)
+double observer_next_sunset(const observer_t *observer, double time, struct observation *obs)
 {
 	struct observation sun;
 	
@@ -37,10 +37,14 @@ double observer_next_sunset(const observer_t *observer, double time)
 //		printf("iteration %i: elev=%f\n", i++, sun.elevation*180.0/M_PI);
 	}
 
+	if (obs != NULL) {
+		memcpy(obs, &sun, sizeof(struct observation));
+	}
+
 	return time;
 }
 
-double observer_next_sunrise(const observer_t *observer, double time)
+double observer_next_sunrise(const observer_t *observer, double time, struct observation *obs)
 {
 	struct observation sun;
 	
@@ -71,6 +75,10 @@ double observer_next_sunrise(const observer_t *observer, double time)
 
 	//	printf("iteration %i: elev=%f\n", i++, sun.elevation*180.0/M_PI);
 	}
+	
+	if (obs != NULL) {
+		memcpy(obs, &sun, sizeof(struct observation));
+	}
 
 	return time;
 }
@@ -85,7 +93,8 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	double sunset = observer_next_sunset(obs, CurrentDaynum());
+	struct observation sun;
+	double sunset = observer_next_sunset(obs, CurrentDaynum(), &sun);
 
 	// Convert to hour, minute, seconds
 	double timeto = (sunset - CurrentDaynum())*24*3600;
@@ -94,9 +103,9 @@ int main(int argc, char **argv)
 	int s = ((int)timeto)%60;
 	
 	time_t t = (time_t)(86400.0 * (sunset + 3651.0));
-	printf("Next sunset in %02i:%02i:%02i at UTC %s", h, m, s, asctime(gmtime(&t)));
+	printf("Next sunset in %02i:%02i:%02i, azimut=%.1f, at UTC %s", h, m, s, sun.azimut*180.0/M_PI, asctime(gmtime(&t)));
 	
-	double sunrise = observer_next_sunrise(obs, CurrentDaynum());
+	double sunrise = observer_next_sunrise(obs, CurrentDaynum(), &sun);
 
 	// Convert to hour, minute, seconds
 	timeto = (sunrise - CurrentDaynum())*24*3600;
@@ -105,7 +114,7 @@ int main(int argc, char **argv)
 	s = ((int)timeto)%60;
 	
 	t = (time_t)(86400.0 * (sunrise + 3651.0));
-	printf("Next sunrise in %02i:%02i:%02i at UTC %s", h, m, s, asctime(gmtime(&t)));
+	printf("Next sunrise in %02i:%02i:%02i, azimut=%.1f, at UTC %s", h, m, s, sun.azimut*180.0/M_PI, asctime(gmtime(&t)));
 	
 	// Free memory
 	observer_destroy(obs);

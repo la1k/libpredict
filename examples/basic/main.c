@@ -9,8 +9,8 @@ int main(int argc, char **argv)
 {
 
 	const char *tle[2] = {
-		"1 25544U 98067A   12317.22408565  .00013449  00000-0  23146-3 0  6331", 
-		"2 25544  51.6464 106.0986 0015548 274.8897  81.8006 15.51295927801004" };
+		"1 25544U 98067A   15129.86961041  .00015753  00000-0  23097-3 0  9998",
+		"2 25544  51.6464 275.3867 0006524 289.1638 208.5861 15.55704207942078"};
 
 	// Create orbit object
 	orbit_t *iss = orbit_create(tle);
@@ -30,6 +30,7 @@ int main(int argc, char **argv)
 	// Predict orbit
 	int i;
 	for (i=0;i<100;++i) {
+		
 		predict_julian_date_t curr_time = predict_get_julian_date_from_time(time(NULL));
 		
 		// Predict ISS
@@ -39,7 +40,7 @@ int main(int argc, char **argv)
 		// Observe ISS
 		struct observation iss_obs;
 		observer_find_orbit(obs, iss, &iss_obs);
-		printf("ISS: %f, %f\n", iss_obs.azimut*180.0/M_PI, iss_obs.elevation*180.0/M_PI);
+		printf("ISS: %f (rate: %f), %f (rate: %f)\n", iss_obs.azimut*180.0/M_PI, iss_obs.azimut_rate*180.0/M_PI, iss_obs.elevation*180.0/M_PI, iss_obs.elevation_rate*180.0/M_PI);
 
 		// Predict and observe MOON
 		struct observation moon_obs;
@@ -50,7 +51,6 @@ int main(int argc, char **argv)
 		struct observation sun_obs;
 		observer_find_sun(obs, curr_time, &sun_obs);
 		printf("SUN: %f, %f\n", sun_obs.azimut*180.0/M_PI, sun_obs.elevation*180.0/M_PI);
-	
 
 		//Sleep
 		usleep(1000000);

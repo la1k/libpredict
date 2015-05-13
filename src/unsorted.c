@@ -22,11 +22,11 @@ double vec3_dot(const double v[3], const double u[3])
 	return (v[0]*u[0] + v[1]*u[1] + v[2]*u[2]);
 }
 
-void vec3_mul_scalar(double v[3], double a)
+void vec3_mul_scalar(double v[3], double a, double r[3])
 {
-	v[0] *= a;
-	v[1] *= a;
-	v[2] *= a;
+	r[0] = v[0] * a;
+	r[1] = v[1] * a;
+	r[2] = v[2] * a;
 }
 
 void vec3_sub(const double v1[3], const double v2[3], double *r)
@@ -264,8 +264,8 @@ void Convert_Sat_State(double pos[3], double vel[3])
 //	Scale_Vector(xkmper, pos);
 //	Scale_Vector(xkmper*xmnpda/secday, vel);
 
-	vec3_mul_scalar(pos, xkmper);
-	vec3_mul_scalar(vel, xkmper*xmnpda/secday);
+	vec3_mul_scalar(pos, xkmper, pos);
+	vec3_mul_scalar(vel, xkmper*xmnpda/secday, vel);
 }
 
 double Julian_Date_of_Year(double year)
@@ -531,6 +531,9 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 //	rz=range.z;
 
 	vec3_sub(vel, obs_vel, rgvel);
+	
+	double range_length = vec3_length(range);
+	double rgvel_length = vec3_length(rgvel);
 
 	sin_lat=sin(geodetic->lat);
 	cos_lat=cos(geodetic->lat);
@@ -547,15 +550,25 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 	if (azim<0.0)
 		azim = azim + 2*M_PI;
 
-	el=ArcSin(top_z/vec3_length(range));
+	el=ArcSin(top_z/range_length);
 	obs_set->x=azim;	/* Azimuth (radians)   */
 	obs_set->y=el;		/* Elevation (radians) */
-	obs_set->z=vec3_length(range);	/* Range (kilometers)  */
+	obs_set->z=range_length;	/* Range (kilometers)  */
 
 	/* Range Rate (kilometers/second) */
 
 	obs_set->w = vec3_dot(range, rgvel)/vec3_length(range);
 
+	// Calculate rates
+	double theta_dot = 2*M_PI*omega_E;
+	double top_z_dot = cos_lat * ( cos_theta*(rgvel[0] + range[1]*theta_dot) + 
+								sin_theta*(rgvel[1] - range[0]*theta_dot) ) +
+								sin_lat*rgvel[2];
+	double x = top_z / range_length;
+	double x_dot = (top_z_dot*range_length - rgvel_length*top_z) / (range_length * range_length);
+	double el_dot = 1 / sqrt( 1 - x*x ) * x_dot;
+
+	printf("el_dot: %.2f\n", el_dot*180.0/M_PI);
 	/* Corrections for atmospheric refraction */
 	/* Reference:  Astronomical Algorithms by Jean Meeus, pp. 101-104    */
 	/* Correction is meaningless when apparent elevation is below horizon */
