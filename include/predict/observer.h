@@ -1,7 +1,8 @@
 #ifndef _OBSERVER_H_
 #define _OBSERVER_H_
 
-#include <predict/predict.h>
+#include <predict/juliandate.h>
+#include <predict/orbit.h>
 
 typedef struct observer {
 	///Observatory name

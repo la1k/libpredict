@@ -1,7 +1,7 @@
 #ifndef ORBIT_H_
 #define ORBIT_H_
 
-#include <predict/predict.h>
+#include <predict/juliandate.h>
 #include <predict/tle.h>
 #include <stdbool.h>
 
