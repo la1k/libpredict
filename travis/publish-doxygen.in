@@ -30,6 +30,7 @@ mkdir -p ${GH_PAGES_PATH}
 git clone -b gh-pages "${REPO_PATH}" --single-branch ${GH_PAGES_PATH}
 
 # rm all the files through git to prevent stale files.
+cd ${GH_PAGES_PATH}
 test -d ${API_DOC_PATH} && git rm -rf ${API_DOC_RELATIVE_PATH}
 cd @CMAKE_CURRENT_BINARY_DIR@/..
 
