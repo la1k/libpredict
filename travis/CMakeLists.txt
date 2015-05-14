@@ -1,0 +1,1 @@
+configure_file(publish-doxygen.in publish-doxygen @ONLY)

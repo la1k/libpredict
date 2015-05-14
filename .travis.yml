@@ -1,11 +1,26 @@
 language: c
+
 compiler:
   - gcc
   - clang
-script: cmake --version && cmake . && make
+
+script: mkdir -p build; cd build; cmake --version && cmake .. && make
+
 notifications:
   irc:
     channels:
       - "irc.oftc.net#libpredict"
     use_notice: true
     skip_join: true
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_dee54b1f9803_key -iv $encrypted_dee54b1f9803_iv
+    -in travis/travisci_rsa.enc -out travis/travisci_rsa -d
+  - chmod 0600 travis/travisci_rsa
+  - cp travis/travisci_rsa ~/.ssh/id_rsa
+
+install:
+  - sudo apt-get install --yes doxygen graphviz
+
+after_success:
+  - ./travis/publish-doxygen
