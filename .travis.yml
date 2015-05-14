@@ -19,8 +19,5 @@ before_install:
   - chmod 0600 travis/travisci_rsa
   - cp travis/travisci_rsa ~/.ssh/id_rsa
 
-install:
-  - sudo apt-get install --yes doxygen graphviz
-
 after_success:
   - ./travis/publish-doxygen
