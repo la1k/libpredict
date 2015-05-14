@@ -126,13 +126,6 @@ void observer_calculate(const observer_t *observer, double time, const double po
 	result->range_y = range[1];
 	result->range_z = range[2];
 
-	/* Corrections for atmospheric refraction */
-	/* Reference:  Astronomical Algorithms by Jean Meeus, pp. 101-104    */
-	/* Correction is meaningless when apparent elevation is below horizon */
-	result->corrected_elevation = el + ((1.02 / tan(el + 10.3*M_PI/180.0 / (el + 5.11*M_PI/180.0))) / 60)*M_PI/180.0;
-	
-	//TODO: 
-	//result->corrected_elevation_rate = el_rate + ((1.02 / tan(el + 10.3*M_PI/180.0 / (el + 5.11*M_PI/180.0))) / 60)*M_PI/180.0;
 }
 
 void observer_find_sun(const observer_t *observer, double time, struct observation *obs)

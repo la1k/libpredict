@@ -309,4 +309,15 @@ predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t 
  **/
 double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
 
+double predict_refraction(double el);
+double predict_refraction_ext(double el, double pressure, double temp);
+double predict_refraction_from_apparent(double apparent_el);
+double predict_refraction_from_apparent_ext(double apparent_el, double pressure, double temp);
+double predict_refraction_rate(double el, double el_rate);
+double predict_refraction_rate_ext(double el, double el_rate, double pressure, double temp);
+double predict_apparent_elevation(double el);
+double predict_apparent_elevation_ext(double el, double pressure, double temp);
+double predict_apparent_elevation_rate(double el, double el_rate);
+double predict_apparent_elevation_rate_ext(double el, double el_rate, double pressure, double temp);
+
 #endif //_PREDICT_H_

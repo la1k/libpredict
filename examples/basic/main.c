@@ -9,8 +9,8 @@ int main(int argc, char **argv)
 {
 
 	const char *tle[2] = {
-		"1 25544U 98067A   15129.86961041  .00015753  00000-0  23097-3 0  9998",
-		"2 25544  51.6464 275.3867 0006524 289.1638 208.5861 15.55704207942078"};
+		"1 25544U 98067A   15134.29254792  .00029616  00000-0  42351-3 0  9996",
+		"2 25544  51.6442 253.2895 0007197 306.8094 139.9156 15.55943689942769"};
 
 	// Create orbit object
 	orbit_t *iss = orbit_create(tle);
@@ -41,6 +41,10 @@ int main(int argc, char **argv)
 		struct observation iss_obs;
 		observer_find_orbit(obs, iss, &iss_obs);
 		printf("ISS: %f (rate: %f), %f (rate: %f)\n", iss_obs.azimut*180.0/M_PI, iss_obs.azimut_rate*180.0/M_PI, iss_obs.elevation*180.0/M_PI, iss_obs.elevation_rate*180.0/M_PI);
+
+		// Apparent elevation
+		double apparent_elevation = predict_apparent_elevation(iss_obs.elevation);
+		printf("Apparent ISS elevation: %.2f\n", apparent_elevation*180.0/M_PI);
 
 		// Predict and observe MOON
 		struct observation moon_obs;

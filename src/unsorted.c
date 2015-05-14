@@ -568,7 +568,6 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 	double x_dot = (top_z_dot*range_length - rgvel_length*top_z) / (range_length * range_length);
 	double el_dot = 1 / sqrt( 1 - x*x ) * x_dot;
 
-	printf("el_dot: %.2f\n", el_dot*180.0/M_PI);
 	/* Corrections for atmospheric refraction */
 	/* Reference:  Astronomical Algorithms by Jean Meeus, pp. 101-104    */
 	/* Correction is meaningless when apparent elevation is below horizon */
