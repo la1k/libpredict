@@ -1,4 +1,4 @@
-#include <predict/refraction.h>
+#include <predict/predict.h>
 #include <math.h>
 
 /* Corrections for atmospheric refraction */
