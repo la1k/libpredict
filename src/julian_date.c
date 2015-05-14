@@ -4,7 +4,13 @@
 
 
 #define SECONDS_IN_HOUR (60*60)
-/* assume timeinfo_utc describes time in UTC, return time_t value */
+
+/**
+ * Create time_t in UTC from struct tm.
+ *
+ * \param timeinfo_utc Broken down time, assumed to be in UTC
+ * \return Time in UTC
+ **/
 time_t mktime_utc(const struct tm* timeinfo_utc)
 {
 	time_t curr_time = time(NULL);
@@ -40,7 +46,10 @@ time_t mktime_utc(const struct tm* timeinfo_utc)
 	return mktime(&ret_timeinfo);
 }
 
-//helper function for getting the julian day start date as time_t (a bit difficult to define this as a const...)
+/**
+ * Helper function for getting the Julian day start date (1979-12-31 00:00 UTC) as time_t.
+ * \return Internally defined Julian start date (fixed).
+ **/
 time_t get_julian_start_day()
 {
 	struct tm start_time;
