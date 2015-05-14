@@ -5,12 +5,12 @@ if [ -z "$TRAVIS" ]; then
     exit
 fi
 
-if [ "$TRAVIS_BRANCH" != "master" -o "$CC" != "gcc" ]; then
+echo ${CC}
+
+if [ "XX$TRAVIS_BRANCH" != "XXmaster" -o "XX$CC" != "XXgcc" ]; then
     echo "Skipping documentation build for all except master with gcc."
     exit
 fi
-
-echo ${CC}
 
 set -x
 
