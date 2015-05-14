@@ -1,7 +1,7 @@
 #ifndef _SDP4_H_
 #define _SDP4_H_
 
-#include <predict/tle.h>
+#include <predict/predict.h>
 
 typedef struct	{
 		   	   /* Used by dpinit part of Deep() */
