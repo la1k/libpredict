@@ -28,6 +28,12 @@ void observer_destroy(observer_t *obs)
 	}
 }
 
+/**
+ * \brief Calculates range, azimuth, elevation and relative velocity.
+ *
+ * Calculated range, azimuth, elevation and relative velocity from the
+ * given observer position.
+ **/
 void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs)
 {
 	if (obs == NULL) return;
@@ -116,8 +122,8 @@ void observer_calculate(const observer_t *observer, double time, const double po
 	double x_dot = (top_z_dot*range_length - range_rate_length*top_z) / (range_length * range_length);
 	double el_dot = x_dot / sqrt( 1 - x*x );
 	
-	result->azimut = az;
-	result->azimut_rate = az_dot;
+	result->azimuth = az;
+	result->azimuth_rate = az_dot;
 	result->elevation = el;
 	result->elevation_rate = el_dot;
 	result->range = range_length;
@@ -157,7 +163,7 @@ void observer_find_sun(const observer_t *observer, double time, struct observati
 	/* Zero vector for initializations */
 	double zero_vector[3] = {0,0,0};
 
-	/* Solar observed azi and ele vector  */
+	/* Solar observed azimuth and elevation vector  */
 	vector_t solar_set;
 
 	/* Solar right ascension and declination vector */
@@ -194,7 +200,7 @@ void observer_find_sun(const observer_t *observer, double time, struct observati
 	*/
 	
 	obs->time = time;
-	obs->azimut = sun_azi;
+	obs->azimuth = sun_azi;
 	obs->elevation = sun_ele;
 	obs->range = sun_range;
 	obs->range_rate = sun_range_rate;
@@ -388,7 +394,7 @@ void observer_find_moon(const observer_t *observer, double time, struct observat
 
 	if (moon_gha<0.0) moon_gha+=360.0;
 
-	obs->azimut = moon_az;
+	obs->azimuth = moon_az;
 	obs->elevation = moon_el;
 
 }

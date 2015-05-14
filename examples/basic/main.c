@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 		// Observe ISS
 		struct observation iss_obs;
 		observer_find_orbit(obs, iss, &iss_obs);
-		printf("ISS: %f (rate: %f), %f (rate: %f)\n", iss_obs.azimut*180.0/M_PI, iss_obs.azimut_rate*180.0/M_PI, iss_obs.elevation*180.0/M_PI, iss_obs.elevation_rate*180.0/M_PI);
+		printf("ISS: %f (rate: %f), %f (rate: %f)\n", iss_obs.azimuth*180.0/M_PI, iss_obs.azimuth_rate*180.0/M_PI, iss_obs.elevation*180.0/M_PI, iss_obs.elevation_rate*180.0/M_PI);
 
 		// Apparent elevation
 		double apparent_elevation = predict_apparent_elevation(iss_obs.elevation);
@@ -49,12 +49,12 @@ int main(int argc, char **argv)
 		// Predict and observe MOON
 		struct observation moon_obs;
 		observer_find_moon(obs, curr_time, &moon_obs);
-		printf("MOON: %f, %f\n", moon_obs.azimut*180.0/M_PI, moon_obs.elevation*180.0/M_PI);
+		printf("MOON: %f, %f\n", moon_obs.azimuth*180.0/M_PI, moon_obs.elevation*180.0/M_PI);
 
 		// Predict and observe SUN
 		struct observation sun_obs;
 		observer_find_sun(obs, curr_time, &sun_obs);
-		printf("SUN: %f, %f\n", sun_obs.azimut*180.0/M_PI, sun_obs.elevation*180.0/M_PI);
+		printf("SUN: %f, %f\n", sun_obs.azimuth*180.0/M_PI, sun_obs.elevation*180.0/M_PI);
 
 		//Sleep
 		usleep(1000000);

@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 	int s = ((int)timeto)%60;
 	
 	time_t t = (time_t)(86400.0 * (sunset + 3651.0));
-	printf("Next sunset in %02i:%02i:%02i, azimut=%.1f, at UTC %s", h, m, s, sun.azimut*180.0/M_PI, asctime(gmtime(&t)));
+	printf("Next sunset in %02i:%02i:%02i, azimuth=%.1f, at UTC %s", h, m, s, sun.azimuth*180.0/M_PI, asctime(gmtime(&t)));
 	
 	double sunrise = observer_next_sunrise(obs, CurrentDaynum(), &sun);
 
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 	s = ((int)timeto)%60;
 	
 	t = (time_t)(86400.0 * (sunrise + 3651.0));
-	printf("Next sunrise in %02i:%02i:%02i, azimut=%.1f, at UTC %s", h, m, s, sun.azimut*180.0/M_PI, asctime(gmtime(&t)));
+	printf("Next sunrise in %02i:%02i:%02i, azimuth=%.1f, at UTC %s", h, m, s, sun.azimuth*180.0/M_PI, asctime(gmtime(&t)));
 	
 	// Free memory
 	observer_destroy(obs);
