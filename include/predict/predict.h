@@ -155,10 +155,22 @@ void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struc
 void observer_find_moon(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 void observer_find_sun(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
-/* Find next AOS from time start_time (ignore previous AOS of current pass if satellite is in range) */
+/** Find next acquisition of signal (AOS) of satellite (when the satellite rises above the horizon). Ignores previous AOS of current pass if the satellite is in range at the start time. 
+ *
+ * \param observer Point of observation
+ * \param orbit Satellite orbit
+ * \param start_time Starting point for AOS search
+ * \return Time of AOS
+ **/
 predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
-/* Find next LOS from time start_time (LOS of an upcoming pass or the current pass if satellite is in range) */
+/** Find next loss of signal (LOS) of satellite (when the satellite goes below the horizon). Finds LOS of the current pass if the satellite currently is in range, finds LOS of next pass if not.
+ *
+ * \param observer Point of observation
+ * \param orbit Satellite orbit
+ * \param start_time Starting point for LOS search
+ * \return Time of LOS
+ **/
 predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
 /**
