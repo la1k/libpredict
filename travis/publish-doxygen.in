@@ -34,7 +34,8 @@ cd @CMAKE_CURRENT_BINARY_DIR@/..
 
 # Generate the HTML documentation.
 make doc
-cp -rp ${DOXYGEN_OUTPUT_PATH} ${API_DOC_PATH}
+mkdir -p ${API_DOC_PATH}
+cp -rp ${DOXYGEN_OUTPUT_PATH}/* ${API_DOC_PATH}
 
 # Create and commit the documentation repo.
 cd ${API_DOC_PATH}
