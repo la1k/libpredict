@@ -212,20 +212,20 @@ typedef struct observer {
 struct observation {
 	///UTC time                
 	predict_julian_date_t time;                       
-	///Azimut angle      
-	double azimut; 
-	///Elevation angle                               
-	double elevation; 
-	///Corrected elevation    
-	double correctedElevation;         
+	///Azimuth angle (rad)      
+	double azimuth;
+	///Azimuth angle rate (rad/s)
+	double azimuth_rate;
+	///Elevation angle (rad)                           
+	double elevation;
+	///Elevation angle rate (rad/s)
+	double elevation_rate;
 	///Range (km) 
 	double range;                        
 	///Range vector                    
-	double xRange, yRange, zRange; 
+	double range_x, range_y, range_z; 
 	///Range velocity (km/s) 
-	double rangeDot;                    
-	///Visible? 
-	int visible; 
+	double range_rate;      
 };
 
 /**

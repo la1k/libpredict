@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include <predict/predict.h>
-#include <predict/observer.h>
 
 double observer_next_sunset(const observer_t *observer, double time, struct observation *obs)
 {
@@ -92,12 +93,14 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Failed to initialize observer!");
 		exit(1);
 	}
+		
+	predict_julian_date_t curr_time = predict_get_julian_date_from_time(time(NULL));
 
 	struct observation sun;
-	double sunset = observer_next_sunset(obs, CurrentDaynum(), &sun);
+	double sunset = observer_next_sunset(obs, curr_time, &sun);
 
 	// Convert to hour, minute, seconds
-	double timeto = (sunset - CurrentDaynum())*24*3600;
+	double timeto = (sunset - curr_time)*24*3600;
 	int h = timeto / 3600;
 	int m = (timeto-h*3600) / 60;
 	int s = ((int)timeto)%60;
@@ -105,10 +108,10 @@ int main(int argc, char **argv)
 	time_t t = (time_t)(86400.0 * (sunset + 3651.0));
 	printf("Next sunset in %02i:%02i:%02i, azimuth=%.1f, at UTC %s", h, m, s, sun.azimuth*180.0/M_PI, asctime(gmtime(&t)));
 	
-	double sunrise = observer_next_sunrise(obs, CurrentDaynum(), &sun);
+	double sunrise = observer_next_sunrise(obs, curr_time, &sun);
 
 	// Convert to hour, minute, seconds
-	timeto = (sunrise - CurrentDaynum())*24*3600;
+	timeto = (sunrise - curr_time)*24*3600;
 	h = timeto / 3600;
 	m = (timeto-h*3600) / 60;
 	s = ((int)timeto)%60;
