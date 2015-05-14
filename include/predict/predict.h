@@ -200,7 +200,7 @@ typedef struct observer {
 } observer_t;
 
 /**
- * Data relevant for a relative observation of e.g. an orbit with respect to an observation point.
+ * Data relevant for a relative observation of an orbit or similar with respect to an observation point.
  **/
 struct observation {
 	///UTC time                
@@ -292,7 +292,7 @@ predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t 
  * \param observer Point of observation
  * \param orbit Current state of satellite orbit
  * \param downlink_frequency Downlink frequency of the satellite
- * \return Doppler shift, i.e. the frequency difference from the original frequency
+ * \return The frequency difference from the original frequency
  **/
 double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
 
