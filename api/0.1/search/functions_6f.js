@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['observer_5fcreate',['observer_create',['../predict_8h.html#a8b71002ec2c21d0f6364a7dc90c9c86e',1,'predict.h']]],
+  ['observer_5fdestroy',['observer_destroy',['../predict_8h.html#a54efe33b68aca34149e5fa2fb4ab306d',1,'predict.h']]],
+  ['observer_5ffind_5fmoon',['observer_find_moon',['../predict_8h.html#a9f6be22590343e3677beea2c66c10e1b',1,'predict.h']]],
+  ['observer_5ffind_5forbit',['observer_find_orbit',['../predict_8h.html#ac22185edd38d8ef39a24800b80c01697',1,'predict.h']]],
+  ['observer_5ffind_5fsun',['observer_find_sun',['../predict_8h.html#a7f447a10dc0e9b2881d14204a82f8695',1,'predict.h']]],
+  ['observer_5fget_5fdoppler_5fshift',['observer_get_doppler_shift',['../predict_8h.html#a4a57cf8d64b9fedfdc01064f6d818cd5',1,'predict.h']]],
+  ['observer_5fget_5fnext_5faos',['observer_get_next_aos',['../predict_8h.html#a53587f3219ed73f98862682c56b26004',1,'predict.h']]],
+  ['observer_5fget_5fnext_5flos',['observer_get_next_los',['../predict_8h.html#ae64c8bf711af606bf09a11d702c0b2bf',1,'predict.h']]],
+  ['orbit_5faos_5fhappens',['orbit_aos_happens',['../predict_8h.html#a71902c5177a0cdbb84157a2bbfa62672',1,'predict.h']]],
+  ['orbit_5fapogee',['orbit_apogee',['../predict_8h.html#acac64b6b46e1ced392fdd5756546c6fa',1,'predict.h']]],
+  ['orbit_5fcreate',['orbit_create',['../predict_8h.html#a0f4fb1947fc6b52e8f7f700882272bc4',1,'predict.h']]],
+  ['orbit_5fdecayed',['orbit_decayed',['../predict_8h.html#a1bab96eb5076f1d9caf69fb74102fe76',1,'predict.h']]],
+  ['orbit_5fdestroy',['orbit_destroy',['../predict_8h.html#ac3c8d649a5eef19b729ff7665fb40515',1,'predict.h']]],
+  ['orbit_5fis_5fgeostationary',['orbit_is_geostationary',['../predict_8h.html#a528a3adc0881714472e18ac782110f52',1,'predict.h']]],
+  ['orbit_5fperigee',['orbit_perigee',['../predict_8h.html#ae2654aa00c58c37eb28b82636c0cb9ed',1,'predict.h']]],
+  ['orbit_5fpredict',['orbit_predict',['../predict_8h.html#ae7ca1679acd41ac6bfeae5de714fd9b2',1,'predict.h']]]
+];
