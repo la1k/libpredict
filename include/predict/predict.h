@@ -25,8 +25,9 @@ predict_julian_date_t predict_get_julian_date_from_time(time_t time);
  **/
 time_t predict_get_time_from_julian_date(predict_julian_date_t date);
 
-//Seems to be used as a container for processed tle data from
-//the original TLE.
+/**
+ * Container for processed TLE data from TLE strings.
+ **/
 typedef struct	{
 	double epoch;
 	double xndt2o;
@@ -43,6 +44,9 @@ typedef struct	{
 	int revnum;
 }tle_t; 
 
+/**
+ * Simplified perturbation models used in modeling the satellite orbits. 
+ **/
 typedef enum {
   EPHEMERIS_SGP4 = 0,
   EPHEMERIS_SDP4 = 1,
@@ -50,16 +54,29 @@ typedef enum {
   EPHEMERIS_SDP8 = 3
 } ephemeris_t;
 
+/**
+ * Satellite orbit definitions, according to defined NORAD TLE. 
+ **/
 struct orbit {
+	///Name of satellite
 	char name[128];
+
+	///Timestamp for last call to orbit_predict
 	predict_julian_date_t time;
+	///ECI position in km
 	double position[3];
+	///ECI velocity in km/s
 	double velocity[3];
 
+	///Latitude in radians, northing/easting
 	double latitude;
+	///Longitude in radians, northing/easting
 	double longitude;
+	///Altitude in meters
 	double altitude;
+	///Whether satellite is eclipsed by the earth
 	int eclipsed;
+	///Which perturbation model to use
 	ephemeris_t ephemeris;
 	///Original TLE line number one:
 	char line1[70];
@@ -106,7 +123,17 @@ struct orbit {
 
 typedef struct orbit orbit_t;
 
+/**
+ * Create orbit structure. 
+ * \param tle NORAD two-line element set as string array
+ * \return Allocated orbit structure
+ **/
 orbit_t *orbit_create(const char *tle[]);
+
+/**
+ * Free memory allocated in orbit structure. 
+ * \param orbit Orbit to free
+ **/
 void orbit_destroy(orbit_t *orbit);
 
 /**
