@@ -41,10 +41,10 @@ void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struc
 void observer_find_moon(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 void observer_find_sun(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
-/* Find next AOS from time start_utc (ignore previous AOS of current pass if satellite is in range) */
+/* Find next AOS from time start_time (ignore previous AOS of current pass if satellite is in range) */
 predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
-/* Find next LOS from time start_utc (LOS of an upcoming pass or the current pass if satellite is in range) */
+/* Find next LOS from time start_time (LOS of an upcoming pass or the current pass if satellite is in range) */
 predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
 /* Calculate doppler shift of a given downlink frequency with respect to the observer */
