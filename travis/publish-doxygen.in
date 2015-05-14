@@ -5,8 +5,8 @@ if [ -z "$TRAVIS" ]; then
     exit
 fi
 
-if [ "$TRAVIS_BRANCH" != "master" ]; then
-    echo "Skipping documentation build for all branches except master."
+if [ "$TRAVIS_BRANCH" != "master" || "$CC" != "gcc" ]; then
+    echo "Skipping documentation build for all except master with gcc."
     exit
 fi
 
