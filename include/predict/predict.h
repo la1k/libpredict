@@ -148,6 +148,14 @@ struct observation {
 	int visible; 
 };
 
+/**
+ * Create observation point (QTH).
+ * \param name Name of observation point
+ * \param lat Latitude in radians (easting/northing)
+ * \param lon Longitude in radians (easting/northing)
+ * \param alt Altitude in meters
+ * \return Allocated observation point
+ **/
 observer_t *observer_create(const char *name, double lat, double lon, double alt);
 
 /** 
@@ -164,7 +172,8 @@ void observer_destroy(observer_t *obs);
  **/
 void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs);
 
-/** Estimate relative position of the moon.
+/**
+ * Estimate relative position of the moon.
  *
  * \param observer Point of observation
  * \param time Time of observation
