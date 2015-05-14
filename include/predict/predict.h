@@ -109,15 +109,58 @@ typedef struct orbit orbit_t;
 orbit_t *orbit_create(const char *tle[]);
 void orbit_destroy(orbit_t *orbit);
 
+/**
+ * Main prediction function. Predict satellite orbit at given time. 
+ * \param x Satellite orbit
+ * \param time Julian day in UTC
+ * \return 0 if everything went fine
+ **/
 int orbit_predict(orbit_t *x, predict_julian_date_t time);
+
+/**
+ * Find whether orbit is geostationary. 
+ *
+ * \param x Satellite orbit
+ * \return true if orbit is geostationary, otherwise false
+ **/
 bool orbit_is_geostationary(const orbit_t *x);
+
+/** 
+ * Get apogee of satellite orbit. 
+ *
+ * \param x Satellite orbit
+ * \return Apogee of orbit
+ **/
 double orbit_apogee(const orbit_t *x);
+
+/**
+ * Get perigee of satellite orbit. 
+ *
+ * \param x Satellite orbit
+ * \return Perigee of orbit
+ **/
 double orbit_perigee(const orbit_t *x);
+
+/**
+ * Find whether an AOS can ever happen on the given latitude. 
+ *
+ * \param x Satellite orbit
+ * \param latitude Latitude of ground station
+ * \return true if AOS can happen, otherwise false
+ **/
 bool orbit_aos_happens(const orbit_t *x, double latitude);
 
-/* return true if orbit has decayed */
+/** 
+ * Find whether an orbit has decayed.
+ *
+ * \param x Current state of orbit
+ * \return true if orbit has decayed, otherwise false
+ **/
 bool orbit_decayed(const orbit_t *x);
 
+/**
+ * Observation point/ground station (QTH).
+ **/
 typedef struct observer {
 	///Observatory name
 	char name[128];
@@ -129,6 +172,9 @@ typedef struct observer {
 	double altitude;
 } observer_t;
 
+/**
+ * Data relevant for a relative observation of e.g. an orbit with respect to an observation point.
+ **/
 struct observation {
 	///UTC time                
 	predict_julian_date_t time;                       
@@ -150,6 +196,7 @@ struct observation {
 
 /**
  * Create observation point (QTH).
+ *
  * \param name Name of observation point
  * \param lat Latitude in radians (easting/northing)
  * \param lon Longitude in radians (easting/northing)
@@ -160,6 +207,8 @@ observer_t *observer_create(const char *name, double lat, double lon, double alt
 
 /** 
  * Free observer.
+ *
+ * \param obs Observer to be freed.
  **/
 void observer_destroy(observer_t *obs);
 
