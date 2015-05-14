@@ -28,7 +28,7 @@ git clone -b gh-pages "${REPO_PATH}" --single-branch ${GH_PAGES_PATH}
 
 # rm all the files through git to prevent stale files.
 git rm -rf ${API_DOC_PATH}
-cd -
+cd @CMAKE_CURRENT_BINARY_DIR@/..
 
 # Generate the HTML documentation.
 make doc
