@@ -10,6 +10,8 @@ if [ "$TRAVIS_BRANCH" != "master" ]; then
     exit
 fi
 
+echo ${CC}
+
 set -x
 
 # Settings
@@ -27,7 +29,7 @@ mkdir -p ${GH_PAGES_PATH}
 git clone -b gh-pages "${REPO_PATH}" --single-branch ${GH_PAGES_PATH}
 
 # rm all the files through git to prevent stale files.
-git rm -rf ${API_DOC_PATH}
+test -d ${API_DOC_PATH} && git rm -rf ${API_DOC_PATH}
 cd @CMAKE_CURRENT_BINARY_DIR@/..
 
 # Generate the HTML documentation.
