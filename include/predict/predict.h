@@ -152,14 +152,26 @@ observer_t *observer_create(const char *name, double lat, double lon, double alt
 void observer_destroy(observer_t *obs);
 
 void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs);
+
+/** Estimate relative position of the moon.
+ * \param observer Point of observation
+ * \param time Time of observation
+ * \param obs Return object for position of the moon relative to the observer
+ **/
 void observer_find_moon(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
+
+/** Estimate relative position of the sun.
+ * \param observer Point of observation
+ * \param time Time of observation
+ * \param obs Return object for position of the sun relative to the observer
+ **/
 void observer_find_sun(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
 /** Find next acquisition of signal (AOS) of satellite (when the satellite rises above the horizon). Ignores previous AOS of current pass if the satellite is in range at the start time. 
  *
  * \param observer Point of observation
  * \param orbit Satellite orbit
- * \param start_time Starting point for AOS search
+ * \param start_time Start time for AOS search
  * \return Time of AOS
  **/
 predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
@@ -168,7 +180,7 @@ predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t 
  *
  * \param observer Point of observation
  * \param orbit Satellite orbit
- * \param start_time Starting point for LOS search
+ * \param start_time Start time for LOS search
  * \return Time of LOS
  **/
 predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
