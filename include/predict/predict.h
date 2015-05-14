@@ -161,7 +161,14 @@ predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t 
 /* Find next LOS from time start_time (LOS of an upcoming pass or the current pass if satellite is in range) */
 predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
-/* Calculate doppler shift of a given downlink frequency with respect to the observer */
+/**
+ * Calculate doppler shift of a given downlink frequency with respect to the observer. 
+ *
+ * \param observer Point of observation
+ * \param orbit Current state of satellite orbit
+ * \param downlink_frequency Downlink frequency of the satellite
+ * \return Doppler shift, i.e. the frequency difference from the original frequency.
+ **/
 double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
 
 #endif //_PREDICT_H_
