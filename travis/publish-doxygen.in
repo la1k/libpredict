@@ -10,6 +10,8 @@ if [ "$TRAVIS_BRANCH" != "master" ]; then
     exit
 fi
 
+set -x
+
 # Settings
 REPO_PATH=git@github.com:la1k/libpredict.git
 DOXYGEN_OUTPUT_PATH=@CMAKE_CURRENT_BINARY_DIR@/../doc/html
