@@ -99,11 +99,13 @@ Include dependency graph for predict.h:</div>
 <tr><td colspan="2"><h2><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtle__t.html">tle_t</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for processed TLE data from TLE strings.  <a href="structtle__t.html#details">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorbit.html">orbit</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Satellite orbit definitions, according to defined NORAD TLE.  <a href="structorbit.html#details">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structobserver.html">observer</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Observation point/ground station (QTH).  <a href="structobserver.html#details">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structobservation.html">observation</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Data relevant for a relative observation of e.g.  <a href="structobservation.html#details">More...</a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Data relevant for a relative observation of an orbit or similar with respect to an observation point.  <a href="structobservation.html#details">More...</a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a6e08d85c2f542eb43ae86ec8bfe33183">predict_julian_date_t</a></td></tr>
@@ -118,6 +120,7 @@ Enumerations</h2></td></tr>
 <a class="el" href="predict_8h.html#a7971502c7aaf6452d146035f4019e721a34da4c154e0ad3faa11f9d76d7fe422f">EPHEMERIS_SGP8</a> =  2, 
 <a class="el" href="predict_8h.html#a7971502c7aaf6452d146035f4019e721a8857b894ef41fd324c93f9299ea66b9c">EPHEMERIS_SDP8</a> =  3
  }</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Simplified perturbation models used in modeling the satellite orbits.  <a href="predict_8h.html#a7971502c7aaf6452d146035f4019e721">More...</a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="predict_8h.html#a6e08d85c2f542eb43ae86ec8bfe33183">predict_julian_date_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a883df3964fec7d41fd3bae544dfc6dd0">predict_get_julian_date_from_time</a> (time_t time)</td></tr>
@@ -125,7 +128,9 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">time_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a9732171b526a3ab0c7b6a46cf926e9da">predict_get_time_from_julian_date</a> (<a class="el" href="predict_8h.html#a6e08d85c2f542eb43ae86ec8bfe33183">predict_julian_date_t</a> date)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert Julian date in UTC back to a time_t in UTC.  <a href="#a9732171b526a3ab0c7b6a46cf926e9da"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a0f4fb1947fc6b52e8f7f700882272bc4">orbit_create</a> (const char *tle[])</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Create orbit structure.  <a href="#a0f4fb1947fc6b52e8f7f700882272bc4"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#ac3c8d649a5eef19b729ff7665fb40515">orbit_destroy</a> (<a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *<a class="el" href="structorbit.html">orbit</a>)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Free memory allocated in orbit structure.  <a href="#ac3c8d649a5eef19b729ff7665fb40515"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#ae7ca1679acd41ac6bfeae5de714fd9b2">orbit_predict</a> (<a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *x, <a class="el" href="predict_8h.html#a6e08d85c2f542eb43ae86ec8bfe33183">predict_julian_date_t</a> time)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Main prediction function.  <a href="#ae7ca1679acd41ac6bfeae5de714fd9b2"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a528a3adc0881714472e18ac782110f52">orbit_is_geostationary</a> (const <a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *x)</td></tr>
@@ -210,6 +215,8 @@ Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
+
+<p>Simplified perturbation models used in modeling the satellite orbits. </p>
 <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
 <tr><td valign="top"><em><a class="anchor" id="a7971502c7aaf6452d146035f4019e721a2c59e3924364110dca1ac2a511fdc062"></a><!-- doxytag: member="EPHEMERIS_SGP4" ref="a7971502c7aaf6452d146035f4019e721a2c59e3924364110dca1ac2a511fdc062" args="" -->EPHEMERIS_SGP4</em>&nbsp;</td><td>
 </td></tr>
@@ -471,7 +478,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>Doppler shift, i.e. the frequency difference from the original frequency </dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>The frequency difference from the original frequency </dd></dl>
 
 </div>
 </div>
@@ -643,6 +650,15 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
+<p>Create orbit structure. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tle</td><td>NORAD two-line element set as string array </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Allocated orbit structure </dd></dl>
+
 </div>
 </div>
 <a class="anchor" id="a1bab96eb5076f1d9caf69fb74102fe76"></a><!-- doxytag: member="predict.h::orbit_decayed" ref="a1bab96eb5076f1d9caf69fb74102fe76" args="(const orbit_t *x)" -->
@@ -685,6 +701,14 @@ Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
+
+<p>Free memory allocated in orbit structure. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">orbit</td><td>Orbit to free </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -848,7 +872,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 14 2015 22:53:17 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu May 14 2015 23:52:05 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
