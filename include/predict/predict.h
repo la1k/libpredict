@@ -40,7 +40,7 @@ typedef enum {
 
 struct orbit {
 	char name[128];
-	double time;
+	predict_julian_date_t time;
 	double position[3];
 	double velocity[3];
 
@@ -119,7 +119,7 @@ typedef struct observer {
 
 struct observation {
 	///UTC time                
-	double time;                       
+	predict_julian_date_t time;                       
 	///Azimut angle      
 	double azimut; 
 	///Elevation angle                               
