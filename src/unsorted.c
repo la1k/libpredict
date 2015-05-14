@@ -524,16 +524,9 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 	Calculate_User_PosVel(time, geodetic, obs_pos, obs_vel);
 
 	vec3_sub(pos, obs_pos, range);
-	/* Save these values globally for calculating squint angles later... */
-
-//	rx=range.x;
-//	ry=range.y;
-//	rz=range.z;
-
 	vec3_sub(vel, obs_vel, rgvel);
 	
 	double range_length = vec3_length(range);
-	double rgvel_length = vec3_length(rgvel);
 
 	sin_lat=sin(geodetic->lat);
 	cos_lat=cos(geodetic->lat);
@@ -556,27 +549,7 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 	obs_set->z=range_length;	/* Range (kilometers)  */
 
 	/* Range Rate (kilometers/second) */
-
 	obs_set->w = vec3_dot(range, rgvel)/vec3_length(range);
-
-	// Calculate rates
-	double theta_dot = 2*M_PI*omega_E;
-	double top_z_dot = cos_lat * ( cos_theta*(rgvel[0] + range[1]*theta_dot) + 
-								sin_theta*(rgvel[1] - range[0]*theta_dot) ) +
-								sin_lat*rgvel[2];
-	double x = top_z / range_length;
-	double x_dot = (top_z_dot*range_length - rgvel_length*top_z) / (range_length * range_length);
-	double el_dot = 1 / sqrt( 1 - x*x ) * x_dot;
-
-	/* Corrections for atmospheric refraction */
-	/* Reference:  Astronomical Algorithms by Jean Meeus, pp. 101-104    */
-	/* Correction is meaningless when apparent elevation is below horizon */
-
-	/*** The following adjustment for
-		 atmospheric refraction is bypassed ***/
-
-	/* obs_set->y=obs_set->y+Radians((1.02/tan(Radians(Degrees(el)+10.3/(Degrees(el)+5.11))))/60); */
-
 	obs_set->y=el;
 
 	/**** End bypass ****/
