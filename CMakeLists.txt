@@ -29,3 +29,14 @@ include_directories(AFTER ${LIBPREDICT_INCLUDE_DIR})
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
 
 add_subdirectory(src)
+
+# Add a target to generate API documentation with Doxygen
+set(DOXYGEN_OUTPUT_DIR "doc")
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+configure_file(Doxyfile.in Doxyfile @ONLY)
+add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  COMMENT "Generating API documentation with Doxygen" VERBATIM
+)
+endif(DOXYGEN_FOUND)
