@@ -49,7 +49,7 @@ time_t mktime_utc(const struct tm* timeinfo_utc)
 /**
  * Helper function for getting the Julian day start date (1979-12-31 00:00 UTC) as time_t.
  *
- * \return Internally defined Julian start date (fixed).
+ * \return Internally defined Julian start date (fixed)
  **/
 time_t get_julian_start_day()
 {
