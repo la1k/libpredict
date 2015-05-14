@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #include <predict/predict.h>
-#include <predict/observer.h>
 
 int main(int argc, char **argv)
 {
@@ -30,12 +30,10 @@ int main(int argc, char **argv)
 	// Predict orbit
 	int i;
 	for (i=0;i<100;++i) {
+		predict_julian_date_t curr_time = predict_get_julian_date_from_time(time(NULL));
 		
-		//Get current time:
-		double time = CurrentDaynum();
-
 		// Predict ISS
-		orbit_predict(iss, time);
+		orbit_predict(iss, curr_time);
 		printf("ISS: lat=%f, lon=%f, alt=%f\n", iss->latitude*180.0/M_PI, iss->longitude*180.0/M_PI, iss->altitude);
 	
 		// Observe ISS
@@ -45,17 +43,17 @@ int main(int argc, char **argv)
 
 		// Predict and observe MOON
 		struct observation moon_obs;
-		observer_find_moon(obs, time, &moon_obs);
+		observer_find_moon(obs, curr_time, &moon_obs);
 		printf("MOON: %f, %f\n", moon_obs.azimut*180.0/M_PI, moon_obs.elevation*180.0/M_PI);
 
 		// Predict and observe SUN
 		struct observation sun_obs;
-		observer_find_sun(obs, time, &sun_obs);
+		observer_find_sun(obs, curr_time, &sun_obs);
 		printf("SUN: %f, %f\n", sun_obs.azimut*180.0/M_PI, sun_obs.elevation*180.0/M_PI);
 	
 
 		//Sleep
-		usleep(100000);
+		usleep(1000000);
 	}
 
 	// Free memory
