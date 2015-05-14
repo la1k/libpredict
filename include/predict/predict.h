@@ -149,25 +149,40 @@ struct observation {
 };
 
 observer_t *observer_create(const char *name, double lat, double lon, double alt);
+
+/** 
+ * Free observer.
+ **/
 void observer_destroy(observer_t *obs);
 
+/** 
+ * Find relative position of satellite with respect to an observer.
+ *
+ * \param observer Point of observation
+ * \param orbit Satellite orbit
+ * \param obs Return of object for position of the satellite relative to the observer.
+ **/
 void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs);
 
 /** Estimate relative position of the moon.
+ *
  * \param observer Point of observation
  * \param time Time of observation
  * \param obs Return object for position of the moon relative to the observer
  **/
 void observer_find_moon(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
-/** Estimate relative position of the sun.
+/** 
+ * Estimate relative position of the sun.
+ *
  * \param observer Point of observation
  * \param time Time of observation
  * \param obs Return object for position of the sun relative to the observer
  **/
 void observer_find_sun(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
-/** Find next acquisition of signal (AOS) of satellite (when the satellite rises above the horizon). Ignores previous AOS of current pass if the satellite is in range at the start time. 
+/** 
+ * Find next acquisition of signal (AOS) of satellite (when the satellite rises above the horizon). Ignores previous AOS of current pass if the satellite is in range at the start time. 
  *
  * \param observer Point of observation
  * \param orbit Satellite orbit
@@ -176,7 +191,8 @@ void observer_find_sun(const observer_t *observer, predict_julian_date_t time, s
  **/
 predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
-/** Find next loss of signal (LOS) of satellite (when the satellite goes below the horizon). Finds LOS of the current pass if the satellite currently is in range, finds LOS of next pass if not.
+/** 
+ * Find next loss of signal (LOS) of satellite (when the satellite goes below the horizon). Finds LOS of the current pass if the satellite currently is in range, finds LOS of next pass if not.
  *
  * \param observer Point of observation
  * \param orbit Satellite orbit
