@@ -620,9 +620,6 @@ void Calculate_RADec(double time, const double pos[3], const double vel[3], geod
 char temp[512];
 char *SubString(const char *string, int start, int end)
 {
-	/* This function returns a substring based on the starting
-	   and ending positions provided.  It is used heavily in
-	   the AutoUpdate function when parsing 2-line element data. */
 
 	unsigned x, y;
 
