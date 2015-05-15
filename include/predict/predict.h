@@ -127,6 +127,7 @@ typedef struct orbit orbit_t;
  * Create orbit structure. Allocate memory and prepare internal data.
  * \param tle NORAD two-line element set as string array
  * \return Allocated orbit structure
+ * \copyright GPLv2+
  **/
 orbit_t *orbit_create(const char *tle[]);
 
@@ -141,6 +142,7 @@ void orbit_destroy(orbit_t *orbit);
  * \param x Satellite orbit
  * \param time Julian day in UTC
  * \return 0 if everything went fine
+ * \copyright GPLv2+
  **/
 int orbit_predict(orbit_t *x, predict_julian_date_t time);
 
@@ -149,6 +151,7 @@ int orbit_predict(orbit_t *x, predict_julian_date_t time);
  *
  * \param x Satellite orbit
  * \return true if orbit is geostationary, otherwise false
+ * \copyright GPLv2+
  **/
 bool orbit_is_geostationary(const orbit_t *x);
 
@@ -157,6 +160,7 @@ bool orbit_is_geostationary(const orbit_t *x);
  *
  * \param x Satellite orbit
  * \return Apogee of orbit
+ * \copyright GPLv2+
  **/
 double orbit_apogee(const orbit_t *x);
 
@@ -165,6 +169,7 @@ double orbit_apogee(const orbit_t *x);
  *
  * \param x Satellite orbit
  * \return Perigee of orbit
+ * \copyright GPLv2+
  **/
 double orbit_perigee(const orbit_t *x);
 
@@ -174,6 +179,7 @@ double orbit_perigee(const orbit_t *x);
  * \param x Satellite orbit
  * \param latitude Latitude of ground station
  * \return true if AOS can happen, otherwise false
+ * \copyright GPLv2+
  **/
 bool orbit_aos_happens(const orbit_t *x, double latitude);
 
@@ -182,6 +188,7 @@ bool orbit_aos_happens(const orbit_t *x, double latitude);
  *
  * \param x Current state of orbit
  * \return true if orbit has decayed, otherwise false
+ * \copyright GPLv2+
  **/
 bool orbit_decayed(const orbit_t *x);
 
@@ -245,6 +252,7 @@ void observer_destroy(observer_t *obs);
  * \param observer Point of observation
  * \param orbit Satellite orbit
  * \param obs Return of object for position of the satellite relative to the observer.
+ * \copyright GPLv2+
  **/
 void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs);
 
@@ -254,6 +262,7 @@ void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struc
  * \param observer Point of observation
  * \param time Time of observation
  * \param obs Return object for position of the moon relative to the observer
+ * \copyright GPLv2+
  **/
 void observer_find_moon(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
@@ -263,6 +272,7 @@ void observer_find_moon(const observer_t *observer, predict_julian_date_t time, 
  * \param observer Point of observation
  * \param time Time of observation
  * \param obs Return object for position of the sun relative to the observer
+ * \copyright GPLv2+
  **/
 void observer_find_sun(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
@@ -273,6 +283,7 @@ void observer_find_sun(const observer_t *observer, predict_julian_date_t time, s
  * \param orbit Satellite orbit
  * \param start_time Start time for AOS search
  * \return Time of AOS
+ * \copyright GPLv2+
  **/
 predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
@@ -283,6 +294,7 @@ predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t 
  * \param orbit Satellite orbit
  * \param start_time Start time for LOS search
  * \return Time of LOS
+ * \copyright GPLv2+
  **/
 predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
@@ -293,6 +305,7 @@ predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t 
  * \param orbit Current state of satellite orbit
  * \param downlink_frequency Downlink frequency of the satellite
  * \return The frequency difference from the original frequency
+ * \copyright GPLv2+
  **/
 double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
 
