@@ -124,7 +124,7 @@ struct orbit {
 typedef struct orbit orbit_t;
 
 /**
- * Create orbit structure. 
+ * Create orbit structure. Allocate memory and prepare internal data.
  * \param tle NORAD two-line element set as string array
  * \return Allocated orbit structure
  **/
@@ -240,7 +240,7 @@ observer_t *observer_create(const char *name, double lat, double lon, double alt
 void observer_destroy(observer_t *obs);
 
 /** 
- * Find relative position of satellite with respect to an observer.
+ * Find relative position of satellite with respect to an observer. Calculates range, azimuth, elevation and relative velocity.
  *
  * \param observer Point of observation
  * \param orbit Satellite orbit
