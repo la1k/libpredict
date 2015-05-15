@@ -5,8 +5,6 @@ if [ -z "$TRAVIS" ]; then
     exit
 fi
 
-echo ${CC}
-
 if [ "XX$TRAVIS_BRANCH" != "XXmaster" -o "XX$CC" != "XXgcc" ]; then
     echo "Skipping documentation build for all except master with gcc."
     exit
@@ -18,7 +16,8 @@ set -x
 REPO_PATH=git@github.com:la1k/libpredict.git
 DOXYGEN_OUTPUT_PATH=@CMAKE_CURRENT_BINARY_DIR@/../doc/html
 GH_PAGES_PATH=@CMAKE_CURRENT_BINARY_DIR@/../gh-pages
-API_DOC_PATH=${GH_PAGES_PATH}/api/@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@
+API_DOC_RELATIVE_PATH=api/@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@
+API_DOC_PATH=${GH_PAGES_PATH}/${API_DOC_RELATIVE_PATH}
 COMMIT_USER="Documentation builder"
 COMMIT_EMAIL="libpredict-admin@la1k.no"
 CHANGESET=$(git rev-parse --verify HEAD)
@@ -29,7 +28,8 @@ mkdir -p ${GH_PAGES_PATH}
 git clone -b gh-pages "${REPO_PATH}" --single-branch ${GH_PAGES_PATH}
 
 # rm all the files through git to prevent stale files.
-test -d ${API_DOC_PATH} && git rm -rf ${API_DOC_PATH}
+cd ${GH_PAGES_PATH}
+test -d ${API_DOC_PATH} && git rm -rf ${API_DOC_RELATIVE_PATH}
 cd @CMAKE_CURRENT_BINARY_DIR@/..
 
 # Generate the HTML documentation.
