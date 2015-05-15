@@ -80,7 +80,7 @@ void sdp4_predict(struct _sdp4 *m, double tsince, tle_t * tle, double pos[3], do
  * Deep space perturbations. Original Deep() function.
  *
  * \param m SDP4 model parameters
- * \param ientry Flag. DPInit: Deep space initialization. DPSecular: Deep space secular effects. DPPeriodic: lunar-solar periodics
+ * \param ientry Behavior flag. 0: Deep space initialization. 1: Deep space secular effects. 2: lunar-solar periodics
  * \param tle TLE parameters
  * \param deep_arg Deep perturbation parameters
  * \copyright GPLv2+
