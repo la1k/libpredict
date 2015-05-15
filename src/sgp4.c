@@ -11,13 +11,6 @@ void sgp4_init(struct _sgp4 *m)
 
 void sgp4_predict(struct _sgp4 *m, double tsince, tle_t *tle, double pos[3], double vel[3])
 {
-	/* This function is used to calculate the position and velocity */
-	/* of near-earth (period < 225 minutes) satellites. tsince is   */
-	/* time since epoch in minutes, tle is a pointer to a tle_t     */
-	/* structure with Keplerian orbital elements and pos and vel    */
-	/* are vector_t structures returning ECI satellite position and */ 
-	/* velocity. Use Convert_Sat_State() to convert to km and km/s. */
-
 	double cosuk, sinuk, rfdotk, vx, vy, vz, ux, uy, uz, xmy, xmx, cosnok,
 	sinnok, cosik, sinik, rdotk, xinck, xnodek, uk, rk, cos2u, sin2u,
 	u, sinu, cosu, betal, rfdot, rdot, r, pl, elsq, esine, ecose, epw,

@@ -3,6 +3,9 @@
 
 #include <predict/predict.h>
 
+/**
+ * Parameters for deep space perturbations?
+ **/
 typedef struct	{
 		   	   /* Used by dpinit part of Deep() */
 		   double  eosq, sinio, cosio, betao, aodp, theta2,
@@ -15,6 +18,9 @@ typedef struct	{
 		   double  ds50;
 		}  deep_arg_t;
 
+/**
+ * Parameters relevant for SDP4 (simplified deep space perturbations) orbital model.
+ **/
 struct _sdp4 {
 	
 	//Phase?
@@ -51,18 +57,34 @@ struct _sdp4 {
 
 };
 
-
+/**
+ * Initialize SDP4 model parameters. 
+ *
+ * \param m Struct to initialize
+ **/
 void sdp4_init(struct _sdp4 *m);
 
-/* This function is used to calculate the position and velocity */
-/* of deep-space (period > 225 minutes) satellites. tsince is   */
-/* time since epoch in minutes, tle is a pointer to a tle_t     */
-/* structure with Keplerian orbital elements and pos and vel    */
-/* are vector_t structures returning ECI satellite position and */
-/* velocity. Use Convert_Sat_State() to convert to km and km/s. */
+/** 
+ * Predict ECI position and velocity of deep-space orbit (period > 225 minutes) according to SDP4 model and the given orbital parameters. 
+ *
+ * \param m SDP4 model parameters
+ * \param tsince Time since epoch of TLE in minutes
+ * \param tle TLE parameters
+ * \param pos Output ECI position in meters
+ * \param vel Output velocity in m/s
+ * \copyright GPLv2+
+ **/
 void sdp4_predict(struct _sdp4 *m, double tsince, tle_t * tle, double pos[3], double vel[3]);
 
-///This is the original Deep() function
+/**
+ * Deep space perturbations. Original Deep() function.
+ *
+ * \param m SDP4 model parameters
+ * \param ientry DPInit: Deep space initialization. DPSecular: Deep space secular effects. DPPeriodic: lunar-solar periodics. 
+ * \param tle TLE parameters
+ * \param deep_arg Deep perturbation parameters
+ * \copyright GPLv2+
+ **/
 void sdp4_deep(struct _sdp4 *m, int ientry, tle_t * tle, deep_arg_t * deep_arg);
 
 
