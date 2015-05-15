@@ -26,12 +26,6 @@ void observer_destroy(observer_t *obs)
 	}
 }
 
-/**
- * \brief Calculates range, azimut, elevation and relative velocity.
- *
- * Calculated range, azimut, elevation and relative velocity from the
- * given observer position.
- **/
 void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs)
 {
 	if (obs == NULL) return;

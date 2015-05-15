@@ -155,9 +155,6 @@ double Delta_ET(double year);
 /* Reference:  The 1992 Astronomical Almanac, page B6. */
 double ThetaG_JD(double jd);
 
-double CurrentDaynum();
-
-
 /* Calculates the day number from m/d/y. 
  * Needed for orbit_decay.*/
 long DayNum(int month, int day, int year);

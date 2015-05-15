@@ -439,23 +439,6 @@ void Calculate_User_PosVel(double time, geodetic_t *geodetic, double obs_pos[3],
 	obs_vel[2] = (0);
 }
 
-double CurrentDaynum()
-{
-	/* Read the system clock and return the number
-	   of days since 31Dec79 00:00:00 UTC (daynum 0) */
-
-	/* int x; */
-	struct timeval tptr;
-	double usecs, seconds;
-
-	/*x=*/gettimeofday(&tptr,NULL);
-
-	usecs=0.000001*(double)tptr.tv_usec;
-	seconds=usecs+(double)tptr.tv_sec;
-
-	return ((seconds/86400.0)-3651.0);
-}
-
 long DayNum(int m, int d, int y)
 {
 

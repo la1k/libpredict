@@ -176,7 +176,7 @@ bool orbit_aos_happens(const orbit_t *m, double latitude)
 int orbit_predict(orbit_t *m, double utc)
 {
 	/* Set time to now if now time is provided: */
-	if (utc == 0) utc = CurrentDaynum();
+	if (utc == 0) utc = predict_get_julian_date_from_time(time(NULL));
 	
 	/* Satellite position and velocity vectors */
 	vec3_set(m->position, 0, 0, 0);
