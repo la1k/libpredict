@@ -43,6 +43,7 @@ time_t mktime_utc(const struct tm* timeinfo_utc)
 	ret_timeinfo.tm_mday = timeinfo_utc->tm_mday;
 	ret_timeinfo.tm_mon = timeinfo_utc->tm_mon;
 	ret_timeinfo.tm_year = timeinfo_utc->tm_year;
+	ret_timeinfo.tm_isdst = timeinfo_utc->tm_isdst;
 	return mktime(&ret_timeinfo);
 }
 
@@ -60,6 +61,7 @@ time_t get_julian_start_day()
 	start_time.tm_mday = 31;
 	start_time.tm_mon = 11;
 	start_time.tm_year = 1979-1900;
+	start_time.tm_isdst = 0;
 	return mktime_utc(&start_time);
 }
 
