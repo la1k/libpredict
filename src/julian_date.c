@@ -29,15 +29,9 @@ time_t mktime_utc(const struct tm* timeinfo_utc)
 	//find the time difference between the two interpretations
 	timezone_diff += difftime(time_local, time_gmt);
 
-	//add daylight saving time, if any
-	if (timeinfo_local.tm_isdst)
-	{
-		timezone_diff += SECONDS_IN_HOUR;
-	}
-
-	//hack for preventing mktime from assuming localtime: subtract timezone difference from the input struct.
+	//hack for preventing mktime from assuming localtime: add timezone difference to the input struct.
 	struct tm ret_timeinfo;
-	ret_timeinfo.tm_sec = timeinfo_utc->tm_sec - timezone_diff; 
+	ret_timeinfo.tm_sec = timeinfo_utc->tm_sec + timezone_diff;
 	ret_timeinfo.tm_min = timeinfo_utc->tm_min;
 	ret_timeinfo.tm_hour = timeinfo_utc->tm_hour;
 	ret_timeinfo.tm_mday = timeinfo_utc->tm_mday;
