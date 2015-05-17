@@ -20,18 +20,18 @@ orbit_t *orbit_create(const char *tle[])
 	struct orbit *m = (struct orbit*)malloc(sizeof(struct orbit));
 	if (m == NULL) return NULL;
 
-	m->time = NAN;
-	m->position[0] = NAN;
-	m->position[1] = NAN;
-	m->position[2] = NAN;
-	m->velocity[0] = NAN;
-	m->velocity[1] = NAN;
-	m->velocity[2] = NAN;
-	m->latitude = NAN;
-	m->longitude = NAN;
-	m->altitude = NAN;
+	m->time = nan("");
+	m->position[0] = nan("");
+	m->position[1] = nan("");
+	m->position[2] = nan("");
+	m->velocity[0] = nan("");
+	m->velocity[1] = nan("");
+	m->velocity[2] = nan("");
+	m->latitude = nan("");
+	m->longitude = nan("");
+	m->altitude = nan("");
 	m->eclipsed = false;
-	m->eclipse_depth = NAN;
+	m->eclipse_depth = nan("");
 
 	//Parse TLE
 	double tempnum;
