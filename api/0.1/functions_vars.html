@@ -99,7 +99,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="#index_v"><span>v</span></a></li>
       <li><a href="#index_x"><span>x</span></a></li>
       <li><a href="#index_y"><span>y</span></a></li>
-      <li><a href="#index_z"><span>z</span></a></li>
     </ul>
   </div>
 </div>
@@ -114,8 +113,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>argper
 : <a class="el" href="structorbit.html#a1b6d71f519f7b87734630903b0efe1c5">orbit</a>
 </li>
-<li>azimut
-: <a class="el" href="structobservation.html#af8952dbe03eb089fe20096a33b5fcb09">observation</a>
+<li>azimuth
+: <a class="el" href="structobservation.html#a6e335a040ef6d12998c8fc997a3d55f3">observation</a>
+</li>
+<li>azimuth_rate
+: <a class="el" href="structobservation.html#acce6212f66a4b17c3fe2a65838b69155">observation</a>
 </li>
 </ul>
 
@@ -135,9 +137,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>catnum
 : <a class="el" href="structorbit.html#acee451b3215a2a91c3d2d2e8744e8f89">orbit</a>
 </li>
-<li>correctedElevation
-: <a class="el" href="structobservation.html#a68e3eb59492d66612fa829576a9f6a64">observation</a>
-</li>
 </ul>
 
 
@@ -155,14 +154,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>eccn
 : <a class="el" href="structorbit.html#a1ede87280d795dd5bad2495f7c5d1a91">orbit</a>
 </li>
-<li>eclipse_depth
-: <a class="el" href="structorbit.html#adcffc87015b3cdfe90830fa21cbe4a71">orbit</a>
-</li>
 <li>eclipsed
 : <a class="el" href="structorbit.html#ac43401ebc4d05b2244de810fff8948eb">orbit</a>
 </li>
 <li>elevation
 : <a class="el" href="structobservation.html#acb860240550a932bfc17d952acaa3cbc">observation</a>
+</li>
+<li>elevation_rate
+: <a class="el" href="structobservation.html#ab14f61a8e2c40a1e2d38a4b613ec852b">observation</a>
 </li>
 <li>elset
 : <a class="el" href="structtle__t.html#ac17297f0c26eaf3adb2d07a8ec3bdbd8">tle_t</a>
@@ -252,8 +251,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>range
 : <a class="el" href="structobservation.html#a39ca0a38e1c8f0b999bd3482aefbfe12">observation</a>
 </li>
-<li>rangeDot
-: <a class="el" href="structobservation.html#aabfaa7ce6ae5beb908d95d4b232b7f21">observation</a>
+<li>range_rate
+: <a class="el" href="structobservation.html#a50d9ccc37fe36d5680cdc1cf97a970d3">observation</a>
+</li>
+<li>range_x
+: <a class="el" href="structobservation.html#adbecfc59ae9eae0a78cf3cf867ff1559">observation</a>
+</li>
+<li>range_y
+: <a class="el" href="structobservation.html#a0f12c1e38989ab115869868c95c46918">observation</a>
+</li>
+<li>range_z
+: <a class="el" href="structobservation.html#a4defa747af6bc353c2afb144d4857cf4">observation</a>
 </li>
 <li>refepoch
 : <a class="el" href="structorbit.html#ab7391cc9690683eaebe9ad13dc7f8b12">orbit</a>
@@ -286,9 +294,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>velocity
 : <a class="el" href="structorbit.html#a00077a3173daa618413c14cdecf5d1bd">orbit</a>
 </li>
-<li>visible
-: <a class="el" href="structobservation.html#ab425b6505115bca5f76e97255733506f">observation</a>
-</li>
 </ul>
 
 
@@ -311,25 +316,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>xnodeo
 : <a class="el" href="structtle__t.html#a1cb3459bd2018d2e67c5878f54e20708">tle_t</a>
 </li>
-<li>xRange
-: <a class="el" href="structobservation.html#a4b44fe5f34b63dc350c31e9038ebcb78">observation</a>
-</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_y"></a>- y -</h3><ul>
 <li>year
 : <a class="el" href="structorbit.html#a2cbd6f6d6a759b784c6154e5f89b76dc">orbit</a>
-</li>
-<li>yRange
-: <a class="el" href="structobservation.html#a7e2a32a90657ca1c2b5ab8dfeece04f2">observation</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_z"></a>- z -</h3><ul>
-<li>zRange
-: <a class="el" href="structobservation.html#a6d3977bf1c4d6410f393472024fd0efd">observation</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -350,7 +342,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 17 2015 08:12:56 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun May 17 2015 08:37:23 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

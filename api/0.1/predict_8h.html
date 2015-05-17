@@ -143,10 +143,6 @@ Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Find whether an AOS can ever happen on the given latitude.  <a href="#a71902c5177a0cdbb84157a2bbfa62672"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a1bab96eb5076f1d9caf69fb74102fe76">orbit_decayed</a> (const <a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *x)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Find whether an orbit has decayed.  <a href="#a1bab96eb5076f1d9caf69fb74102fe76"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a7bac98be460911852d42230927464594">orbit_is_eclipsed</a> (const <a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *x)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Find whether a satellite is currently eclipsed.  <a href="#a7bac98be460911852d42230927464594"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a1a24ff64bd0e1108d16cec09505ece94">orbit_eclipse_depth</a> (const <a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *x)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the eclipse depth.  <a href="#a1a24ff64bd0e1108d16cec09505ece94"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="predict_8h.html#a922dfcffacdb6c50ebee367a1a76e5a0">observer_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a8b71002ec2c21d0f6364a7dc90c9c86e">observer_create</a> (const char *name, double lat, double lon, double alt)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Create observation point (QTH).  <a href="#a8b71002ec2c21d0f6364a7dc90c9c86e"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a54efe33b68aca34149e5fa2fb4ab306d">observer_destroy</a> (<a class="el" href="predict_8h.html#a922dfcffacdb6c50ebee367a1a76e5a0">observer_t</a> *obs)</td></tr>
@@ -163,6 +159,26 @@ Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Find next loss of signal (LOS) of satellite (when the satellite goes below the horizon).  <a href="#ae64c8bf711af606bf09a11d702c0b2bf"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a4a57cf8d64b9fedfdc01064f6d818cd5">observer_get_doppler_shift</a> (const <a class="el" href="predict_8h.html#a922dfcffacdb6c50ebee367a1a76e5a0">observer_t</a> *<a class="el" href="structobserver.html">observer</a>, const <a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *<a class="el" href="structorbit.html">orbit</a>, double downlink_frequency)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate doppler shift of a given downlink frequency with respect to the observer.  <a href="#a4a57cf8d64b9fedfdc01064f6d818cd5"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#ab88a28470cec526aed983001eb72485f">predict_refraction</a> (double el)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate refraction angle.  <a href="#ab88a28470cec526aed983001eb72485f"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a40b517ee78cd977ab4d060ee5909f6db">predict_refraction_ext</a> (double el, double pressure, double temp)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate refraction angle.  <a href="#a40b517ee78cd977ab4d060ee5909f6db"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a38247654789b982d70316d67792833f8">predict_refraction_from_apparent</a> (double apparent_el)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate refraction angle from apparent elevation.  <a href="#a38247654789b982d70316d67792833f8"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a86cbb73740df1a66f9e55f14257b80a7">predict_refraction_from_apparent_ext</a> (double apparent_el, double pressure, double temp)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate refraction angle from apparent elevation.  <a href="#a86cbb73740df1a66f9e55f14257b80a7"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a2002ac1695cb4d0765827e5af2e22156">predict_refraction_rate</a> (double el, double el_rate)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate refraction rate of change.  <a href="#a2002ac1695cb4d0765827e5af2e22156"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a041cd939c694488e34bf87777c945044">predict_refraction_rate_ext</a> (double el, double el_rate, double pressure, double temp)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate refraction rate of change.  <a href="#a041cd939c694488e34bf87777c945044"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a39ffba04d22baf407d3da896bbc6d281">predict_apparent_elevation</a> (double el)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate apparent elevation from true elevation.  <a href="#a39ffba04d22baf407d3da896bbc6d281"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a44dbad897c5422f06ce0377c0fc8516f">predict_apparent_elevation_ext</a> (double el, double pressure, double temp)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate apparent elevation from true elevation.  <a href="#a44dbad897c5422f06ce0377c0fc8516f"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#a6423af62f3ae5dfcc4344d7f64ebf1da">predict_apparent_elevation_rate</a> (double el, double el_rate)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate apparent elevation rate.  <a href="#a6423af62f3ae5dfcc4344d7f64ebf1da"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="predict_8h.html#ae03bb445d40dfa75d7d248f079a20fd8">predict_apparent_elevation_rate_ext</a> (double el, double el_rate, double pressure, double temp)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate apparent elevation rate.  <a href="#ae03bb445d40dfa75d7d248f079a20fd8"></a><br/></td></tr>
 </table>
 <hr/><h2>Typedef Documentation</h2>
 <a class="anchor" id="a922dfcffacdb6c50ebee367a1a76e5a0"></a><!-- doxytag: member="predict.h::observer_t" ref="a922dfcffacdb6c50ebee367a1a76e5a0" args="" -->
@@ -728,58 +744,6 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a1a24ff64bd0e1108d16cec09505ece94"></a><!-- doxytag: member="predict.h::orbit_eclipse_depth" ref="a1a24ff64bd0e1108d16cec09505ece94" args="(const orbit_t *x)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double <a class="el" href="predict_8h.html#a1a24ff64bd0e1108d16cec09505ece94">orbit_eclipse_depth</a> </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *&#160;</td>
-          <td class="paramname"><em>x</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Return the eclipse depth. </p>
-<dl class="params"><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>Current state of orbit </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>Eclipse depth (rad) </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a7bac98be460911852d42230927464594"></a><!-- doxytag: member="predict.h::orbit_is_eclipsed" ref="a7bac98be460911852d42230927464594" args="(const orbit_t *x)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool <a class="el" href="predict_8h.html#a7bac98be460911852d42230927464594">orbit_is_eclipsed</a> </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d">orbit_t</a> *&#160;</td>
-          <td class="paramname"><em>x</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Find whether a satellite is currently eclipsed. </p>
-<dl class="params"><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>Current state of orbit </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>true if orbit is eclipsed, otherwise false </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="a528a3adc0881714472e18ac782110f52"></a><!-- doxytag: member="predict.h::orbit_is_geostationary" ref="a528a3adc0881714472e18ac782110f52" args="(const orbit_t *x)" -->
 <div class="memitem">
 <div class="memproto">
@@ -873,6 +837,166 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a39ffba04d22baf407d3da896bbc6d281"></a><!-- doxytag: member="predict.h::predict_apparent_elevation" ref="a39ffba04d22baf407d3da896bbc6d281" args="(double el)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#a39ffba04d22baf407d3da896bbc6d281">predict_apparent_elevation</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate apparent elevation from true elevation. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">el</td><td>True elevation angle (rad).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Apparent elevation (rad). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a44dbad897c5422f06ce0377c0fc8516f"></a><!-- doxytag: member="predict.h::predict_apparent_elevation_ext" ref="a44dbad897c5422f06ce0377c0fc8516f" args="(double el, double pressure, double temp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#a44dbad897c5422f06ce0377c0fc8516f">predict_apparent_elevation_ext</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>pressure</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>temp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate apparent elevation from true elevation. </p>
+<p>Corrects for different atmospheric pressures and temperatures.</p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">el</td><td>True elevation angle (rad). </td></tr>
+    <tr><td class="paramname">pressure</td><td>Atmospheric pressure (kPa). </td></tr>
+    <tr><td class="paramname">temp</td><td>Temperature (deg C).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Apparent elevation (rad). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a6423af62f3ae5dfcc4344d7f64ebf1da"></a><!-- doxytag: member="predict.h::predict_apparent_elevation_rate" ref="a6423af62f3ae5dfcc4344d7f64ebf1da" args="(double el, double el_rate)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#a6423af62f3ae5dfcc4344d7f64ebf1da">predict_apparent_elevation_rate</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el_rate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate apparent elevation rate. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">el</td><td>True elevation angle (rad). </td></tr>
+    <tr><td class="paramname">el_rate</td><td>Rate of change of true elevation angle (rad/s).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Rate of change of apparent elevation (rad/s). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ae03bb445d40dfa75d7d248f079a20fd8"></a><!-- doxytag: member="predict.h::predict_apparent_elevation_rate_ext" ref="ae03bb445d40dfa75d7d248f079a20fd8" args="(double el, double el_rate, double pressure, double temp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#ae03bb445d40dfa75d7d248f079a20fd8">predict_apparent_elevation_rate_ext</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el_rate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>pressure</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>temp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate apparent elevation rate. </p>
+<p>Corrects for different atmospheric pressures and temperatures.</p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">el</td><td>True elevation angle (rad). </td></tr>
+    <tr><td class="paramname">el_rate</td><td>Rate of change of true elevation angle (rad/s). </td></tr>
+    <tr><td class="paramname">pressure</td><td>Atmospheric pressure (kPa). </td></tr>
+    <tr><td class="paramname">temp</td><td>Temperature (deg C).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Rate of change of apparent elevation (rad/s). </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a883df3964fec7d41fd3bae544dfc6dd0"></a><!-- doxytag: member="predict.h::predict_get_julian_date_from_time" ref="a883df3964fec7d41fd3bae544dfc6dd0" args="(time_t time)" -->
 <div class="memitem">
 <div class="memproto">
@@ -925,6 +1049,239 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ab88a28470cec526aed983001eb72485f"></a><!-- doxytag: member="predict.h::predict_refraction" ref="ab88a28470cec526aed983001eb72485f" args="(double el)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#ab88a28470cec526aed983001eb72485f">predict_refraction</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate refraction angle. </p>
+<p>This function assumes atmospheric pressure of 101.0kPa and temperature 10deg celsius.</p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">el</td><td>True elevation angle (rad).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Refraction angle (rad). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a40b517ee78cd977ab4d060ee5909f6db"></a><!-- doxytag: member="predict.h::predict_refraction_ext" ref="a40b517ee78cd977ab4d060ee5909f6db" args="(double el, double pressure, double temp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#a40b517ee78cd977ab4d060ee5909f6db">predict_refraction_ext</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>pressure</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>temp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate refraction angle. </p>
+<p>Corrects for different atmospheric pressure and temperature.</p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">el</td><td>True elevation angle in rads. </td></tr>
+    <tr><td class="paramname">pressure</td><td>Atmospheric pressure in kPa. </td></tr>
+    <tr><td class="paramname">temp</td><td>Temperature in deg celsius.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Refraction angle (rad). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a38247654789b982d70316d67792833f8"></a><!-- doxytag: member="predict.h::predict_refraction_from_apparent" ref="a38247654789b982d70316d67792833f8" args="(double apparent_el)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#a38247654789b982d70316d67792833f8">predict_refraction_from_apparent</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>apparent_el</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate refraction angle from apparent elevation. </p>
+<p>This function assumes atmospheric pressure of 101.0kPa and temperature 10deg celsius.</p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">apparent_el</td><td>Apparent elevation angle (rad).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Refraction angle (rad). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a86cbb73740df1a66f9e55f14257b80a7"></a><!-- doxytag: member="predict.h::predict_refraction_from_apparent_ext" ref="a86cbb73740df1a66f9e55f14257b80a7" args="(double apparent_el, double pressure, double temp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#a86cbb73740df1a66f9e55f14257b80a7">predict_refraction_from_apparent_ext</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>apparent_el</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>pressure</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>temp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate refraction angle from apparent elevation. </p>
+<p>Corrects for different atmospheric pressure and temperature.</p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">apparent_el</td><td>Apparent elevation angle (rad). </td></tr>
+    <tr><td class="paramname">pressure</td><td>Atmospheric pressure in kPa. </td></tr>
+    <tr><td class="paramname">temp</td><td>Temperature in deg celsius.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Refraction angle (rad). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a2002ac1695cb4d0765827e5af2e22156"></a><!-- doxytag: member="predict.h::predict_refraction_rate" ref="a2002ac1695cb4d0765827e5af2e22156" args="(double el, double el_rate)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#a2002ac1695cb4d0765827e5af2e22156">predict_refraction_rate</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el_rate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate refraction rate of change. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">el</td><td>True elevation angle (rad). </td></tr>
+    <tr><td class="paramname">el_rate</td><td>Rate of change of true elevation angle (rad/s).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Refraction rate of change (rad/s). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a041cd939c694488e34bf87777c945044"></a><!-- doxytag: member="predict.h::predict_refraction_rate_ext" ref="a041cd939c694488e34bf87777c945044" args="(double el, double el_rate, double pressure, double temp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="predict_8h.html#a041cd939c694488e34bf87777c945044">predict_refraction_rate_ext</a> </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>el_rate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>pressure</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>temp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Calculate refraction rate of change. </p>
+<p>Corrects for different atmospheric pressure and temerature.</p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">el</td><td>True elevation angle (rad). </td></tr>
+    <tr><td class="paramname">el_rate</td><td>Rate of change of true elevation angle (rad/s). </td></tr>
+    <tr><td class="paramname">pressure</td><td>Atmospheric pressure in kPa. </td></tr>
+    <tr><td class="paramname">temp</td><td>Temperature in deg celsius.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Apparent elevation (rad). </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -943,7 +1300,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 17 2015 08:12:56 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun May 17 2015 08:37:23 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
