@@ -212,20 +212,20 @@ typedef struct observer {
 struct observation {
 	///UTC time                
 	predict_julian_date_t time;                       
-	///Azimut angle      
-	double azimut; 
-	///Elevation angle                               
-	double elevation; 
-	///Corrected elevation    
-	double correctedElevation;         
+	///Azimuth angle (rad)      
+	double azimuth;
+	///Azimuth angle rate (rad/s)
+	double azimuth_rate;
+	///Elevation angle (rad)                           
+	double elevation;
+	///Elevation angle rate (rad/s)
+	double elevation_rate;
 	///Range (km) 
 	double range;                        
 	///Range vector                    
-	double xRange, yRange, zRange; 
+	double range_x, range_y, range_z; 
 	///Range velocity (km/s) 
-	double rangeDot;                    
-	///Visible? 
-	int visible; 
+	double range_rate;      
 };
 
 /**
@@ -308,5 +308,123 @@ predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t 
  * \copyright GPLv2+
  **/
 double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
+
+/*!
+ * \brief Calculate refraction angle.
+ *
+ * This function assumes atmospheric pressure of 101.0kPa and temperature 10deg celsius.
+ *
+ * \param el True elevation angle (rad).
+ *
+ * \return Refraction angle (rad).
+ */
+double predict_refraction(double el);
+
+/*!
+ * \brief Calculate refraction angle.
+ *
+ * Corrects for different atmospheric pressure and temperature.
+ *
+ * \param el True elevation angle in rads.
+ * \param pressure Atmospheric pressure in kPa.
+ * \param temp Temperature in deg celsius.
+ *
+ * \return Refraction angle (rad).
+ */
+double predict_refraction_ext(double el, double pressure, double temp);
+
+/*!
+ * \brief Calculate refraction angle from apparent elevation.
+ *
+ * This function assumes atmospheric pressure of 101.0kPa and temperature 10deg celsius.
+ *
+ * \param apparent_el Apparent elevation angle (rad).
+ *
+ * \return Refraction angle (rad).
+ */
+double predict_refraction_from_apparent(double apparent_el);
+
+/*!
+ * \brief Calculate refraction angle from apparent elevation.
+ *
+ * Corrects for different atmospheric pressure and temperature.
+ *
+ * \param apparent_el Apparent elevation angle (rad).
+ * \param pressure Atmospheric pressure in kPa.
+ * \param temp Temperature in deg celsius.
+ *
+ * \return Refraction angle (rad).
+ */
+double predict_refraction_from_apparent_ext(double apparent_el, double pressure, double temp);
+
+/*!
+ * \brief Calculate refraction rate of change.
+ *
+ * \param el True elevation angle (rad).
+ * \param el_rate Rate of change of true elevation angle (rad/s).
+ *
+ * \return Refraction rate of change (rad/s).
+ */
+double predict_refraction_rate(double el, double el_rate);
+
+/*!
+ * \brief Calculate refraction rate of change.
+ *
+ * Corrects for different atmospheric pressure and temerature.
+ *
+ * \param el True elevation angle (rad).
+ * \param el_rate Rate of change of true elevation angle (rad/s).
+ * \param pressure Atmospheric pressure in kPa.
+ * \param temp Temperature in deg celsius.
+ *
+ * \return Apparent elevation (rad).
+ */
+double predict_refraction_rate_ext(double el, double el_rate, double pressure, double temp);
+
+/*!
+ * \brief Calculate apparent elevation from true elevation.
+ *
+ * \param el True elevation angle (rad).
+ *
+ * \return Apparent elevation (rad).
+ */
+double predict_apparent_elevation(double el);
+
+/*!
+ * \brief Calculate apparent elevation from true elevation.
+ *
+ * Corrects for different atmospheric pressures and temperatures.
+ *
+ * \param el True elevation angle (rad).
+ * \param pressure Atmospheric pressure (kPa).
+ * \param temp Temperature (deg C).
+ *
+ * \return Apparent elevation (rad).
+ */
+double predict_apparent_elevation_ext(double el, double pressure, double temp);
+
+/*!
+ * \brief Calculate apparent elevation rate.
+ *
+ * \param el True elevation angle (rad).
+ * \param el_rate Rate of change of true elevation angle (rad/s).
+ *
+ * \return Rate of change of apparent elevation (rad/s).
+ */
+double predict_apparent_elevation_rate(double el, double el_rate);
+
+/*!
+ * \brief Calculate apparent elevation rate.
+ *
+ * Corrects for different atmospheric pressures and temperatures.
+ *
+ * \param el True elevation angle (rad).
+ * \param el_rate Rate of change of true elevation angle (rad/s).
+ * \param pressure Atmospheric pressure (kPa).
+ * \param temp Temperature (deg C).
+ *
+ * \return Rate of change of apparent elevation (rad/s).
+ */
+double predict_apparent_elevation_rate_ext(double el, double el_rate, double pressure, double temp);
 
 #endif //_PREDICT_H_
