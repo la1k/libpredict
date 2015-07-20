@@ -9,8 +9,8 @@ int main(int argc, char **argv)
 {
 
 	const char *tle[2] = {
-		"1 25544U 98067A   15134.29254792  .00029616  00000-0  42351-3 0  9996",
-		"2 25544  51.6442 253.2895 0007197 306.8094 139.9156 15.55943689942769"};
+		"1 25544U 98067A   15129.86961041  .00015753  00000-0  23097-3 0  9998",
+		"2 25544  51.6464 275.3867 0006524 289.1638 208.5861 15.55704207942078"};
 
 	// Create orbit object
 	orbit_t *iss = orbit_create(tle);
@@ -30,12 +30,12 @@ int main(int argc, char **argv)
 	// Predict orbit
 	int i;
 	for (i=0;i<100;++i) {
-		
 		predict_julian_date_t curr_time = predict_get_julian_date_from_time(time(NULL));
-		
+	
 		// Predict ISS
 		orbit_predict(iss, curr_time);
-		printf("ISS: lat=%f, lon=%f, alt=%f\n", iss->latitude*180.0/M_PI, iss->longitude*180.0/M_PI, iss->altitude);
+		printf("ISS: lat=%f, lon=%f, alt=%f, eclipsed=%i (%.2f)\n", iss->latitude*180.0/M_PI, iss->longitude*180.0/M_PI, 
+				iss->altitude, orbit_is_eclipsed(iss), orbit_eclipse_depth(iss)*180.0/M_PI);
 	
 		// Observe ISS
 		struct observation iss_obs;

@@ -76,6 +76,8 @@ struct orbit {
 	double altitude;
 	///Whether satellite is eclipsed by the earth
 	int eclipsed;
+	///Eclipse depth
+	double eclipse_depth;
 	///Which perturbation model to use
 	ephemeris_t ephemeris;
 	///Original TLE line number one:
@@ -191,6 +193,22 @@ bool orbit_aos_happens(const orbit_t *x, double latitude);
  * \copyright GPLv2+
  **/
 bool orbit_decayed(const orbit_t *x);
+
+/** 
+ * Find whether a satellite is currently eclipsed.
+ *
+ * \param x Current state of orbit
+ * \return true if orbit is eclipsed, otherwise false
+ **/
+bool orbit_is_eclipsed(const orbit_t *x);
+
+/** 
+ * Return the eclipse depth
+ *
+ * \param x Current state of orbit
+ * \return Eclipse depth (rad)
+ **/
+double orbit_eclipse_depth(const orbit_t *x);
 
 /**
  * Observation point/ground station (QTH).

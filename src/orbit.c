@@ -4,6 +4,9 @@
 #include "unsorted.h"
 #include "sdp4.h"
 #include "sgp4.h"
+#include "sun.h"
+
+bool is_eclipsed(const double pos[3], const double sol[3], double *depth);
 
 /**
  * \brief Allocates memory and prepares internal data.
@@ -16,6 +19,19 @@ orbit_t *orbit_create(const char *tle[])
 	// Allocate memory for new orbit struct
 	struct orbit *m = (struct orbit*)malloc(sizeof(struct orbit));
 	if (m == NULL) return NULL;
+
+	m->time = nan("");
+	m->position[0] = nan("");
+	m->position[1] = nan("");
+	m->position[2] = nan("");
+	m->velocity[0] = nan("");
+	m->velocity[1] = nan("");
+	m->velocity[2] = nan("");
+	m->latitude = nan("");
+	m->longitude = nan("");
+	m->altitude = nan("");
+	m->eclipsed = false;
+	m->eclipse_depth = nan("");
 
 	//Parse TLE
 	double tempnum;
@@ -182,13 +198,6 @@ int orbit_predict(orbit_t *m, double utc)
 	vec3_set(m->position, 0, 0, 0);
 	vec3_set(m->velocity, 0, 0, 0);
 
-	/* Solar ECI position vector  */
-	double solar_vector[3];
-	vec3_set(solar_vector, 0, 0, 0);
-
-	/* Solar observed azi and ele vector  */
-	//vector_t solar_set;
-
 	m->time = utc;
 	double julTime = utc + 2444238.5;
 
@@ -223,40 +232,12 @@ int orbit_predict(orbit_t *m, double utc)
 	m->longitude = sat_geodetic.lon;
 	m->altitude = sat_geodetic.alt;
 
+	// Calculate solar position
+	double solar_vector[3];
+	sun_predict(m->time, solar_vector);
 
-	/* TODO: ?? Calculate squint angle */
-	//if (calc_squint) squint=(acos(-(ax*rx+ay*ry+az*rz)/obs_set.z))/deg2rad;
-
-	/* Calculate solar position and satellite eclipse depth. */
-	/* Also set or clear the satellite eclipsed flag accordingly. */
-//	Calculate_Solar_Position(julTime, &solar_vector);
-	//Calculate_Obs(julTime, &solar_vector, &zero_vector, &obs_geodetic, &solar_set);
-//	double eclipseDepth;
-//	m->eclipsed = Sat_Eclipsed(&pos, &solar_vector, &eclipseDepth);
-
-/*
-	fk=12756.33*acos(xkmper/(xkmper+sat_alt));
-	fm=fk/1.609344;
-	rv=(long)floor((tle.xno*xmnpda/twopi+age*tle.bstar*ae)*age+tle.xmo/twopi)+tle.revnum;
-	sun_azi=Degrees(solar_set.x); 
-	sun_ele=Degrees(solar_set.y);
-	irk=(long)rint(sat_range);
-	isplat=(int)rint(sat_lat);
-	isplong=(int)rint(360.0-sat_lon);
-	iaz=(int)rint(sat_azi);
-	iel=(int)rint(sat_ele);
-	ma256=(int)rint(256.0*(phase/twopi));
-
-	if (!eclipsed())
-	{
-		if (sun_ele<=-12.0 && rint(sat_ele)>=0.0)
-			findsun='+';
-		else
-			findsun='*';
-	}
-	else
-		findsun=' ';
-*/
+	// Find eclipse depth and if sat is eclipsed
+	m->eclipsed = is_eclipsed(m->position, solar_vector, &m->eclipse_depth);
 
 	return 0;
 }
@@ -273,4 +254,33 @@ bool orbit_decayed(const orbit_t *orbit)
 		has_decayed = true;
 	}
 	return has_decayed;
+}
+
+	/* Calculates if a position is eclipsed.  */
+bool is_eclipsed(const double pos[3], const double sol[3], double *depth)
+{
+	double Rho[3], earth[3];
+
+	/* Determine partial eclipse */
+	double sd_earth = ArcSin(xkmper / vec3_length(pos));
+	vec3_sub(sol, pos, Rho);
+	double sd_sun = ArcSin(sr / vec3_length(Rho));
+	vec3_mul_scalar(pos, -1, earth);
+	
+	double delta = ArcCos( vec3_dot(sol, earth) / vec3_length(sol) / vec3_length(earth) );
+	*depth = sd_earth - sd_sun - delta;
+
+	if (sd_earth < sd_sun) return false;
+	else if (*depth >= 0) return true;
+	else return false;
+}
+
+bool orbit_is_eclipsed(const orbit_t *orbit)
+{
+	return orbit->eclipsed;
+}
+
+double orbit_eclipse_depth(const orbit_t *orbit)
+{
+	return orbit->eclipse_depth;
 }

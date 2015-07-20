@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "defs.h"
+#include "sun.h"
 
 void observer_calculate(const observer_t *observer, double time, const double pos[3], const double vel[3], struct observation *result);
 
@@ -137,29 +138,10 @@ void observer_calculate(const observer_t *observer, double time, const double po
 void observer_find_sun(const observer_t *observer, double time, struct observation *obs)
 {
 	
-	double mjd, year, T, M, L, e, C, O, Lsa, nu, R, eps;
-
-	double jul_utc = time+2444238.5;
-	mjd=jul_utc-2415020.0;
-	year=1900+mjd/365.25;
-	T=(mjd+Delta_ET(year)/secday)/36525.0;
-	M=Radians(Modulus(358.47583+Modulus(35999.04975*T,360.0)-(0.000150+0.0000033*T)*Sqr(T),360.0));
-	L=Radians(Modulus(279.69668+Modulus(36000.76892*T,360.0)+0.0003025*Sqr(T),360.0));
-	e=0.01675104-(0.0000418+0.000000126*T)*T;
-	C=Radians((1.919460-(0.004789+0.000014*T)*T)*sin(M)+(0.020094-0.000100*T)*sin(2*M)+0.000293*sin(3*M));
-	O=Radians(Modulus(259.18-1934.142*T,360.0));
-	Lsa=Modulus(L+C-Radians(0.00569-0.00479*sin(O)), 2*M_PI);
-	nu=Modulus(M+C, 2*M_PI);
-	R=1.0000002*(1.0-Sqr(e))/(1.0+e*cos(nu));
-	eps=Radians(23.452294-(0.0130125+(0.00000164-0.000000503*T)*T)*T+0.00256*cos(O));
-	R=AU*R;
-
+	// Find sun position
 	double solar_vector[3];
-	solar_vector[0] = R*cos(Lsa);
-	solar_vector[1] = R*sin(Lsa)*cos(eps);
-	solar_vector[2] = R*sin(Lsa)*sin(eps);
+	sun_predict(time, solar_vector);
 
-	
 	/* Zero vector for initializations */
 	double zero_vector[3] = {0,0,0};
 
@@ -177,6 +159,8 @@ void observer_find_sun(const observer_t *observer, double time, struct observati
 	geodetic.lon = observer->longitude;
 	geodetic.alt = observer->altitude / 1000.0;
 	geodetic.theta = 0.0;
+	
+	double jul_utc = time + 2444238.5;
 	Calculate_Obs(jul_utc, solar_vector, zero_vector, &geodetic, &solar_set);
 	
 	double sun_azi = solar_set.x; 
