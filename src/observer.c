@@ -5,6 +5,8 @@
 #include "defs.h"
 #include "sun.h"
 
+void observer_calculate(const observer_t *observer, double time, const double pos[3], const double vel[3], struct observation *result);
+
 observer_t *observer_create(const char *name, double lat, double lon, double alt)
 {
 	// Allocate memory
@@ -27,56 +29,109 @@ void observer_destroy(observer_t *obs)
 	}
 }
 
+/**
+ * \brief Calculates range, azimuth, elevation and relative velocity.
+ *
+ * Calculated range, azimuth, elevation and relative velocity from the
+ * given observer position.
+ **/
 void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs)
 {
 	if (obs == NULL) return;
 	
 	double julTime = orbit->time + 2444238.5;
 
-	double sin_lat, cos_lat, sin_theta, cos_theta, azim, top_s, top_e, top_z;
-	double obs_pos[3], obs_vel[3], range[3], rgvel[3];
+	observer_calculate(observer, julTime, orbit->position, orbit->velocity, obs);
 
+}
+
+void observer_calculate(const observer_t *observer, double time, const double pos[3], const double vel[3], struct observation *result)
+{
+	
+		/* The procedures Calculate_Obs and Calculate_RADec calculate         */
+	/* the *topocentric* coordinates of the object with ECI position,     */
+	/* {pos}, and velocity, {vel}, from location {geodetic} at {time}.    */
+	/* The {obs_set} returned for Calculate_Obs consists of azimuth,      */
+	/* elevation, range, and range rate (in that order) with units of     */
+	/* radians, radians, kilometers, and kilometers/second, respectively. */
+	/* The WGS '72 geoid is used and the effect of atmospheric refraction */
+	/* (under standard temperature and pressure) is incorporated into the */
+	/* elevation calculation; the effect of atmospheric refraction on     */
+	/* range and range rate has not yet been quantified.                  */
+
+	/* The {obs_set} for Calculate_RADec consists of right ascension and  */
+	/* declination (in that order) in radians.  Again, calculations are   */
+	/* based on *topocentric* position using the WGS '72 geoid and        */
+	/* incorporating atmospheric refraction.                              */
+
+
+	double obs_pos[3];
+	double obs_vel[3];
+	double range[3];
+	double rgvel[3];
+	
 	geodetic_t geodetic;
 	geodetic.lat = observer->latitude;
 	geodetic.lon = observer->longitude;
 	geodetic.alt = observer->altitude / 1000.0;
 	geodetic.theta = 0.0;
+	Calculate_User_PosVel(time, &geodetic, obs_pos, obs_vel);
 
-	Calculate_User_PosVel(julTime, &geodetic, obs_pos, obs_vel);
+	vec3_sub(pos, obs_pos, range);
+	vec3_sub(vel, obs_vel, rgvel);
+	
+	double range_length = vec3_length(range);
+	double range_rate_length = vec3_dot(range, rgvel) / range_length;
 
-	//Find QTH -> SAT vector:
-	vec3_sub(orbit->position, obs_pos, range);
+	double theta_dot = 2*M_PI*omega_E/secday;
+	double sin_lat = sin(geodetic.lat);
+	double cos_lat = cos(geodetic.lat);
+	double sin_theta = sin(geodetic.theta);
+	double cos_theta = cos(geodetic.theta);
+	
+	double top_s = sin_lat*cos_theta*range[0] + sin_lat*sin_theta*range[1] - cos_lat*range[2];
+	double top_e = -sin_theta*range[0] + cos_theta*range[1];
+	double top_z = cos_lat*cos_theta*range[0] + cos_lat*sin_theta*range[1] + sin_lat*range[2];
 
-	//Find QTH -> SAT relative velocity:
-	vec3_sub(orbit->velocity, obs_vel, rgvel);
 
-	//Direct distance: 
-	double rangeLength = vec3_length(range);
+	double top_s_dot = sin_lat*(cos_theta*rgvel[0] - sin_theta*range[0]*theta_dot) + 
+						sin_lat*(sin_theta*rgvel[1] + cos_theta*range[1]*theta_dot) -
+						cos_lat*rgvel[2];
+	double top_e_dot = - (sin_theta*rgvel[0] + cos_theta*range[0]*theta_dot) + 
+						(cos_theta*rgvel[1] - sin_theta*range[1]*theta_dot);
 
-	sin_lat = sin(geodetic.lat);
-	cos_lat = cos(geodetic.lat);
-	sin_theta = sin(geodetic.theta);
-	cos_theta = cos(geodetic.theta);
-	top_s = sin_lat*cos_theta*range[0]+sin_lat*sin_theta*range[1]-cos_lat*range[2];
-	top_e = -sin_theta*range[0]+cos_theta*range[1];
-	top_z = cos_lat*cos_theta*range[0]+cos_lat*sin_theta*range[1]+sin_lat*range[2];
-	azim = atan(-top_e/top_s); /* Azimuth */
+	double top_z_dot = cos_lat * ( cos_theta*(rgvel[0] + range[1]*theta_dot) + 
+								sin_theta*(rgvel[1] - range[0]*theta_dot) ) +
+								sin_lat*rgvel[2];
+	
+	// Azimut
+	double y = -top_e / top_s;
+	double az = atan(-top_e / top_s);
 
-	if (top_s > 0.0) azim = azim + M_PI;
-	if (azim < 0.0) azim = azim + 2*M_PI;
+	if (top_s > 0.0) az = az + M_PI;
+	if (az < 0.0) az = az + 2*M_PI;
 
-	obs->azimut = azim;
-	obs->elevation = ArcSin(top_z/rangeLength);
-	obs->range = rangeLength;
-	obs->rangeDot = vec3_dot(range, rgvel) / rangeLength;
+	// Azimut rate
+	double y_dot = - (top_e_dot*top_s - top_s_dot*top_e) / (top_s*top_s);
+	double az_dot = y_dot / (1 + y*y);
 
-	/* Corrections for atmospheric refraction */
-	/* Reference:  Astronomical Algorithms by Jean Meeus, pp. 101-104    */
-	/* Correction is meaningless when apparent elevation is below horizon */
-	obs->correctedElevation = obs->elevation+Radians((1.02/tan(Radians(Degrees(obs->elevation)+10.3/(Degrees(obs->elevation)+5.11))))/60);
+	// Elevation
+	double x = top_z / range_length;
+	double el = ArcSin(x);
 
-	//Above horizon?
-	obs->visible = (obs->elevation >= 0);
+	// Elevation rate
+	double x_dot = (top_z_dot*range_length - range_rate_length*top_z) / (range_length * range_length);
+	double el_dot = x_dot / sqrt( 1 - x*x );
+	
+	result->azimuth = az;
+	result->azimuth_rate = az_dot;
+	result->elevation = el;
+	result->elevation_rate = el_dot;
+	result->range = range_length;
+	result->range_rate = range_rate_length; 
+	result->range_x = range[0];
+	result->range_y = range[1];
+	result->range_z = range[2];
 
 }
 
@@ -90,7 +145,7 @@ void observer_find_sun(const observer_t *observer, double time, struct observati
 	/* Zero vector for initializations */
 	double zero_vector[3] = {0,0,0};
 
-	/* Solar observed azi and ele vector  */
+	/* Solar observed azimuth and elevation vector  */
 	vector_t solar_set;
 
 	/* Solar right ascension and declination vector */
@@ -129,11 +184,10 @@ void observer_find_sun(const observer_t *observer, double time, struct observati
 	*/
 	
 	obs->time = time;
-	obs->azimut = sun_azi;
+	obs->azimuth = sun_azi;
 	obs->elevation = sun_ele;
-	obs->visible = (obs->elevation > 0);
 	obs->range = sun_range;
-	obs->rangeDot = sun_range_rate;
+	obs->range_rate = sun_range_rate;
 }
 
 
@@ -324,7 +378,7 @@ void observer_find_moon(const observer_t *observer, double time, struct observat
 
 	if (moon_gha<0.0) moon_gha+=360.0;
 
-	obs->azimut = moon_az;
+	obs->azimuth = moon_az;
 	obs->elevation = moon_el;
 
 }
@@ -436,6 +490,6 @@ double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orb
 	struct observation obs;
 	observer_find_orbit(observer, orbit, &obs);
 
-	double sat_range_rate = obs.rangeDot*1000.0; //convert to m/s
+	double sat_range_rate = obs.range_rate*1000.0; //convert to m/s
 	return frequency*sat_range_rate/SPEED_OF_LIGHT; //assumes that sat_range <<<<< speed of light, which is very ok
 }

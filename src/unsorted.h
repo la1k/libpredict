@@ -33,7 +33,7 @@ double vec3_length(const double v[3]);
  *
  * \param v Input vector. Overwritten by result
  * \param a Scalar to be multiplied into vector
- * \paren r Resulting vector
+ * \param r Resulting vector
  **/
 void vec3_mul_scalar(const double v[3], double a, double r[3]);
 

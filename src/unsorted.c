@@ -524,13 +524,9 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 	Calculate_User_PosVel(time, geodetic, obs_pos, obs_vel);
 
 	vec3_sub(pos, obs_pos, range);
-	/* Save these values globally for calculating squint angles later... */
-
-//	rx=range.x;
-//	ry=range.y;
-//	rz=range.z;
-
 	vec3_sub(vel, obs_vel, rgvel);
+	
+	double range_length = vec3_length(range);
 
 	sin_lat=sin(geodetic->lat);
 	cos_lat=cos(geodetic->lat);
@@ -547,24 +543,13 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 	if (azim<0.0)
 		azim = azim + 2*M_PI;
 
-	el=ArcSin(top_z/vec3_length(range));
+	el=ArcSin(top_z/range_length);
 	obs_set->x=azim;	/* Azimuth (radians)   */
 	obs_set->y=el;		/* Elevation (radians) */
-	obs_set->z=vec3_length(range);	/* Range (kilometers)  */
+	obs_set->z=range_length;	/* Range (kilometers)  */
 
 	/* Range Rate (kilometers/second) */
-
 	obs_set->w = vec3_dot(range, rgvel)/vec3_length(range);
-
-	/* Corrections for atmospheric refraction */
-	/* Reference:  Astronomical Algorithms by Jean Meeus, pp. 101-104    */
-	/* Correction is meaningless when apparent elevation is below horizon */
-
-	/*** The following adjustment for
-		 atmospheric refraction is bypassed ***/
-
-	/* obs_set->y=obs_set->y+Radians((1.02/tan(Radians(Degrees(el)+10.3/(Degrees(el)+5.11))))/60); */
-
 	obs_set->y=el;
 
 	/**** End bypass ****/
