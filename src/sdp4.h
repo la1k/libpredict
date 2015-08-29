@@ -74,7 +74,7 @@ void sdp4_init(struct _sdp4 *m);
  * \param vel Output velocity in m/s
  * \copyright GPLv2+
  **/
-void sdp4_predict(struct _sdp4 *m, double tsince, tle_t * tle, double pos[3], double vel[3]);
+void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double pos[3], double vel[3]);
 
 /**
  * Deep space perturbations. Original Deep() function.
@@ -85,7 +85,7 @@ void sdp4_predict(struct _sdp4 *m, double tsince, tle_t * tle, double pos[3], do
  * \param deep_arg Deep perturbation parameters
  * \copyright GPLv2+
  **/
-void sdp4_deep(struct _sdp4 *m, int ientry, tle_t * tle, deep_arg_t * deep_arg);
+void sdp4_deep(struct _sdp4 *m, int ientry, predict_tle_t * tle, deep_arg_t * deep_arg);
 
 
 #endif // ifndef _SDP4_H_

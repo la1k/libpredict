@@ -6,9 +6,9 @@
 
 #include <predict/predict.h>
 
-double observer_next_sunset(const observer_t *observer, double time, struct observation *obs)
+double observer_next_sunset(const predict_observer_t *observer, double time, struct predict_observation *obs)
 {
-	struct observation sun;
+	struct predict_observation sun;
 	
 	// Scan for first elevation > 0 (t0)
 	double t0 = time;
@@ -39,15 +39,15 @@ double observer_next_sunset(const observer_t *observer, double time, struct obse
 	}
 
 	if (obs != NULL) {
-		memcpy(obs, &sun, sizeof(struct observation));
+		memcpy(obs, &sun, sizeof(struct predict_observation));
 	}
 
 	return time;
 }
 
-double observer_next_sunrise(const observer_t *observer, double time, struct observation *obs)
+double observer_next_sunrise(const predict_observer_t *observer, double time, struct predict_observation *obs)
 {
-	struct observation sun;
+	struct predict_observation sun;
 	
 	// Scan for first elevation < 0 (t0)
 	double t0 = time;
@@ -78,7 +78,7 @@ double observer_next_sunrise(const observer_t *observer, double time, struct obs
 	}
 	
 	if (obs != NULL) {
-		memcpy(obs, &sun, sizeof(struct observation));
+		memcpy(obs, &sun, sizeof(struct predict_observation));
 	}
 
 	return time;
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 {
 
 	// Create observer object
-	observer_t *obs = predict_create_observer("Me", 59.95*M_PI/180.0, 10.75*M_PI/180.0, 0);
+	predict_observer_t *obs = predict_create_observer("Me", 59.95*M_PI/180.0, 10.75*M_PI/180.0, 0);
 	if (!obs) {
 		fprintf(stderr, "Failed to initialize observer!");
 		exit(1);
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 		
 	predict_julian_date_t curr_time = predict_to_julian(time(NULL));
 
-	struct observation sun;
+	struct predict_observation sun;
 	double sunset = observer_next_sunset(obs, curr_time, &sun);
 
 	// Convert to hour, minute, seconds

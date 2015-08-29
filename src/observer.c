@@ -5,12 +5,12 @@
 #include "defs.h"
 #include "sun.h"
 
-void observer_calculate(const observer_t *observer, double time, const double pos[3], const double vel[3], struct observation *result);
+void observer_calculate(const predict_observer_t *observer, double time, const double pos[3], const double vel[3], struct predict_observation *result);
 
-observer_t *predict_create_observer(const char *name, double lat, double lon, double alt)
+predict_observer_t *predict_create_observer(const char *name, double lat, double lon, double alt)
 {
 	// Allocate memory
-	observer_t *obs = (observer_t*)malloc(sizeof(observer_t));
+	predict_observer_t *obs = (predict_observer_t*)malloc(sizeof(predict_observer_t));
 	if (obs == NULL) return NULL;
 
 	strncpy(obs->name, name, 128);
@@ -22,7 +22,7 @@ observer_t *predict_create_observer(const char *name, double lat, double lon, do
 	return obs;
 }
 
-void predict_destroy_observer(observer_t *obs)
+void predict_destroy_observer(predict_observer_t *obs)
 {
 	if (obs != NULL) {
 		free(obs);
@@ -35,7 +35,7 @@ void predict_destroy_observer(observer_t *obs)
  * Calculated range, azimuth, elevation and relative velocity from the
  * given observer position.
  **/
-void predict_observe_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs)
+void predict_observe_orbit(const predict_observer_t *observer, const predict_orbit_t *orbit, struct predict_observation *obs)
 {
 	if (obs == NULL) return;
 	
@@ -45,7 +45,7 @@ void predict_observe_orbit(const observer_t *observer, const orbit_t *orbit, str
 
 }
 
-void observer_calculate(const observer_t *observer, double time, const double pos[3], const double vel[3], struct observation *result)
+void observer_calculate(const predict_observer_t *observer, double time, const double pos[3], const double vel[3], struct predict_observation *result)
 {
 	
 		/* The procedures Calculate_Obs and Calculate_RADec calculate         */
@@ -135,7 +135,7 @@ void observer_calculate(const observer_t *observer, double time, const double po
 
 }
 
-void predict_observe_sun(const observer_t *observer, double time, struct observation *obs)
+void predict_observe_sun(const predict_observer_t *observer, double time, struct predict_observation *obs)
 {
 	
 	// Find sun position
@@ -196,7 +196,7 @@ void predict_observe_sun(const observer_t *observer, double time, struct observa
 	   from a Javascript implementation of the Meeus method for
 	   determining the exact position of the Moon found at:
 	   http://www.geocities.com/s_perona/ingles/poslun.htm. */
-void predict_observe_moon(const observer_t *observer, double time, struct observation *obs)
+void predict_observe_moon(const predict_observer_t *observer, double time, struct predict_observation *obs)
 {
 	
 	double	jd, ss, t, t1, t2, t3, d, ff, l1, m, m1, ex, om, l,
@@ -385,11 +385,11 @@ void predict_observe_moon(const observer_t *observer, double time, struct observ
 
 #define ELEVATION_ZERO_TOLERANCE 0.3 //threshold for fine-tuning of AOS/LOS
 #define DAYNUM_MINUTE 1.0/(24*60) //number of days corresponding to a minute
-double predict_next_aos(const observer_t *observer, orbit_t *orbit, double start_utc)
+double predict_next_aos(const predict_observer_t *observer, predict_orbit_t *orbit, double start_utc)
 {
 	double ret_aos_time = 0;
 	double curr_time = start_utc;
-	struct observation obs;
+	struct predict_observation obs;
 	double time_step = 0;
 	
 	predict_orbit(orbit, curr_time);
@@ -438,11 +438,11 @@ double predict_next_aos(const observer_t *observer, orbit_t *orbit, double start
 	return ret_aos_time;
 }
 
-double predict_next_los(const observer_t *observer, orbit_t *orbit, double start_utc)
+double predict_next_los(const predict_observer_t *observer, predict_orbit_t *orbit, double start_utc)
 {
 	double ret_los_time = 0;
 	double curr_time = start_utc;
-	struct observation obs;
+	struct predict_observation obs;
 	double time_step = 0;
 
 	predict_orbit(orbit, curr_time);
@@ -485,9 +485,9 @@ double predict_next_los(const observer_t *observer, orbit_t *orbit, double start
 
 }
 
-double predict_doppler_shift(const observer_t *observer, const orbit_t *orbit, double frequency)
+double predict_doppler_shift(const predict_observer_t *observer, const predict_orbit_t *orbit, double frequency)
 {
-	struct observation obs;
+	struct predict_observation obs;
 	predict_observe_orbit(observer, orbit, &obs);
 
 	double sat_range_rate = obs.range_rate*1000.0; //convert to m/s

@@ -21,7 +21,7 @@ void sdp4_init(struct _sdp4 *m)
 
 }
 
-void sdp4_predict(struct _sdp4 *m, double tsince, tle_t * tle, double pos[3], double vel[3])
+void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double pos[3], double vel[3])
 {
 
 	int i;
@@ -287,7 +287,7 @@ double ThetaG(double epoch, deep_arg_t *deep_arg)
 	return ThetaG;
 }
 
-void sdp4_deep(struct _sdp4 *m, int ientry, tle_t * tle, deep_arg_t * deep_arg)
+void sdp4_deep(struct _sdp4 *m, int ientry, predict_tle_t * tle, deep_arg_t * deep_arg)
 {
 	/* This function is used by SDP4 to add lunar and solar */
 	/* perturbation effects to deep-space orbit objects.    */
