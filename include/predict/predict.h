@@ -135,13 +135,13 @@ typedef struct orbit orbit_t;
  * \return Allocated orbit structure
  * \copyright GPLv2+
  **/
-orbit_t *orbit_create(const char *tle[]);
+orbit_t *predict_create_orbit(const char *tle[]);
 
 /**
  * Free memory allocated in orbit structure. 
  * \param orbit Orbit to free
  **/
-void orbit_destroy(orbit_t *orbit);
+void predict_destroy_orbit(orbit_t *orbit);
 
 /**
  * Main prediction function. Predict satellite orbit at given time. 
@@ -150,7 +150,7 @@ void orbit_destroy(orbit_t *orbit);
  * \return 0 if everything went fine
  * \copyright GPLv2+
  **/
-int orbit_predict(orbit_t *x, predict_julian_date_t time);
+int predict_orbit(orbit_t *x, predict_julian_date_t time);
 
 /**
  * Find whether orbit is geostationary. 
@@ -159,7 +159,7 @@ int orbit_predict(orbit_t *x, predict_julian_date_t time);
  * \return true if orbit is geostationary, otherwise false
  * \copyright GPLv2+
  **/
-bool orbit_is_geostationary(const orbit_t *x);
+bool predict_is_geostationary(const orbit_t *x);
 
 /** 
  * Get apogee of satellite orbit. 
@@ -168,7 +168,7 @@ bool orbit_is_geostationary(const orbit_t *x);
  * \return Apogee of orbit
  * \copyright GPLv2+
  **/
-double orbit_apogee(const orbit_t *x);
+double predict_apogee(const orbit_t *x);
 
 /**
  * Get perigee of satellite orbit. 
@@ -177,7 +177,7 @@ double orbit_apogee(const orbit_t *x);
  * \return Perigee of orbit
  * \copyright GPLv2+
  **/
-double orbit_perigee(const orbit_t *x);
+double predict_perigee(const orbit_t *x);
 
 /**
  * Find whether an AOS can ever happen on the given latitude. 
@@ -187,7 +187,7 @@ double orbit_perigee(const orbit_t *x);
  * \return true if AOS can happen, otherwise false
  * \copyright GPLv2+
  **/
-bool orbit_aos_happens(const orbit_t *x, double latitude);
+bool predict_aos_happens(const orbit_t *x, double latitude);
 
 /** 
  * Find whether an orbit has decayed.
@@ -196,7 +196,7 @@ bool orbit_aos_happens(const orbit_t *x, double latitude);
  * \return true if orbit has decayed, otherwise false
  * \copyright GPLv2+
  **/
-bool orbit_decayed(const orbit_t *x);
+bool predict_decayed(const orbit_t *x);
 
 /** 
  * Find whether a satellite is currently eclipsed.
@@ -204,7 +204,7 @@ bool orbit_decayed(const orbit_t *x);
  * \param x Current state of orbit
  * \return true if orbit is eclipsed, otherwise false
  **/
-bool orbit_is_eclipsed(const orbit_t *x);
+bool predict_is_eclipsed(const orbit_t *x);
 
 /** 
  * Return the eclipse depth
@@ -212,7 +212,7 @@ bool orbit_is_eclipsed(const orbit_t *x);
  * \param x Current state of orbit
  * \return Eclipse depth (rad)
  **/
-double orbit_eclipse_depth(const orbit_t *x);
+double predict_eclipse_depth(const orbit_t *x);
 
 /**
  * Observation point/ground station (QTH).

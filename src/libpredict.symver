@@ -2,16 +2,16 @@ VER_0.1 {
 	global:
 		predict_to_julian;
 		predict_from_julian;
-		orbit_create;
-		orbit_destroy;
-		orbit_predict;
-		orbit_is_geostationary;
-		orbit_apogee;
-		orbit_perigee;
-		orbit_aos_happens;
-		orbit_decayed;
-		orbit_is_eclipsed;
-		orbit_eclipse_depth;
+		predict_create_orbit;
+		predict_destroy_orbit;
+		predict_orbit;
+		predict_is_geostationary;
+		predict_apogee;
+		predict_perigee;
+		predict_aos_happens;
+		predict_decayed;
+		predict_is_eclipsed;
+		predict_eclipse_depth;
 		observer_create;
 		observer_destroy;
 		observer_find_orbit;

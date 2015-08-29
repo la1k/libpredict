@@ -392,11 +392,11 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 	struct observation obs;
 	double time_step = 0;
 	
-	orbit_predict(orbit, curr_time);
+	predict_orbit(orbit, curr_time);
 	observer_find_orbit(observer, orbit, &obs);
 
 	//check whether AOS can happen after specified start time
-	if (orbit_aos_happens(orbit, observer->latitude) && !orbit_is_geostationary(orbit) && !orbit_decayed(orbit))
+	if (predict_aos_happens(orbit, observer->latitude) && !predict_is_geostationary(orbit) && !predict_decayed(orbit))
 	{
 		//TODO: Time steps have been found in FindAOS/LOS(). 
 		//Might be based on some pre-existing source, root-finding techniques
@@ -411,7 +411,7 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		{
 			curr_time = observer_get_next_los(observer, orbit, curr_time);
 			curr_time += DAYNUM_MINUTE*20; //skip 20 minutes. LOS might still be within the elevation threshold. (rough quickfix from predict) 
-			orbit_predict(orbit, curr_time);
+			predict_orbit(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
 		}
 
@@ -420,7 +420,7 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		{
 			time_step = 0.00035*(obs.elevation*180.0/M_PI*((orbit->altitude/8400.0)+0.46)-2.0);
 			curr_time -= time_step;
-			orbit_predict(orbit, curr_time);
+			predict_orbit(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
 		}
 
@@ -429,7 +429,7 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		{
 			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/530000.0;
 			curr_time -= time_step;
-			orbit_predict(orbit, curr_time);
+			predict_orbit(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
 		}
 
@@ -445,17 +445,17 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 	struct observation obs;
 	double time_step = 0;
 
-	orbit_predict(orbit, curr_time);
+	predict_orbit(orbit, curr_time);
 	observer_find_orbit(observer, orbit, &obs);
 
 	//check whether AOS/LOS can happen after specified start time
-	if (orbit_aos_happens(orbit, observer->latitude) && !orbit_is_geostationary(orbit) && !orbit_decayed(orbit))
+	if (predict_aos_happens(orbit, observer->latitude) && !predict_is_geostationary(orbit) && !predict_decayed(orbit))
 	{
 		//iterate until next satellite pass
 		if (obs.elevation < 0.0)
 		{
 			curr_time = observer_get_next_aos(observer, orbit, curr_time);
-			orbit_predict(orbit, curr_time);
+			predict_orbit(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
 		}
 
@@ -464,7 +464,7 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 		{
 			time_step = cos(obs.elevation - 1.0)*sqrt(orbit->altitude)/25000.0; 
 			curr_time += time_step;
-			orbit_predict(orbit, curr_time);
+			predict_orbit(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
 		} 
 		while (obs.elevation >= 0.0);
@@ -474,7 +474,7 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 		{
 			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/502500.0;
 			curr_time += time_step;
-			orbit_predict(orbit, curr_time);
+			predict_orbit(orbit, curr_time);
 			observer_find_orbit(observer, orbit, &obs);
 		}
 		while (fabs(obs.elevation*180.0/M_PI) > ELEVATION_ZERO_TOLERANCE);

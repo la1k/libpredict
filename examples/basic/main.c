@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 		"2 25544  51.6464 275.3867 0006524 289.1638 208.5861 15.55704207942078"};
 
 	// Create orbit object
-	orbit_t *iss = orbit_create(tle);
+	orbit_t *iss = predict_create_orbit(tle);
 	if (!iss) {
 		fprintf(stderr, "Failed to initialize orbit from tle!");
 		exit(1);
@@ -33,9 +33,9 @@ int main(int argc, char **argv)
 		predict_julian_date_t curr_time = predict_to_julian(time(NULL));
 	
 		// Predict ISS
-		orbit_predict(iss, curr_time);
+		predict_orbit(iss, curr_time);
 		printf("ISS: lat=%f, lon=%f, alt=%f, eclipsed=%i (%.2f)\n", iss->latitude*180.0/M_PI, iss->longitude*180.0/M_PI, 
-				iss->altitude, orbit_is_eclipsed(iss), orbit_eclipse_depth(iss)*180.0/M_PI);
+				iss->altitude, predict_is_eclipsed(iss), predict_eclipse_depth(iss)*180.0/M_PI);
 	
 		// Observe ISS
 		struct observation iss_obs;
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 	}
 
 	// Free memory
-	orbit_destroy(iss);
+	predict_destroy_orbit(iss);
 	observer_destroy(obs);
 
 	return 0;
