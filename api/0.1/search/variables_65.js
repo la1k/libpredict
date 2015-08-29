@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['eccn',['eccn',['../structorbit.html#a1ede87280d795dd5bad2495f7c5d1a91',1,'orbit']]],
-  ['eclipse_5fdepth',['eclipse_depth',['../structorbit.html#adcffc87015b3cdfe90830fa21cbe4a71',1,'orbit']]],
-  ['eclipsed',['eclipsed',['../structorbit.html#ac43401ebc4d05b2244de810fff8948eb',1,'orbit']]],
-  ['elevation',['elevation',['../structobservation.html#acb860240550a932bfc17d952acaa3cbc',1,'observation']]],
-  ['elevation_5frate',['elevation_rate',['../structobservation.html#ab14f61a8e2c40a1e2d38a4b613ec852b',1,'observation']]],
-  ['elset',['elset',['../structtle__t.html#ac17297f0c26eaf3adb2d07a8ec3bdbd8',1,'tle_t']]],
-  ['eo',['eo',['../structtle__t.html#a5c667884ed4cf4e4230af74aba78d412',1,'tle_t']]],
-  ['ephemeris',['ephemeris',['../structorbit.html#af449ab8b2312f7c969c35be73607bc69',1,'orbit']]],
-  ['ephemeris_5fdata',['ephemeris_data',['../structorbit.html#a9b6ab2bd933ffbd2ec853b3e45f3a2fa',1,'orbit']]],
-  ['epoch',['epoch',['../structtle__t.html#ae1006f0d841409e7aa4504e4103455b8',1,'tle_t']]]
+  ['eccn',['eccn',['../structpredict__orbit__t.html#a178c088267e78d7da52281411f32c283',1,'predict_orbit_t']]],
+  ['eclipse_5fdepth',['eclipse_depth',['../structpredict__orbit__t.html#aa10f659652d7678f79a6ca200f13698a',1,'predict_orbit_t']]],
+  ['eclipsed',['eclipsed',['../structpredict__orbit__t.html#abe4bdc1a035d0883c6f2375a7ea0a5e1',1,'predict_orbit_t']]],
+  ['elevation',['elevation',['../structpredict__observation.html#a2e4b963b3d6cacf579b22c323a14957a',1,'predict_observation']]],
+  ['elevation_5frate',['elevation_rate',['../structpredict__observation.html#a382dbae33e16ef4c97a678e1d9079d49',1,'predict_observation']]],
+  ['elset',['elset',['../structpredict__tle__t.html#a2903ed6865abaa9b8b6a57d81c6cedc6',1,'predict_tle_t']]],
+  ['eo',['eo',['../structpredict__tle__t.html#ac28f0dc507e86f71370a588f1fd65d86',1,'predict_tle_t']]],
+  ['ephemeris',['ephemeris',['../structpredict__orbit__t.html#a40641c7aa673ff70201edaced37b7397',1,'predict_orbit_t']]],
+  ['ephemeris_5fdata',['ephemeris_data',['../structpredict__orbit__t.html#ab4bd12c33b23a7f36a67324b1742e0f8',1,'predict_orbit_t']]],
+  ['epoch',['epoch',['../structpredict__tle__t.html#ac4e6d3b2eefa34c6b11d88957eaf4a7e',1,'predict_tle_t']]]
 ];

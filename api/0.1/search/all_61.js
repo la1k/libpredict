@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['altitude',['altitude',['../structorbit.html#aa0b9140bea7430c1fecae9732f9090c3',1,'orbit::altitude()'],['../structobserver.html#aee05b8a7c9d8aaf7be0ef8375b3ec3eb',1,'observer::altitude()']]],
-  ['argper',['argper',['../structorbit.html#a1b6d71f519f7b87734630903b0efe1c5',1,'orbit']]],
-  ['azimuth',['azimuth',['../structobservation.html#a6e335a040ef6d12998c8fc997a3d55f3',1,'observation']]],
-  ['azimuth_5frate',['azimuth_rate',['../structobservation.html#acce6212f66a4b17c3fe2a65838b69155',1,'observation']]]
+  ['altitude',['altitude',['../structpredict__orbit__t.html#ad8dbda60068559ae8f70a3780e1151d3',1,'predict_orbit_t::altitude()'],['../structpredict__observer__t.html#a2a184067b12d325469b17b794c35ecdd',1,'predict_observer_t::altitude()']]],
+  ['argper',['argper',['../structpredict__orbit__t.html#aa25e998547f25d23e7d87aca56250c02',1,'predict_orbit_t']]],
+  ['azimuth',['azimuth',['../structpredict__observation.html#a6ce9599d674f833331eec53cc9d3dacf',1,'predict_observation']]],
+  ['azimuth_5frate',['azimuth_rate',['../structpredict__observation.html#a95860ea3296c0901d53c153aacbf94a6',1,'predict_observation']]]
 ];

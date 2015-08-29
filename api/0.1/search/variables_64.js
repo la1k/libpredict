@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['designator',['designator',['../structorbit.html#a5ad1bf81caff2ce2723a7e95036f8dac',1,'orbit']]],
-  ['drag',['drag',['../structorbit.html#a66acff39db0fcd313bff287d225c0ba9',1,'orbit']]]
+  ['designator',['designator',['../structpredict__orbit__t.html#ac5e6c03b87aa700546ae281eae2acaa0',1,'predict_orbit_t']]],
+  ['drag',['drag',['../structpredict__orbit__t.html#ae8ca058bb5fec15ad28a195438dfc00b',1,'predict_orbit_t']]]
 ];
