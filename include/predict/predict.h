@@ -1,6 +1,10 @@
 #ifndef _PREDICT_H_
 #define _PREDICT_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <time.h>
 #include <stdbool.h>
 
@@ -444,5 +448,9 @@ double predict_apparent_elevation_rate(double el, double el_rate);
  * \return Rate of change of apparent elevation (rad/s).
  */
 double predict_apparent_elevation_rate_ext(double el, double el_rate, double pressure, double temp);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //_PREDICT_H_
