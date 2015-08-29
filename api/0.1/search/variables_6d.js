@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['meanan',['meanan',['../structpredict__orbit__t.html#a97843d9a116f1d33eb864eca4b6d99d6',1,'predict_orbit_t']]],
-  ['meanmo',['meanmo',['../structpredict__orbit__t.html#ac6e52131c1417091be94e327c5a0accc',1,'predict_orbit_t']]]
+  ['meanan',['meanan',['../structorbit.html#aac0d98b6bc64e177c3232659835a2fa7',1,'orbit']]],
+  ['meanmo',['meanmo',['../structorbit.html#a72dd1c6d9b831d26bebd770ca672c790',1,'orbit']]]
 ];

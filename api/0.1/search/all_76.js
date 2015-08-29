@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['velocity',['velocity',['../structpredict__orbit__t.html#a5b2728943ebb600be73d9f153c721df4',1,'predict_orbit_t']]]
+  ['velocity',['velocity',['../structorbit.html#a00077a3173daa618413c14cdecf5d1bd',1,'orbit']]]
 ];

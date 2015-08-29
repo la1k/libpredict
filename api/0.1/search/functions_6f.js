@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['observation',['observation',['../structobservation.html',1,'']]],
-  ['observer',['observer',['../structobserver.html',1,'']]],
   ['observer_5fcreate',['observer_create',['../predict_8h.html#a8b71002ec2c21d0f6364a7dc90c9c86e',1,'predict.h']]],
   ['observer_5fdestroy',['observer_destroy',['../predict_8h.html#a54efe33b68aca34149e5fa2fb4ab306d',1,'predict.h']]],
   ['observer_5ffind_5fmoon',['observer_find_moon',['../predict_8h.html#a9f6be22590343e3677beea2c66c10e1b',1,'predict.h']]],
@@ -10,9 +8,6 @@ var searchData=
   ['observer_5fget_5fdoppler_5fshift',['observer_get_doppler_shift',['../predict_8h.html#a4a57cf8d64b9fedfdc01064f6d818cd5',1,'predict.h']]],
   ['observer_5fget_5fnext_5faos',['observer_get_next_aos',['../predict_8h.html#a53587f3219ed73f98862682c56b26004',1,'predict.h']]],
   ['observer_5fget_5fnext_5flos',['observer_get_next_los',['../predict_8h.html#ae64c8bf711af606bf09a11d702c0b2bf',1,'predict.h']]],
-  ['observer_5ft',['observer_t',['../predict_8h.html#a922dfcffacdb6c50ebee367a1a76e5a0',1,'predict.h']]],
-  ['omegao',['omegao',['../structtle__t.html#a1ca5e955dc367844809158046f3d91fa',1,'tle_t']]],
-  ['orbit',['orbit',['../structorbit.html',1,'']]],
   ['orbit_5faos_5fhappens',['orbit_aos_happens',['../predict_8h.html#a71902c5177a0cdbb84157a2bbfa62672',1,'predict.h']]],
   ['orbit_5fapogee',['orbit_apogee',['../predict_8h.html#acac64b6b46e1ced392fdd5756546c6fa',1,'predict.h']]],
   ['orbit_5fcreate',['orbit_create',['../predict_8h.html#a0f4fb1947fc6b52e8f7f700882272bc4',1,'predict.h']]],
@@ -22,7 +17,5 @@ var searchData=
   ['orbit_5fis_5feclipsed',['orbit_is_eclipsed',['../predict_8h.html#a7bac98be460911852d42230927464594',1,'predict.h']]],
   ['orbit_5fis_5fgeostationary',['orbit_is_geostationary',['../predict_8h.html#a528a3adc0881714472e18ac782110f52',1,'predict.h']]],
   ['orbit_5fperigee',['orbit_perigee',['../predict_8h.html#ae2654aa00c58c37eb28b82636c0cb9ed',1,'predict.h']]],
-  ['orbit_5fpredict',['orbit_predict',['../predict_8h.html#ae7ca1679acd41ac6bfeae5de714fd9b2',1,'predict.h']]],
-  ['orbit_5ft',['orbit_t',['../predict_8h.html#a3db3c963b8360406e16e78460f0a8f8d',1,'predict.h']]],
-  ['orbitnum',['orbitnum',['../structorbit.html#a7d2635241f4f29d4b3672f6ac79e618c',1,'orbit']]]
+  ['orbit_5fpredict',['orbit_predict',['../predict_8h.html#ae7ca1679acd41ac6bfeae5de714fd9b2',1,'predict.h']]]
 ];

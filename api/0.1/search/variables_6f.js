@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['omegao',['omegao',['../structpredict__tle__t.html#a275cbab4a6784ff735c7af0dfd49df14',1,'predict_tle_t']]],
-  ['orbitnum',['orbitnum',['../structpredict__orbit__t.html#ae1287e34a421cef9263bf5e67986af78',1,'predict_orbit_t']]]
+  ['omegao',['omegao',['../structtle__t.html#a1ca5e955dc367844809158046f3d91fa',1,'tle_t']]],
+  ['orbitnum',['orbitnum',['../structorbit.html#a7d2635241f4f29d4b3672f6ac79e618c',1,'orbit']]]
 ];
