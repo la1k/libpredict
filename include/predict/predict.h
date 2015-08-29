@@ -19,7 +19,7 @@ typedef double predict_julian_date_t;
  * \param time Time in UTC
  * \return Julian day in UTC
  **/
-predict_julian_date_t predict_get_julian_date_from_time(time_t time);
+predict_julian_date_t predict_to_julian(time_t time);
 
 /**
  * Convert Julian date in UTC back to a time_t in UTC. 
@@ -27,7 +27,7 @@ predict_julian_date_t predict_get_julian_date_from_time(time_t time);
  * \param date Julian date in UTC
  * \return Time in UTC
  **/
-time_t predict_get_time_from_julian_date(predict_julian_date_t date);
+time_t predict_from_julian(predict_julian_date_t date);
 
 /**
  * Container for processed TLE data from TLE strings.

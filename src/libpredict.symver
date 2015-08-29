@@ -1,5 +1,7 @@
 VER_0.1 {
 	global:
+		predict_to_julian;
+		predict_from_julian;
 		orbit_create;
 		orbit_destroy;
 		orbit_predict;

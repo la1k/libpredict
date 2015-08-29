@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 	// Predict orbit
 	int i;
 	for (i=0;i<100;++i) {
-		predict_julian_date_t curr_time = predict_get_julian_date_from_time(time(NULL));
+		predict_julian_date_t curr_time = predict_to_julian(time(NULL));
 	
 		// Predict ISS
 		orbit_predict(iss, curr_time);

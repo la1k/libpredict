@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 		
-	predict_julian_date_t curr_time = predict_get_julian_date_from_time(time(NULL));
+	predict_julian_date_t curr_time = predict_to_julian(time(NULL));
 
 	struct observation sun;
 	double sunset = observer_next_sunset(obs, curr_time, &sun);
