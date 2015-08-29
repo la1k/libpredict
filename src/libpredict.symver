@@ -1,3 +1,33 @@
-VER_0.0 {
-  global: *;
+VER_0.1 {
+	global:
+		orbit_create;
+		orbit_destroy;
+		orbit_predict;
+		orbit_is_geostationary;
+		orbit_apogee;
+		orbit_perigee;
+		orbit_aos_happens;
+		orbit_decayed;
+		orbit_is_eclipsed;
+		orbit_eclipse_depth;
+		observer_create;
+		observer_destroy;
+		observer_find_orbit;
+		observer_find_moon;
+		observer_find_sun;
+		observer_get_next_aos;
+		observer_get_next_los;
+		observer_get_doppler_shift;
+		predict_refraction;
+		predict_refraction_ext;
+		predict_refraction_from_apparent;
+		predict_refraction_from_apparent_ext;
+		predict_refraction_rate;
+		predict_refraction_rate_ext;
+		predict_apparent_elevation;
+		predict_apparent_elevation_ext;
+		predict_apparent_elevation_rate;
+		predict_apparent_elevation_rate_ext;
+	local:
+		*;
 };
