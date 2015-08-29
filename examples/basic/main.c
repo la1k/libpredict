@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 	}
 
 	// Create observer object
-	observer_t *obs = observer_create("Me", 63.9*M_PI/180.0, 10.9*M_PI/180.0, 0);
+	observer_t *obs = predict_create_observer("Me", 63.9*M_PI/180.0, 10.9*M_PI/180.0, 0);
 	if (!obs) {
 		fprintf(stderr, "Failed to initialize observer!");
 		exit(1);
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	
 		// Observe ISS
 		struct observation iss_obs;
-		observer_find_orbit(obs, iss, &iss_obs);
+		predict_observe_orbit(obs, iss, &iss_obs);
 		printf("ISS: %f (rate: %f), %f (rate: %f)\n", iss_obs.azimuth*180.0/M_PI, iss_obs.azimuth_rate*180.0/M_PI, iss_obs.elevation*180.0/M_PI, iss_obs.elevation_rate*180.0/M_PI);
 
 		// Apparent elevation
@@ -48,12 +48,12 @@ int main(int argc, char **argv)
 
 		// Predict and observe MOON
 		struct observation moon_obs;
-		observer_find_moon(obs, curr_time, &moon_obs);
+		predict_observe_moon(obs, curr_time, &moon_obs);
 		printf("MOON: %f, %f\n", moon_obs.azimuth*180.0/M_PI, moon_obs.elevation*180.0/M_PI);
 
 		// Predict and observe SUN
 		struct observation sun_obs;
-		observer_find_sun(obs, curr_time, &sun_obs);
+		predict_observe_sun(obs, curr_time, &sun_obs);
 		printf("SUN: %f, %f\n", sun_obs.azimuth*180.0/M_PI, sun_obs.elevation*180.0/M_PI);
 
 		//Sleep
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 
 	// Free memory
 	predict_destroy_orbit(iss);
-	observer_destroy(obs);
+	predict_destroy_observer(obs);
 
 	return 0;
 }

@@ -12,25 +12,25 @@ double observer_next_sunset(const observer_t *observer, double time, struct obse
 	
 	// Scan for first elevation > 0 (t0)
 	double t0 = time;
-	observer_find_sun(observer, t0, &sun);
+	predict_observe_sun(observer, t0, &sun);
 	while (sun.elevation < 0) {
 		t0 += 1.0/24.0/3600.0;
-		observer_find_sun(observer, t0, &sun);
+		predict_observe_sun(observer, t0, &sun);
 	}
 
 	//Scan for elevation < 0 (t1);
 	double t1 = t0 + 1.0/24.0/3600.0;
-	observer_find_sun(observer, t1, &sun);
+	predict_observe_sun(observer, t1, &sun);
 	while (sun.elevation > 0) {
 		t1 += 1.0/24.0/3600.0;
-		observer_find_sun(observer, t1, &sun);
+		predict_observe_sun(observer, t1, &sun);
 	}
 	
 //	int i = 0;
 	while ( fabs(t0-t1) > 0.01/24/3600 ) {
 
 		time = (t0 + t1) / 2.0;
-		observer_find_sun(observer, time, &sun);
+		predict_observe_sun(observer, time, &sun);
 
 		if (sun.elevation > 0) t0 = time;
 		else t1 = time;
@@ -51,25 +51,25 @@ double observer_next_sunrise(const observer_t *observer, double time, struct obs
 	
 	// Scan for first elevation < 0 (t0)
 	double t0 = time;
-	observer_find_sun(observer, t0, &sun);
+	predict_observe_sun(observer, t0, &sun);
 	while (sun.elevation > 0) {
 		t0 += 1.0/24.0/3600.0;
-		observer_find_sun(observer, t0, &sun);
+		predict_observe_sun(observer, t0, &sun);
 	}
 
 	//Scan for elevation > 0 (t1);
 	double t1 = t0 + 1.0/24.0/3600.0;
-	observer_find_sun(observer, t1, &sun);
+	predict_observe_sun(observer, t1, &sun);
 	while (sun.elevation < 0) {
 		t1 += 1.0/24.0/3600.0;
-		observer_find_sun(observer, t1, &sun);
+		predict_observe_sun(observer, t1, &sun);
 	}
 	
 //	int i = 0;
 	while ( fabs(t0-t1) > 0.01/24/3600 ) {
 
 		time = (t0 + t1) / 2.0;
-		observer_find_sun(observer, time, &sun);
+		predict_observe_sun(observer, time, &sun);
 
 		if (sun.elevation < 0) t0 = time;
 		else t1 = time;
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 {
 
 	// Create observer object
-	observer_t *obs = observer_create("Me", 59.95*M_PI/180.0, 10.75*M_PI/180.0, 0);
+	observer_t *obs = predict_create_observer("Me", 59.95*M_PI/180.0, 10.75*M_PI/180.0, 0);
 	if (!obs) {
 		fprintf(stderr, "Failed to initialize observer!");
 		exit(1);
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 	printf("Next sunrise in %02i:%02i:%02i, azimuth=%.1f, at UTC %s", h, m, s, sun.azimuth*180.0/M_PI, asctime(gmtime(&t)));
 	
 	// Free memory
-	observer_destroy(obs);
+	predict_destroy_observer(obs);
 
 	return 0;
 }

@@ -259,14 +259,14 @@ struct observation {
  * \param alt Altitude in meters
  * \return Allocated observation point
  **/
-observer_t *observer_create(const char *name, double lat, double lon, double alt);
+observer_t *predict_create_observer(const char *name, double lat, double lon, double alt);
 
 /** 
  * Free observer.
  *
  * \param obs Observer to be freed.
  **/
-void observer_destroy(observer_t *obs);
+void predict_destroy_observer(observer_t *obs);
 
 /** 
  * Find relative position of satellite with respect to an observer. Calculates range, azimuth, elevation and relative velocity.
@@ -276,7 +276,7 @@ void observer_destroy(observer_t *obs);
  * \param obs Return of object for position of the satellite relative to the observer.
  * \copyright GPLv2+
  **/
-void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs);
+void predict_observe_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs);
 
 /**
  * Estimate relative position of the moon.
@@ -286,7 +286,7 @@ void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struc
  * \param obs Return object for position of the moon relative to the observer
  * \copyright GPLv2+
  **/
-void observer_find_moon(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
+void predict_observe_moon(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
 /** 
  * Estimate relative position of the sun.
@@ -296,7 +296,7 @@ void observer_find_moon(const observer_t *observer, predict_julian_date_t time, 
  * \param obs Return object for position of the sun relative to the observer
  * \copyright GPLv2+
  **/
-void observer_find_sun(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
+void predict_observe_sun(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
 
 /** 
  * Find next acquisition of signal (AOS) of satellite (when the satellite rises above the horizon). Ignores previous AOS of current pass if the satellite is in range at the start time. 
@@ -307,7 +307,7 @@ void observer_find_sun(const observer_t *observer, predict_julian_date_t time, s
  * \return Time of AOS
  * \copyright GPLv2+
  **/
-predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
+predict_julian_date_t predict_next_aos(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
 /** 
  * Find next loss of signal (LOS) of satellite (when the satellite goes below the horizon). Finds LOS of the current pass if the satellite currently is in range, finds LOS of next pass if not.
@@ -318,7 +318,7 @@ predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t 
  * \return Time of LOS
  * \copyright GPLv2+
  **/
-predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
+predict_julian_date_t predict_next_los(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
 
 /**
  * Calculate doppler shift of a given downlink frequency with respect to the observer. 
@@ -329,7 +329,7 @@ predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t 
  * \return The frequency difference from the original frequency
  * \copyright GPLv2+
  **/
-double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
+double predict_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
 
 /*!
  * \brief Calculate refraction angle.
