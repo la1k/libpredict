@@ -14,10 +14,10 @@ bool is_eclipsed(const double pos[3], const double sol[3], double *depth);
  * This function is a combination of the original PreCalc() and
  * select_ephemeris() functions.
  **/
-orbit_t *orbit_create(const char *tle[])
+predict_orbit_t *predict_create_orbit(const char *tle[])
 {
 	// Allocate memory for new orbit struct
-	struct orbit *m = (struct orbit*)malloc(sizeof(struct orbit));
+	predict_orbit_t *m = (predict_orbit_t*)malloc(sizeof(predict_orbit_t));
 	if (m == NULL) return NULL;
 
 	m->time = nan("");
@@ -90,7 +90,7 @@ orbit_t *orbit_create(const char *tle[])
 		m->ephemeris_data = malloc(sizeof(struct _sdp4));
 
 		if (m->ephemeris_data == NULL) {
-			orbit_destroy(m);
+			predict_destroy_orbit(m);
 			return NULL;
 		}
 		// Initialize ephemeris data structure
@@ -103,7 +103,7 @@ orbit_t *orbit_create(const char *tle[])
 		m->ephemeris_data = malloc(sizeof(struct _sgp4));
 
 		if (m->ephemeris_data == NULL) {
-			orbit_destroy(m);
+			predict_destroy_orbit(m);
 			return NULL;
 		}
 		// Initialize ephemeris data structure
@@ -113,7 +113,7 @@ orbit_t *orbit_create(const char *tle[])
 	return m;
 }
 
-void orbit_destroy(orbit_t *orbit)
+void predict_destroy_orbit(predict_orbit_t *orbit)
 {
 	if (orbit == NULL) return;
 
@@ -129,7 +129,7 @@ void orbit_destroy(orbit_t *orbit)
  *
  * This function returns true if the satellite is geostationary.
  **/
-bool orbit_is_geostationary(const orbit_t *m)
+bool predict_is_geostationary(const predict_orbit_t *m)
 {
 	if (fabs(m->meanmo-1.0027)<0.0002) {
 		return true;
@@ -138,13 +138,13 @@ bool orbit_is_geostationary(const orbit_t *m)
 	}
 }
 
-double orbit_apogee(const orbit_t *m)
+double predict_apogee(const predict_orbit_t *m)
 {
 	double sma = 331.25*exp(log(1440.0/m->meanmo)*(2.0/3.0));
 	return sma*(1.0+m->eccn)-xkmper;
 }
 		
-double orbit_perigee(const orbit_t *m)
+double predict_perigee(const predict_orbit_t *m)
 {
 	double xno = m->meanmo*twopi/xmnpda;
 	double a1=pow(xke/xno,tothrd);
@@ -162,7 +162,7 @@ double orbit_perigee(const orbit_t *m)
 	return (aodp*(1-m->eccn)-ae)*xkmper;
 }
 
-bool orbit_aos_happens(const orbit_t *m, double latitude)
+bool predict_aos_happens(const predict_orbit_t *m, double latitude)
 {
 	/* This function returns true if the satellite pointed to by
 	   "x" can ever rise above the horizon of the ground station. */
@@ -189,10 +189,10 @@ bool orbit_aos_happens(const orbit_t *m, double latitude)
 
 /* This is the stuff we need to do repetitively while tracking. */
 /* This is the old Calc() function. */
-int orbit_predict(orbit_t *m, double utc)
+int predict_orbit(predict_orbit_t *m, double utc)
 {
 	/* Set time to now if now time is provided: */
-	if (utc == 0) utc = predict_get_julian_date_from_time(time(NULL));
+	if (utc == 0) utc = predict_to_julian(time(NULL));
 	
 	/* Satellite position and velocity vectors */
 	vec3_set(m->position, 0, 0, 0);
@@ -242,7 +242,7 @@ int orbit_predict(orbit_t *m, double utc)
 	return 0;
 }
 
-bool orbit_decayed(const orbit_t *orbit)
+bool predict_decayed(const predict_orbit_t *orbit)
 {
 	double time = orbit->time;
 	double satepoch;
@@ -275,12 +275,12 @@ bool is_eclipsed(const double pos[3], const double sol[3], double *depth)
 	else return false;
 }
 
-bool orbit_is_eclipsed(const orbit_t *orbit)
+bool predict_is_eclipsed(const predict_orbit_t *orbit)
 {
 	return orbit->eclipsed;
 }
 
-double orbit_eclipse_depth(const orbit_t *orbit)
+double predict_eclipse_depth(const predict_orbit_t *orbit)
 {
 	return orbit->eclipse_depth;
 }

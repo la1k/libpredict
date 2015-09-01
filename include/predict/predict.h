@@ -19,7 +19,7 @@ typedef double predict_julian_date_t;
  * \param time Time in UTC
  * \return Julian day in UTC
  **/
-predict_julian_date_t predict_get_julian_date_from_time(time_t time);
+predict_julian_date_t predict_to_julian(time_t time);
 
 /**
  * Convert Julian date in UTC back to a time_t in UTC. 
@@ -27,12 +27,12 @@ predict_julian_date_t predict_get_julian_date_from_time(time_t time);
  * \param date Julian date in UTC
  * \return Time in UTC
  **/
-time_t predict_get_time_from_julian_date(predict_julian_date_t date);
+time_t predict_from_julian(predict_julian_date_t date);
 
 /**
  * Container for processed TLE data from TLE strings.
  **/
-typedef struct	{
+typedef struct {
 	double epoch;
 	double xndt2o;
 	double xndd6o;
@@ -46,22 +46,22 @@ typedef struct	{
  	int catnr;
 	int elset;
 	int revnum;
-}tle_t; 
+} predict_tle_t; 
 
 /**
  * Simplified perturbation models used in modeling the satellite orbits. 
  **/
-typedef enum {
+enum predict_ephemeris {
   EPHEMERIS_SGP4 = 0,
   EPHEMERIS_SDP4 = 1,
   EPHEMERIS_SGP8 = 2,
   EPHEMERIS_SDP8 = 3
-} ephemeris_t;
+};
 
 /**
  * Satellite orbit definitions, according to defined NORAD TLE. 
  **/
-struct orbit {
+typedef struct {
 	///Name of satellite
 	char name[128];
 
@@ -83,13 +83,13 @@ struct orbit {
 	///Eclipse depth
 	double eclipse_depth;
 	///Which perturbation model to use
-	ephemeris_t ephemeris;
+	enum predict_ephemeris ephemeris;
 	///Original TLE line number one:
 	char line1[70];
 	///Original TLE line number two:
 	char line2[70];
 	///Original tle_t used to hold processed tle parameters used in calculations.
-	tle_t tle;
+	predict_tle_t tle;
 
 	///Satellite number (line 1, field 2)
 	long catnum;
@@ -124,10 +124,8 @@ struct orbit {
 
 	///Ephemeris data structure pointer
 	void *ephemeris_data;
+} predict_orbit_t;
 
-};
-
-typedef struct orbit orbit_t;
 
 /**
  * Create orbit structure. Allocate memory and prepare internal data.
@@ -135,13 +133,13 @@ typedef struct orbit orbit_t;
  * \return Allocated orbit structure
  * \copyright GPLv2+
  **/
-orbit_t *orbit_create(const char *tle[]);
+predict_orbit_t *predict_create_orbit(const char *tle[]);
 
 /**
  * Free memory allocated in orbit structure. 
  * \param orbit Orbit to free
  **/
-void orbit_destroy(orbit_t *orbit);
+void predict_destroy_orbit(predict_orbit_t *orbit);
 
 /**
  * Main prediction function. Predict satellite orbit at given time. 
@@ -150,7 +148,7 @@ void orbit_destroy(orbit_t *orbit);
  * \return 0 if everything went fine
  * \copyright GPLv2+
  **/
-int orbit_predict(orbit_t *x, predict_julian_date_t time);
+int predict_orbit(predict_orbit_t *x, predict_julian_date_t time);
 
 /**
  * Find whether orbit is geostationary. 
@@ -159,7 +157,7 @@ int orbit_predict(orbit_t *x, predict_julian_date_t time);
  * \return true if orbit is geostationary, otherwise false
  * \copyright GPLv2+
  **/
-bool orbit_is_geostationary(const orbit_t *x);
+bool predict_is_geostationary(const predict_orbit_t *x);
 
 /** 
  * Get apogee of satellite orbit. 
@@ -168,7 +166,7 @@ bool orbit_is_geostationary(const orbit_t *x);
  * \return Apogee of orbit
  * \copyright GPLv2+
  **/
-double orbit_apogee(const orbit_t *x);
+double predict_apogee(const predict_orbit_t *x);
 
 /**
  * Get perigee of satellite orbit. 
@@ -177,7 +175,7 @@ double orbit_apogee(const orbit_t *x);
  * \return Perigee of orbit
  * \copyright GPLv2+
  **/
-double orbit_perigee(const orbit_t *x);
+double predict_perigee(const predict_orbit_t *x);
 
 /**
  * Find whether an AOS can ever happen on the given latitude. 
@@ -187,7 +185,7 @@ double orbit_perigee(const orbit_t *x);
  * \return true if AOS can happen, otherwise false
  * \copyright GPLv2+
  **/
-bool orbit_aos_happens(const orbit_t *x, double latitude);
+bool predict_aos_happens(const predict_orbit_t *x, double latitude);
 
 /** 
  * Find whether an orbit has decayed.
@@ -196,7 +194,7 @@ bool orbit_aos_happens(const orbit_t *x, double latitude);
  * \return true if orbit has decayed, otherwise false
  * \copyright GPLv2+
  **/
-bool orbit_decayed(const orbit_t *x);
+bool predict_decayed(const predict_orbit_t *x);
 
 /** 
  * Find whether a satellite is currently eclipsed.
@@ -204,7 +202,7 @@ bool orbit_decayed(const orbit_t *x);
  * \param x Current state of orbit
  * \return true if orbit is eclipsed, otherwise false
  **/
-bool orbit_is_eclipsed(const orbit_t *x);
+bool predict_is_eclipsed(const predict_orbit_t *x);
 
 /** 
  * Return the eclipse depth
@@ -212,12 +210,12 @@ bool orbit_is_eclipsed(const orbit_t *x);
  * \param x Current state of orbit
  * \return Eclipse depth (rad)
  **/
-double orbit_eclipse_depth(const orbit_t *x);
+double predict_eclipse_depth(const predict_orbit_t *x);
 
 /**
  * Observation point/ground station (QTH).
  **/
-typedef struct observer {
+typedef struct {
 	///Observatory name
 	char name[128];
 	///Latitude (WGS84, radians)
@@ -226,12 +224,12 @@ typedef struct observer {
 	double longitude;
 	///Altitude (WGS84, meters)
 	double altitude;
-} observer_t;
+} predict_observer_t;
 
 /**
  * Data relevant for a relative observation of an orbit or similar with respect to an observation point.
  **/
-struct observation {
+struct predict_observation {
 	///UTC time                
 	predict_julian_date_t time;                       
 	///Azimuth angle (rad)      
@@ -259,14 +257,14 @@ struct observation {
  * \param alt Altitude in meters
  * \return Allocated observation point
  **/
-observer_t *observer_create(const char *name, double lat, double lon, double alt);
+predict_observer_t *predict_create_observer(const char *name, double lat, double lon, double alt);
 
 /** 
  * Free observer.
  *
  * \param obs Observer to be freed.
  **/
-void observer_destroy(observer_t *obs);
+void predict_destroy_observer(predict_observer_t *obs);
 
 /** 
  * Find relative position of satellite with respect to an observer. Calculates range, azimuth, elevation and relative velocity.
@@ -276,7 +274,7 @@ void observer_destroy(observer_t *obs);
  * \param obs Return of object for position of the satellite relative to the observer.
  * \copyright GPLv2+
  **/
-void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs);
+void predict_observe_orbit(const predict_observer_t *observer, const predict_orbit_t *orbit, struct predict_observation *obs);
 
 /**
  * Estimate relative position of the moon.
@@ -286,7 +284,7 @@ void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struc
  * \param obs Return object for position of the moon relative to the observer
  * \copyright GPLv2+
  **/
-void observer_find_moon(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
+void predict_observe_moon(const predict_observer_t *observer, predict_julian_date_t time, struct predict_observation *obs);
 
 /** 
  * Estimate relative position of the sun.
@@ -296,7 +294,7 @@ void observer_find_moon(const observer_t *observer, predict_julian_date_t time, 
  * \param obs Return object for position of the sun relative to the observer
  * \copyright GPLv2+
  **/
-void observer_find_sun(const observer_t *observer, predict_julian_date_t time, struct observation *obs);
+void predict_observe_sun(const predict_observer_t *observer, predict_julian_date_t time, struct predict_observation *obs);
 
 /** 
  * Find next acquisition of signal (AOS) of satellite (when the satellite rises above the horizon). Ignores previous AOS of current pass if the satellite is in range at the start time. 
@@ -307,7 +305,7 @@ void observer_find_sun(const observer_t *observer, predict_julian_date_t time, s
  * \return Time of AOS
  * \copyright GPLv2+
  **/
-predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
+predict_julian_date_t predict_next_aos(const predict_observer_t *observer, predict_orbit_t *orbit, predict_julian_date_t start_time);
 
 /** 
  * Find next loss of signal (LOS) of satellite (when the satellite goes below the horizon). Finds LOS of the current pass if the satellite currently is in range, finds LOS of next pass if not.
@@ -318,7 +316,7 @@ predict_julian_date_t observer_get_next_aos(const observer_t *observer, orbit_t 
  * \return Time of LOS
  * \copyright GPLv2+
  **/
-predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t *orbit, predict_julian_date_t start_time);
+predict_julian_date_t predict_next_los(const predict_observer_t *observer, predict_orbit_t *orbit, predict_julian_date_t start_time);
 
 /**
  * Calculate doppler shift of a given downlink frequency with respect to the observer. 
@@ -329,7 +327,7 @@ predict_julian_date_t observer_get_next_los(const observer_t *observer, orbit_t 
  * \return The frequency difference from the original frequency
  * \copyright GPLv2+
  **/
-double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double downlink_frequency);
+double predict_doppler_shift(const predict_observer_t *observer, const predict_orbit_t *orbit, double downlink_frequency);
 
 /*!
  * \brief Calculate refraction angle.

@@ -9,7 +9,7 @@ void sgp4_init(struct _sgp4 *m)
 	m->simpleFlag = 0;
 }
 
-void sgp4_predict(struct _sgp4 *m, double tsince, tle_t *tle, double pos[3], double vel[3])
+void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos[3], double vel[3])
 {
 	double cosuk, sinuk, rfdotk, vx, vy, vz, ux, uy, uz, xmy, xmx, cosnok,
 	sinnok, cosik, sinik, rdotk, xinck, xnodek, uk, rk, cos2u, sin2u,

@@ -5,12 +5,12 @@
 #include "defs.h"
 #include "sun.h"
 
-void observer_calculate(const observer_t *observer, double time, const double pos[3], const double vel[3], struct observation *result);
+void observer_calculate(const predict_observer_t *observer, double time, const double pos[3], const double vel[3], struct predict_observation *result);
 
-observer_t *observer_create(const char *name, double lat, double lon, double alt)
+predict_observer_t *predict_create_observer(const char *name, double lat, double lon, double alt)
 {
 	// Allocate memory
-	observer_t *obs = (observer_t*)malloc(sizeof(observer_t));
+	predict_observer_t *obs = (predict_observer_t*)malloc(sizeof(predict_observer_t));
 	if (obs == NULL) return NULL;
 
 	strncpy(obs->name, name, 128);
@@ -22,7 +22,7 @@ observer_t *observer_create(const char *name, double lat, double lon, double alt
 	return obs;
 }
 
-void observer_destroy(observer_t *obs)
+void predict_destroy_observer(predict_observer_t *obs)
 {
 	if (obs != NULL) {
 		free(obs);
@@ -35,7 +35,7 @@ void observer_destroy(observer_t *obs)
  * Calculated range, azimuth, elevation and relative velocity from the
  * given observer position.
  **/
-void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struct observation *obs)
+void predict_observe_orbit(const predict_observer_t *observer, const predict_orbit_t *orbit, struct predict_observation *obs)
 {
 	if (obs == NULL) return;
 	
@@ -45,7 +45,7 @@ void observer_find_orbit(const observer_t *observer, const orbit_t *orbit, struc
 
 }
 
-void observer_calculate(const observer_t *observer, double time, const double pos[3], const double vel[3], struct observation *result)
+void observer_calculate(const predict_observer_t *observer, double time, const double pos[3], const double vel[3], struct predict_observation *result)
 {
 	
 		/* The procedures Calculate_Obs and Calculate_RADec calculate         */
@@ -135,7 +135,7 @@ void observer_calculate(const observer_t *observer, double time, const double po
 
 }
 
-void observer_find_sun(const observer_t *observer, double time, struct observation *obs)
+void predict_observe_sun(const predict_observer_t *observer, double time, struct predict_observation *obs)
 {
 	
 	// Find sun position
@@ -196,7 +196,7 @@ void observer_find_sun(const observer_t *observer, double time, struct observati
 	   from a Javascript implementation of the Meeus method for
 	   determining the exact position of the Moon found at:
 	   http://www.geocities.com/s_perona/ingles/poslun.htm. */
-void observer_find_moon(const observer_t *observer, double time, struct observation *obs)
+void predict_observe_moon(const predict_observer_t *observer, double time, struct predict_observation *obs)
 {
 	
 	double	jd, ss, t, t1, t2, t3, d, ff, l1, m, m1, ex, om, l,
@@ -385,18 +385,18 @@ void observer_find_moon(const observer_t *observer, double time, struct observat
 
 #define ELEVATION_ZERO_TOLERANCE 0.3 //threshold for fine-tuning of AOS/LOS
 #define DAYNUM_MINUTE 1.0/(24*60) //number of days corresponding to a minute
-double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double start_utc)
+double predict_next_aos(const predict_observer_t *observer, predict_orbit_t *orbit, double start_utc)
 {
 	double ret_aos_time = 0;
 	double curr_time = start_utc;
-	struct observation obs;
+	struct predict_observation obs;
 	double time_step = 0;
 	
-	orbit_predict(orbit, curr_time);
-	observer_find_orbit(observer, orbit, &obs);
+	predict_orbit(orbit, curr_time);
+	predict_observe_orbit(observer, orbit, &obs);
 
 	//check whether AOS can happen after specified start time
-	if (orbit_aos_happens(orbit, observer->latitude) && !orbit_is_geostationary(orbit) && !orbit_decayed(orbit))
+	if (predict_aos_happens(orbit, observer->latitude) && !predict_is_geostationary(orbit) && !predict_decayed(orbit))
 	{
 		//TODO: Time steps have been found in FindAOS/LOS(). 
 		//Might be based on some pre-existing source, root-finding techniques
@@ -409,10 +409,10 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		//skip the rest of the pass if the satellite is currently in range, since we want the _next_ AOS. 
 		if (obs.elevation > 0.0)
 		{
-			curr_time = observer_get_next_los(observer, orbit, curr_time);
+			curr_time = predict_next_los(observer, orbit, curr_time);
 			curr_time += DAYNUM_MINUTE*20; //skip 20 minutes. LOS might still be within the elevation threshold. (rough quickfix from predict) 
-			orbit_predict(orbit, curr_time);
-			observer_find_orbit(observer, orbit, &obs);
+			predict_orbit(orbit, curr_time);
+			predict_observe_orbit(observer, orbit, &obs);
 		}
 
 		//iteration until the orbit is roughly in range again, before the satellite pass
@@ -420,8 +420,8 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		{
 			time_step = 0.00035*(obs.elevation*180.0/M_PI*((orbit->altitude/8400.0)+0.46)-2.0);
 			curr_time -= time_step;
-			orbit_predict(orbit, curr_time);
-			observer_find_orbit(observer, orbit, &obs);
+			predict_orbit(orbit, curr_time);
+			predict_observe_orbit(observer, orbit, &obs);
 		}
 
 		//fine tune the results until the elevation is within a low enough threshold
@@ -429,8 +429,8 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 		{
 			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/530000.0;
 			curr_time -= time_step;
-			orbit_predict(orbit, curr_time);
-			observer_find_orbit(observer, orbit, &obs);
+			predict_orbit(orbit, curr_time);
+			predict_observe_orbit(observer, orbit, &obs);
 		}
 
 		ret_aos_time = curr_time;
@@ -438,25 +438,25 @@ double observer_get_next_aos(const observer_t *observer, orbit_t *orbit, double 
 	return ret_aos_time;
 }
 
-double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double start_utc)
+double predict_next_los(const predict_observer_t *observer, predict_orbit_t *orbit, double start_utc)
 {
 	double ret_los_time = 0;
 	double curr_time = start_utc;
-	struct observation obs;
+	struct predict_observation obs;
 	double time_step = 0;
 
-	orbit_predict(orbit, curr_time);
-	observer_find_orbit(observer, orbit, &obs);
+	predict_orbit(orbit, curr_time);
+	predict_observe_orbit(observer, orbit, &obs);
 
 	//check whether AOS/LOS can happen after specified start time
-	if (orbit_aos_happens(orbit, observer->latitude) && !orbit_is_geostationary(orbit) && !orbit_decayed(orbit))
+	if (predict_aos_happens(orbit, observer->latitude) && !predict_is_geostationary(orbit) && !predict_decayed(orbit))
 	{
 		//iterate until next satellite pass
 		if (obs.elevation < 0.0)
 		{
-			curr_time = observer_get_next_aos(observer, orbit, curr_time);
-			orbit_predict(orbit, curr_time);
-			observer_find_orbit(observer, orbit, &obs);
+			curr_time = predict_next_aos(observer, orbit, curr_time);
+			predict_orbit(orbit, curr_time);
+			predict_observe_orbit(observer, orbit, &obs);
 		}
 
 		//step through the pass
@@ -464,8 +464,8 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 		{
 			time_step = cos(obs.elevation - 1.0)*sqrt(orbit->altitude)/25000.0; 
 			curr_time += time_step;
-			orbit_predict(orbit, curr_time);
-			observer_find_orbit(observer, orbit, &obs);
+			predict_orbit(orbit, curr_time);
+			predict_observe_orbit(observer, orbit, &obs);
 		} 
 		while (obs.elevation >= 0.0);
 		
@@ -474,8 +474,8 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 		{
 			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/502500.0;
 			curr_time += time_step;
-			orbit_predict(orbit, curr_time);
-			observer_find_orbit(observer, orbit, &obs);
+			predict_orbit(orbit, curr_time);
+			predict_observe_orbit(observer, orbit, &obs);
 		}
 		while (fabs(obs.elevation*180.0/M_PI) > ELEVATION_ZERO_TOLERANCE);
 
@@ -485,10 +485,10 @@ double observer_get_next_los(const observer_t *observer, orbit_t *orbit, double 
 
 }
 
-double observer_get_doppler_shift(const observer_t *observer, const orbit_t *orbit, double frequency)
+double predict_doppler_shift(const predict_observer_t *observer, const predict_orbit_t *orbit, double frequency)
 {
-	struct observation obs;
-	observer_find_orbit(observer, orbit, &obs);
+	struct predict_observation obs;
+	predict_observe_orbit(observer, orbit, &obs);
 
 	double sat_range_rate = obs.range_rate*1000.0; //convert to m/s
 	return frequency*sat_range_rate/SPEED_OF_LIGHT; //assumes that sat_range <<<<< speed of light, which is very ok
