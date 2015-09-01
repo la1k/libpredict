@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['time',['time',['../structorbit.html#a956c40e08e8f3bc261643de3489937dc',1,'orbit::time()'],['../structobservation.html#af294a32d66f7e0536d002a0e05f2e3e5',1,'observation::time()']]],
-  ['tle',['tle',['../structorbit.html#aab9084d69048132c3ff63f4c219de3ab',1,'orbit']]]
+  ['time',['time',['../structpredict__orbit__t.html#a14ba68a7100ffc870182fcb069b1d5f8',1,'predict_orbit_t::time()'],['../structpredict__observation.html#ab8caa9903536084a2bae42c4d3294195',1,'predict_observation::time()']]],
+  ['tle',['tle',['../structpredict__orbit__t.html#aebc072dc4fb465a699f5b3fa911d5863',1,'predict_orbit_t']]]
 ];

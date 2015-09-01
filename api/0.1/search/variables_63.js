@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['catnr',['catnr',['../structtle__t.html#af3eaa0c9a7091b56baa4c995ea036f3b',1,'tle_t']]],
-  ['catnum',['catnum',['../structorbit.html#acee451b3215a2a91c3d2d2e8744e8f89',1,'orbit']]]
+  ['catnr',['catnr',['../structpredict__tle__t.html#a1ff25714f4de4c67f0ab2d37fe037ec2',1,'predict_tle_t']]],
+  ['catnum',['catnum',['../structpredict__orbit__t.html#a2219fcc7845aca41bc707aa274b08782',1,'predict_orbit_t']]]
 ];

@@ -1,11 +1,11 @@
 var searchData=
 [
-  ['raan',['raan',['../structorbit.html#a1236768bc8bb99c1d3f9b943a9b660c8',1,'orbit']]],
-  ['range',['range',['../structobservation.html#a39ca0a38e1c8f0b999bd3482aefbfe12',1,'observation']]],
-  ['range_5frate',['range_rate',['../structobservation.html#a50d9ccc37fe36d5680cdc1cf97a970d3',1,'observation']]],
-  ['range_5fx',['range_x',['../structobservation.html#adbecfc59ae9eae0a78cf3cf867ff1559',1,'observation']]],
-  ['range_5fy',['range_y',['../structobservation.html#a0f12c1e38989ab115869868c95c46918',1,'observation']]],
-  ['range_5fz',['range_z',['../structobservation.html#a4defa747af6bc353c2afb144d4857cf4',1,'observation']]],
-  ['refepoch',['refepoch',['../structorbit.html#ab7391cc9690683eaebe9ad13dc7f8b12',1,'orbit']]],
-  ['revnum',['revnum',['../structtle__t.html#ab03e96fe2a36886ff9e91e238e2917d0',1,'tle_t']]]
+  ['raan',['raan',['../structpredict__orbit__t.html#a12aace5316c5c4bb8703090bfc4c0706',1,'predict_orbit_t']]],
+  ['range',['range',['../structpredict__observation.html#ad9b9ec5b087705ee694fe2fb50de6f47',1,'predict_observation']]],
+  ['range_5frate',['range_rate',['../structpredict__observation.html#acbe7c4bc2d6da9d547a3aadaff4f1ac5',1,'predict_observation']]],
+  ['range_5fx',['range_x',['../structpredict__observation.html#a5974955a8f9ce21828071245c977ca99',1,'predict_observation']]],
+  ['range_5fy',['range_y',['../structpredict__observation.html#a7461d0ff28c749c26e57e359f2477587',1,'predict_observation']]],
+  ['range_5fz',['range_z',['../structpredict__observation.html#ad7b930ce76cdd92a2948fbb5d84d16f8',1,'predict_observation']]],
+  ['refepoch',['refepoch',['../structpredict__orbit__t.html#a067f99c78e0f79df8dc5556ad6df05c6',1,'predict_orbit_t']]],
+  ['revnum',['revnum',['../structpredict__tle__t.html#a4efee00fcedf79d5c79b34241cff2086',1,'predict_tle_t']]]
 ];
