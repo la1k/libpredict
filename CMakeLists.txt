@@ -26,6 +26,9 @@ set(LIBPREDICT_VERSION ${PROJECT_VERSION})
 set(LIBPREDICT_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 include_directories(AFTER ${LIBPREDICT_INCLUDE_DIR})
 
+# Tests and examples need to link with the library
+set(LIBPREDICT_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/src)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
 
 add_subdirectory(include)
@@ -43,3 +46,6 @@ add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(travis)
+
+enable_testing()
+add_subdirectory(tests)
