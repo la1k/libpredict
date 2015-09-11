@@ -43,7 +43,7 @@ typedef struct {
 	double omegao;
 	double xmo;
 	double xno;
- 	int catnr;
+ 	int catnum;
 	int elset;
 	int revnum;
 } predict_tle_t; 
@@ -92,7 +92,7 @@ typedef struct {
 	predict_tle_t tle;
 
 	///Satellite number (line 1, field 2)
-	long catnum;
+	int catnum;
 	///Element number (line 1, field 13)
 	long setnum;
 	///International designator (line 1, fields 4, 5, 6)
@@ -120,7 +120,7 @@ typedef struct {
 	///BSTAR drag term (decimal point assumed, line 1, field 11)
 	double bstar;
 	///Orbital number (line 2, field 9)
-	long orbitnum;
+	int orbitnum;
 
 	///Ephemeris data structure pointer
 	void *ephemeris_data;

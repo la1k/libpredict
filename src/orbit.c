@@ -54,7 +54,7 @@ predict_orbit_t *predict_create_orbit(const char *tle[])
 	
 	/* Fill in tle structure: */
 	double temp = twopi/xmnpda/xmnpda;
-	m->tle.catnr = m->catnum;
+	m->tle.catnum = m->catnum;
 	m->tle.epoch = 1000.0*m->year + m->refepoch;
 	m->tle.xndt2o = m->drag*temp;
 	m->tle.xndd6o = m->nddot6*temp/xmnpda;
