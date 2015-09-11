@@ -106,7 +106,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00043"></a><a class="code" href="structpredict__tle__t.html#a275cbab4a6784ff735c7af0dfd49df14">00043</a>     <span class="keywordtype">double</span> <a class="code" href="structpredict__tle__t.html#a275cbab4a6784ff735c7af0dfd49df14">omegao</a>;
 <a name="l00044"></a><a class="code" href="structpredict__tle__t.html#a428baf8c9993dc7f1b283a382a695a39">00044</a>     <span class="keywordtype">double</span> <a class="code" href="structpredict__tle__t.html#a428baf8c9993dc7f1b283a382a695a39">xmo</a>;
 <a name="l00045"></a><a class="code" href="structpredict__tle__t.html#a55df00faf56265959246d71c1489cdfc">00045</a>     <span class="keywordtype">double</span> <a class="code" href="structpredict__tle__t.html#a55df00faf56265959246d71c1489cdfc">xno</a>;
-<a name="l00046"></a><a class="code" href="structpredict__tle__t.html#a1ff25714f4de4c67f0ab2d37fe037ec2">00046</a>     <span class="keywordtype">int</span> <a class="code" href="structpredict__tle__t.html#a1ff25714f4de4c67f0ab2d37fe037ec2">catnr</a>;
+<a name="l00046"></a><a class="code" href="structpredict__tle__t.html#af8a492ce0a857378f3882b991d6966f0">00046</a>     <span class="keywordtype">int</span> <a class="code" href="structpredict__tle__t.html#af8a492ce0a857378f3882b991d6966f0">catnum</a>;
 <a name="l00047"></a><a class="code" href="structpredict__tle__t.html#a2903ed6865abaa9b8b6a57d81c6cedc6">00047</a>     <span class="keywordtype">int</span> <a class="code" href="structpredict__tle__t.html#a2903ed6865abaa9b8b6a57d81c6cedc6">elset</a>;
 <a name="l00048"></a><a class="code" href="structpredict__tle__t.html#a4efee00fcedf79d5c79b34241cff2086">00048</a>     <span class="keywordtype">int</span> <a class="code" href="structpredict__tle__t.html#a4efee00fcedf79d5c79b34241cff2086">revnum</a>;
 <a name="l00049"></a>00049 } <a class="code" href="structpredict__tle__t.html" title="Container for processed TLE data from TLE strings.">predict_tle_t</a>; 
@@ -135,7 +135,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00090"></a><a class="code" href="structpredict__orbit__t.html#a7a5a1a1c8413aded57ece0529a7d3483">00090</a>     <span class="keywordtype">char</span> line2[70];
 <a name="l00092"></a><a class="code" href="structpredict__orbit__t.html#aebc072dc4fb465a699f5b3fa911d5863">00092</a>     <a class="code" href="structpredict__tle__t.html" title="Container for processed TLE data from TLE strings.">predict_tle_t</a> <a class="code" href="structpredict__orbit__t.html#aebc072dc4fb465a699f5b3fa911d5863" title="Original tle_t used to hold processed tle parameters used in calculations.">tle</a>;
 <a name="l00093"></a>00093 
-<a name="l00095"></a><a class="code" href="structpredict__orbit__t.html#a2219fcc7845aca41bc707aa274b08782">00095</a>     <span class="keywordtype">long</span> <a class="code" href="structpredict__orbit__t.html#a2219fcc7845aca41bc707aa274b08782" title="Satellite number (line 1, field 2)">catnum</a>;
+<a name="l00095"></a><a class="code" href="structpredict__orbit__t.html#a1dcd3339ee9784fa66b86166afd62892">00095</a>     <span class="keywordtype">int</span> <a class="code" href="structpredict__orbit__t.html#a1dcd3339ee9784fa66b86166afd62892" title="Satellite number (line 1, field 2)">catnum</a>;
 <a name="l00097"></a><a class="code" href="structpredict__orbit__t.html#a2cb3cccb7bb2e349a9d9fd47bfdf7c79">00097</a>     <span class="keywordtype">long</span> <a class="code" href="structpredict__orbit__t.html#a2cb3cccb7bb2e349a9d9fd47bfdf7c79" title="Element number (line 1, field 13)">setnum</a>;
 <a name="l00099"></a><a class="code" href="structpredict__orbit__t.html#ac5e6c03b87aa700546ae281eae2acaa0">00099</a>     <span class="keywordtype">char</span> designator[10];
 <a name="l00101"></a><a class="code" href="structpredict__orbit__t.html#a1cad22bf4313a3d0b854be864ce1f286">00101</a>     <span class="keywordtype">int</span> <a class="code" href="structpredict__orbit__t.html#a1cad22bf4313a3d0b854be864ce1f286" title="Epoch year (last two digits) (line 1, field 7)">year</a>;
@@ -149,7 +149,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00117"></a><a class="code" href="structpredict__orbit__t.html#ae8ca058bb5fec15ad28a195438dfc00b">00117</a>     <span class="keywordtype">double</span> <a class="code" href="structpredict__orbit__t.html#ae8ca058bb5fec15ad28a195438dfc00b" title="First Time Derivative of the Mean Motion divided by two (line 1, field 9)">drag</a>;
 <a name="l00119"></a><a class="code" href="structpredict__orbit__t.html#ab36f4971a43dddad2984934ddd2c04ae">00119</a>     <span class="keywordtype">double</span> <a class="code" href="structpredict__orbit__t.html#ab36f4971a43dddad2984934ddd2c04ae" title="Second Time Derivative of Mean Motion divided by six (decimal point assumed, line 1...">nddot6</a>;
 <a name="l00121"></a><a class="code" href="structpredict__orbit__t.html#a17b62f2aa7c15e8fbfeae1ed941ea282">00121</a>     <span class="keywordtype">double</span> <a class="code" href="structpredict__orbit__t.html#a17b62f2aa7c15e8fbfeae1ed941ea282" title="BSTAR drag term (decimal point assumed, line 1, field 11)">bstar</a>;
-<a name="l00123"></a><a class="code" href="structpredict__orbit__t.html#ae1287e34a421cef9263bf5e67986af78">00123</a>     <span class="keywordtype">long</span> <a class="code" href="structpredict__orbit__t.html#ae1287e34a421cef9263bf5e67986af78" title="Orbital number (line 2, field 9)">orbitnum</a>;
+<a name="l00123"></a><a class="code" href="structpredict__orbit__t.html#a7a023e35c86507cc4cc59b217f57a4e7">00123</a>     <span class="keywordtype">int</span> <a class="code" href="structpredict__orbit__t.html#a7a023e35c86507cc4cc59b217f57a4e7" title="Orbital number (line 2, field 9)">orbitnum</a>;
 <a name="l00124"></a>00124 
 <a name="l00126"></a><a class="code" href="structpredict__orbit__t.html#ab4bd12c33b23a7f36a67324b1742e0f8">00126</a>     <span class="keywordtype">void</span> *<a class="code" href="structpredict__orbit__t.html#ab4bd12c33b23a7f36a67324b1742e0f8" title="Ephemeris data structure pointer.">ephemeris_data</a>;
 <a name="l00127"></a>00127 } <a class="code" href="structpredict__orbit__t.html" title="Satellite orbit definitions, according to defined NORAD TLE.">predict_orbit_t</a>;
@@ -252,7 +252,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 1 2015 18:33:35 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 11 2015 14:52:23 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

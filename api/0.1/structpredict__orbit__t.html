@@ -123,8 +123,8 @@ Data Fields</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Original TLE line number two:  <a href="#a7a5a1a1c8413aded57ece0529a7d3483"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpredict__tle__t.html">predict_tle_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpredict__orbit__t.html#aebc072dc4fb465a699f5b3fa911d5863">tle</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Original tle_t used to hold processed tle parameters used in calculations.  <a href="#aebc072dc4fb465a699f5b3fa911d5863"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpredict__orbit__t.html#a2219fcc7845aca41bc707aa274b08782">catnum</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Satellite number (line 1, field 2)  <a href="#a2219fcc7845aca41bc707aa274b08782"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpredict__orbit__t.html#a1dcd3339ee9784fa66b86166afd62892">catnum</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Satellite number (line 1, field 2)  <a href="#a1dcd3339ee9784fa66b86166afd62892"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpredict__orbit__t.html#a2cb3cccb7bb2e349a9d9fd47bfdf7c79">setnum</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Element number (line 1, field 13)  <a href="#a2cb3cccb7bb2e349a9d9fd47bfdf7c79"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpredict__orbit__t.html#ac5e6c03b87aa700546ae281eae2acaa0">designator</a> [10]</td></tr>
@@ -151,8 +151,8 @@ Data Fields</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Second Time Derivative of Mean Motion divided by six (decimal point assumed, line 1, field 10)  <a href="#ab36f4971a43dddad2984934ddd2c04ae"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpredict__orbit__t.html#a17b62f2aa7c15e8fbfeae1ed941ea282">bstar</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">BSTAR drag term (decimal point assumed, line 1, field 11)  <a href="#a17b62f2aa7c15e8fbfeae1ed941ea282"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpredict__orbit__t.html#ae1287e34a421cef9263bf5e67986af78">orbitnum</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Orbital number (line 2, field 9)  <a href="#ae1287e34a421cef9263bf5e67986af78"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpredict__orbit__t.html#a7a023e35c86507cc4cc59b217f57a4e7">orbitnum</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Orbital number (line 2, field 9)  <a href="#a7a023e35c86507cc4cc59b217f57a4e7"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpredict__orbit__t.html#ab4bd12c33b23a7f36a67324b1742e0f8">ephemeris_data</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Ephemeris data structure pointer.  <a href="#ab4bd12c33b23a7f36a67324b1742e0f8"></a><br/></td></tr>
 </table>
@@ -204,12 +204,12 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a2219fcc7845aca41bc707aa274b08782"></a><!-- doxytag: member="predict_orbit_t::catnum" ref="a2219fcc7845aca41bc707aa274b08782" args="" -->
+<a class="anchor" id="a1dcd3339ee9784fa66b86166afd62892"></a><!-- doxytag: member="predict_orbit_t::catnum" ref="a1dcd3339ee9784fa66b86166afd62892" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">long <a class="el" href="structpredict__orbit__t.html#a2219fcc7845aca41bc707aa274b08782">predict_orbit_t::catnum</a></td>
+          <td class="memname">int <a class="el" href="structpredict__orbit__t.html#a1dcd3339ee9784fa66b86166afd62892">predict_orbit_t::catnum</a></td>
         </tr>
       </table>
 </div>
@@ -459,12 +459,12 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae1287e34a421cef9263bf5e67986af78"></a><!-- doxytag: member="predict_orbit_t::orbitnum" ref="ae1287e34a421cef9263bf5e67986af78" args="" -->
+<a class="anchor" id="a7a023e35c86507cc4cc59b217f57a4e7"></a><!-- doxytag: member="predict_orbit_t::orbitnum" ref="a7a023e35c86507cc4cc59b217f57a4e7" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">long <a class="el" href="structpredict__orbit__t.html#ae1287e34a421cef9263bf5e67986af78">predict_orbit_t::orbitnum</a></td>
+          <td class="memname">int <a class="el" href="structpredict__orbit__t.html#a7a023e35c86507cc4cc59b217f57a4e7">predict_orbit_t::orbitnum</a></td>
         </tr>
       </table>
 </div>
@@ -615,7 +615,7 @@ Data Fields</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 1 2015 18:33:35 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 11 2015 14:52:23 for libpredict by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
