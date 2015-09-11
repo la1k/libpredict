@@ -23,11 +23,12 @@ set(LIBPREDICT_VERSION_PATCH ${PROJECT_VERSION_MINOR})
 #LIBPREDICT_VERSION_TWEAK isn't used
 set(LIBPREDICT_VERSION ${PROJECT_VERSION})
 
-set(LIBPREDICT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(LIBPREDICT_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 include_directories(AFTER ${LIBPREDICT_INCLUDE_DIR})
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
 
+add_subdirectory(include)
 add_subdirectory(src)
 
 # Add a target to generate API documentation with Doxygen
