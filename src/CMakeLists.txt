@@ -32,11 +32,11 @@ set(predict_link_flags "${predict_link_flags} -Wl,--version-script=${CMAKE_CURRE
 set_target_properties(predict PROPERTIES LINK_FLAGS ${predict_link_flags})
 
 install(TARGETS predict predict_static
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  PUBLIC_HEADER DESTINATION include/predict
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/predict
 )
 
 # pkg-config file
 configure_file(predict.pc.in predict.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/predict.pc DESTINATION lib/pkgconfig)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/predict.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)

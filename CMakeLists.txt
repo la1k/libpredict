@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project(libpredict C)
 
+include(GNUInstallDirs)
+
 # The project version number is also the version of the library ABI:
 # major = bump on incompatible change
 # minor = bump on compatible change
