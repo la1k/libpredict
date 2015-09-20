@@ -52,7 +52,7 @@ function generate_satellite_testcase(){
 		phase=${predict_response[12]}
 		eclipse_depth=${predict_response[13]}
 		squint=${predict_response[14]}
-		echo "$time $lat $lon $alt $az $el $doppler_shift" >> $testcase_filename
+		echo "$time,$lat,$lon,$alt,$az,$el,$doppler_shift" >> $testcase_filename
 	done
 	killall predict
 	sleep 1
@@ -90,7 +90,7 @@ function generate_sun_testcase(){
 		az=${predict_response[2]}
 		el=${predict_response[3]}
 		alt=${predict_response[4]}
-		echo $time $lat $lon $alt $az $el >> $testcase_filename
+		echo $time,$lat,$lon,$alt,$az,$el >> $testcase_filename
 	done
 	killall predict
 	sleep 1
@@ -128,7 +128,7 @@ function generate_moon_testcase(){
 		az=${predict_response[2]}
 		el=${predict_response[3]}
 		alt=${predict_response[4]}
-		echo $time $lat $lon $alt $az $el >> $testcase_filename
+		echo $time,$lat,$lon,$alt,$az,$el >> $testcase_filename
 	done
 	killall predict
 	sleep 1
@@ -139,15 +139,12 @@ killall predict
 #compile and prepare UDP client
 gcc -o predict_client predict_client.c
 
-data_directory="test_data"
-mkdir $data_directory
-
 #satellites
-generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:15" "20" "$data_directory/oscar-7-pass.dat"
-generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:31" "20" "$data_directory/oscar-7-below.dat"
+generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:15" "20" "oscar-7-pass.dat"
+generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:31" "20" "oscar-7-below.dat"
 
 #sun and moon
-generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth" "$data_directory/sun_below.dat"
-generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth" "$data_directory/sun_above.dat"
-generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth" "$data_directory/moon_below.dat"
-generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth" "$data_directory/moon_above.dat"
+generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth" "sun_below.dat"
+generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth" "sun_above.dat"
+generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth" "moon_below.dat"
+generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth" "moon_above.dat"
