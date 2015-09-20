@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Generate testcase data for a given satellite
+# Usage: generate_satellite_testcase TLE_file QTH_file satellite_name start_time track_time output_filename
+# \param TLE_file File containing TLE data (should not contain more than approx. 20 satellites due to internal restrictions in predict)
+# \param QTH_file File containing the QTH
+# \param satellite_name Name of satellite that is to be tracked (will use corresponding satellite in the TLE file)
+# \param start_time Start time in format e.g. 2015-09-21 11:00
+# \param track_time Total tracked time in number of seconds from the start time
+# \param output_filename Output filename 
 function generate_satellite_testcase(){
 	tle_file="$1"
 	qth_file="$2"
@@ -50,6 +58,12 @@ function generate_satellite_testcase(){
 	sleep 1
 }
 
+# Generate testcase data for sun tracking. 
+# Usage: generate_sun_testcase start_time track_time QTH_file output_filename
+# \param start_time Start time in format e.g. 2015-09-21 11:00
+# \param track_time Total tracked time in number of seconds from the start time
+# \param QTH_file File containing the QTH
+# \param output_filename Output filename 
 function generate_sun_testcase(){
 	start_time="$1"
 	tot_secs="$2"
@@ -82,6 +96,12 @@ function generate_sun_testcase(){
 	sleep 1
 }
 
+# Generate testcase data for moon tracking. 
+# Usage: generate_moon_testcase start_time track_time QTH_file output_filename
+# \param start_time Start time in format e.g. 2015-09-21 11:00
+# \param track_time Total tracked time in number of seconds from the start time
+# \param QTH_file File containing the QTH
+# \param output_filename Output filename 
 function generate_moon_testcase(){
 	start_time="$1"
 	tot_secs="$2"
@@ -114,8 +134,20 @@ function generate_moon_testcase(){
 	sleep 1
 }
 
-
 killall predict
-generate_satellite_testcase "predict.tle" "predict.qth" "OSCAR-7" "2015-09-20 19:33" "5" "testcase"
-generate_sun_testcase "2015-09-20 19:33" "5" "predict.qth" sun_testcase.dat
-generate_moon_testcase "2015-09-20 19:33" "5" "predict.qth" moon_testcase.dat
+
+#compile and prepare UDP client
+gcc -o predict_client predict_client.c
+
+data_directory="test_data"
+mkdir $data_directory
+
+#satellites
+generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:15" "20" "$data_directory/oscar-7-pass.dat"
+generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:31" "20" "$data_directory/oscar-7-below.dat"
+
+#sun and moon
+generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth" "$data_directory/sun_below.dat"
+generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth" "$data_directory/sun_above.dat"
+generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth" "$data_directory/moon_below.dat"
+generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth" "$data_directory/moon_above.dat"
