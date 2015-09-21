@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Generate QTH lines for testcase file from predict QTH file.
+function get_qth_string(){
+	qth_file="$1"
+	echo "[qth]"
+	echo "lat=$(sed '2!d' $qth_file | sed -rn 's/\s//p')"
+	lon=$(sed '3!d' $qth_file | sed -rn 's/\s//p')
+	
+	#convert longitude from N/W to N/E
+	lon=$(echo "-1*$lon" | bc)
+
+	echo "lon=$lon"
+	echo "alt=$(sed '4!d' $qth_file | sed -rn 's/\s//p')"
+}
+
 # Generate testcase data for a given satellite
 # Usage: generate_satellite_testcase TLE_file QTH_file satellite_name start_time track_time output_filename
 # \param TLE_file File containing TLE data (should not contain more than approx. 20 satellites due to internal restrictions in predict)
@@ -21,10 +35,8 @@ function generate_satellite_testcase(){
 	grep -A 2 $satellite_name $tle_file | tail -2 >> $testcase_filename
 
 	echo "" >> $testcase_filename
-	echo "[qth]" >> $testcase_filename
-	echo "lat=$(sed '2!d' $qth_file | sed -rn 's/\s//p')" >> $testcase_filename
-	echo "lon=$(sed '3!d' $qth_file | sed -rn 's/\s//p')" >> $testcase_filename
-	echo "alt=$(sed '4!d' $qth_file | sed -rn 's/\s//p')" >> $testcase_filename
+	echo "$(get_qth_string $qth_file)" >> $testcase_filename
+
 	echo "freq=0" >> $testcase_filename
 
 	#predict orbit
@@ -38,7 +50,7 @@ function generate_satellite_testcase(){
 		time=$(./predict_client "GET_TIME")
 		doppler_shift=($(./predict_client "GET_DOPPLER $satellite_name"))
 		satname=${predict_response[0]}
-		lon=${predict_response[1]}
+		lon=$(echo "360-${predict_response[1]}" | bc) #convert to N/E
 		lat=${predict_response[2]}
 		az=${predict_response[3]}
 		el=${predict_response[4]}
@@ -71,10 +83,7 @@ function generate_sun_testcase(){
 	testcase_filename="$4"
 
 	#parse qth information into testcase file
-	echo "[qth]" > $testcase_filename
-	echo "lat=$(sed '2!d' $qth_file | sed -rn 's/\s//p')" >> $testcase_filename
-	echo "lon=$(sed '3!d' $qth_file | sed -rn 's/\s//p')" >> $testcase_filename
-	echo "alt=$(sed '4!d' $qth_file | sed -rn 's/\s//p')" >> $testcase_filename
+	echo "$(get_qth_string $qth_file)" >> $testcase_filename
 
 	faketime "$start_time" predict -q $qth_file -s &
 
@@ -85,7 +94,7 @@ function generate_sun_testcase(){
 		sleep 1
 		predict_response=($(./predict_client "GET_SUN"))
 		time=$(./predict_client "GET_TIME")
-		lon=${predict_response[0]}
+		lon=$(echo "360-${predict_response[0]}" | bc) #convert to N/E
 		lat=${predict_response[1]}
 		az=${predict_response[2]}
 		el=${predict_response[3]}
@@ -109,10 +118,7 @@ function generate_moon_testcase(){
 	testcase_filename="$4"
 
 	#parse qth information into testcase file
-	echo "[qth]" > $testcase_filename
-	echo "lat=$(sed '2!d' $qth_file | sed -rn 's/\s//p')" >> $testcase_filename
-	echo "lon=$(sed '3!d' $qth_file | sed -rn 's/\s//p')" >> $testcase_filename
-	echo "alt=$(sed '4!d' $qth_file | sed -rn 's/\s//p')" >> $testcase_filename
+	echo "$(get_qth_string $qth_file)" >> $testcase_filename
 
 	faketime "$start_time" predict -q $qth_file -s &
 
@@ -123,7 +129,7 @@ function generate_moon_testcase(){
 		sleep 1
 		predict_response=($(./predict_client "GET_MOON"))
 		time=$(./predict_client "GET_TIME")
-		lon=${predict_response[0]}
+		lon=$(echo "360-${predict_response[0]}" | bc) #convert to N/E
 		lat=${predict_response[1]}
 		az=${predict_response[2]}
 		el=${predict_response[3]}
