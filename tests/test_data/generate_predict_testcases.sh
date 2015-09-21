@@ -92,12 +92,9 @@ function generate_sun_testcase(){
 		sleep 1
 		predict_response=($(./predict_client "GET_SUN"))
 		time=$(./predict_client "GET_TIME")
-		lon=$(echo "360-${predict_response[0]}" | bc) #convert to N/E
-		lat=${predict_response[1]}
-		az=${predict_response[2]}
-		el=${predict_response[3]}
-		alt=${predict_response[4]}
-		echo $time,$lat,$lon,$alt,$az,$el >> $testcase_filename
+		az=${predict_response[0]}
+		el=${predict_response[1]}
+		echo $time,$az,$el >> $testcase_filename
 	done
 	killall predict
 	sleep 1
@@ -126,12 +123,9 @@ function generate_moon_testcase(){
 		sleep 1
 		predict_response=($(./predict_client "GET_MOON"))
 		time=$(./predict_client "GET_TIME")
-		lon=$(echo "360-${predict_response[0]}" | bc) #convert to N/E
-		lat=${predict_response[1]}
-		az=${predict_response[2]}
-		el=${predict_response[3]}
-		alt=${predict_response[4]}
-		echo $time,$lat,$lon,$alt,$az,$el >> $testcase_filename
+		az=${predict_response[0]}
+		el=${predict_response[1]}
+		echo $time,$az,$el >> $testcase_filename
 	done
 	killall predict
 	sleep 1
@@ -148,6 +142,6 @@ generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 
 
 #sun and moon
 generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth"
-generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth" 
+generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth"
 generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth"
-generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth" "moon_above.dat"
+generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth"
