@@ -21,14 +21,13 @@ function get_qth_string(){
 # \param satellite_name Name of satellite that is to be tracked (will use corresponding satellite in the TLE file)
 # \param start_time Start time in format e.g. 2015-09-21 11:00
 # \param track_time Total tracked time in number of seconds from the start time
-# \param output_filename Output filename 
 function generate_satellite_testcase(){
 	tle_file="$1"
 	qth_file="$2"
 	satellite_name="$3"
 	start_time="$4"
 	tot_secs="$5"
-	testcase_filename="$6"
+	testcase_filename="testcase_satellite_${satellite_name}_$(echo $start_time | sed -r 's/[-|_|:| ]//g').dat"
 
 	#parse tle and qth information into testcase file
 	echo "[tle]" > $testcase_filename
@@ -75,12 +74,11 @@ function generate_satellite_testcase(){
 # \param start_time Start time in format e.g. 2015-09-21 11:00
 # \param track_time Total tracked time in number of seconds from the start time
 # \param QTH_file File containing the QTH
-# \param output_filename Output filename 
 function generate_sun_testcase(){
 	start_time="$1"
 	tot_secs="$2"
 	qth_file="$3"
-	testcase_filename="$4"
+	testcase_filename="testcase_sun_$(echo $start_time | sed -r 's/[-|_|:| ]//g').dat"
 
 	#parse qth information into testcase file
 	echo "$(get_qth_string $qth_file)" >> $testcase_filename
@@ -110,12 +108,11 @@ function generate_sun_testcase(){
 # \param start_time Start time in format e.g. 2015-09-21 11:00
 # \param track_time Total tracked time in number of seconds from the start time
 # \param QTH_file File containing the QTH
-# \param output_filename Output filename 
 function generate_moon_testcase(){
 	start_time="$1"
 	tot_secs="$2"
 	qth_file="$3"
-	testcase_filename="$4"
+	testcase_filename="testcase_moon_$(echo $start_time | sed -r 's/[-|_|:| ]//g').dat"
 
 	#parse qth information into testcase file
 	echo "$(get_qth_string $qth_file)" >> $testcase_filename
@@ -146,11 +143,11 @@ killall predict
 gcc -o predict_client predict_client.c
 
 #satellites
-generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:15" "20" "oscar-7-pass.dat"
-generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:31" "20" "oscar-7-below.dat"
+generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:15" "20"
+generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:31" "20"
 
 #sun and moon
-generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth" "sun_below.dat"
-generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth" "sun_above.dat"
-generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth" "moon_below.dat"
+generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth"
+generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth" 
+generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth"
 generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth" "moon_above.dat"
