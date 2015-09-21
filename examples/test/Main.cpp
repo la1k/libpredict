@@ -4,10 +4,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <limits>
-#
-extern "C" {
 #include <predict/predict.h>
-}
 
 #include "TestCase.h"
 
@@ -61,14 +58,14 @@ int runtest(const char *filename)
 	testcase.getTLE(tle);
 
 	// Create orbit object
-	orbit_t *orbit = orbit_create((const char**)tle);
+	predict_orbit_t *orbit = predict_create_orbit((const char**)tle);
 	if (!orbit) {
 		fprintf(stderr, "Failed to initialize orbit from tle!");
 		return -1;
 	}
 
 	// Create observer object
-	observer_t *obs = observer_create("test", testcase.latitude()*M_PI/180.0, testcase.longitude()*M_PI/180.0, testcase.altitude());
+	predict_observer_t *obs = predict_create_observer("test", testcase.latitude()*M_PI/180.0, testcase.longitude()*M_PI/180.0, testcase.altitude());
 	if (!obs) {
 		fprintf(stderr, "Failed to initialize observer!");
 		return -1;
@@ -87,11 +84,11 @@ int runtest(const char *filename)
 		double el = d[5];
 
 		// Predict
-		orbit_predict(orbit, time);
+		predict_orbit(orbit, predict_to_julian(time));
 
 		// Observe
-		struct observation orbit_obs;
-		observer_find_orbit(obs, orbit, &orbit_obs);
+		struct predict_observation orbit_obs;
+		predict_observe_orbit(obs, orbit, &orbit_obs);
 		
 		// Compare values
 		string failed = "";
