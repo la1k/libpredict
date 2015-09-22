@@ -1,5 +1,19 @@
 #!/bin/bash
 
+## Master file for generating test data from predict for use in validating libpredict's API functions. 
+## Uses the UDP server functionality in predict for generating data.
+## Will compile an UDP client and use this for communicating. 
+##
+## See list at the bottom of this file for files that are generated. 
+##
+## Note that the granularity of the time is accurate to a second, while the obtained data can be 
+## anywhere from the obtained timestamp up till the next second. predict also uses only two decimals in
+## the output. 
+##
+## Also note that due to internal restrictions in predict, TLE files should be restricted to 24 satellites, as 
+## there otherwise could be undefined behavior in the UDP calls to the predict server. 
+
+
 # Generate QTH lines for testcase file from predict QTH file.
 function get_qth_string(){
 	qth_file="$1"
