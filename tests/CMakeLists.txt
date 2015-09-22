@@ -16,6 +16,15 @@ foreach(file ${files})
 	add_test(NAME orbit-${file} COMMAND orbit-t ${file})
 endforeach()
 
+#test aos/los on satellite data
+add_executable(aoslos-t aoslos-t.cpp testcase.cpp)
+target_compile_options(aoslos-t PRIVATE "-std=c++11")
+target_link_libraries(aoslos-t predict)
+file(GLOB files "${LIBPREDICT_TEST_DATA_DIR}/testcase_satellite_*")
+foreach(file ${files})
+	add_test(NAME aoslos-${file} COMMAND aoslos-t ${file})
+endforeach()
+
 #test against sun data
 add_executable(sun-t sun-t.cpp testcase.cpp)
 target_compile_options(sun-t PRIVATE "-std=c++11")
