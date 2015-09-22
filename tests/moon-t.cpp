@@ -6,7 +6,7 @@
 #include <limits>
 #include <predict/predict.h>
 
-#include "TestCase.h"
+#include "testcase.h"
 
 #include <iostream>
 using namespace std;
@@ -69,21 +69,21 @@ int runtest(const char *filename)
 		// Compare values within (time - 1, time + 1) (i.e. up time + 1, but not including time + 1)
 		// (since we don't know the exact time predict generated its data, only within an error of 1 second)
 		const int DIFF = 1;
-		struct predict_observation sun_obs_lower;
-		struct predict_observation sun_obs_upper;
+		struct predict_observation moon_obs_lower;
+		struct predict_observation moon_obs_upper;
 
 		// Lower bound
-		predict_observe_sun(obs, predict_to_julian(time), &sun_obs_lower);
+		predict_observe_moon(obs, predict_to_julian(time), &moon_obs_lower);
 
 		// Upper bound
-		predict_observe_sun(obs, predict_to_julian(time + DIFF), &sun_obs_upper);
+		predict_observe_moon(obs, predict_to_julian(time + DIFF), &moon_obs_upper);
 
 		// Check values
 		string failed = "";
-		if (!fuzzyCompareWithBoundaries(sun_obs_lower.azimuth*180.0/M_PI, sun_obs_upper.azimuth*180.0/M_PI, az)) {
+		if (!fuzzyCompareWithBoundaries(moon_obs_lower.azimuth*180.0/M_PI, moon_obs_upper.azimuth*180.0/M_PI, az)) {
 			failed += "(azimuth)";
 		}
-		if (!fuzzyCompareWithBoundaries(sun_obs_lower.elevation*180.0/M_PI, sun_obs_upper.elevation*180.0/M_PI, el)) {
+		if (!fuzzyCompareWithBoundaries(moon_obs_lower.elevation*180.0/M_PI, moon_obs_upper.elevation*180.0/M_PI, el)) {
 			failed += "(elevation)";
 		}
 
@@ -93,8 +93,8 @@ int runtest(const char *filename)
 			cout << filename << ": failed at data line " << line << ": " << failed << endl;
 
 			printf("%.8f, %.8f/%.8f/%.8f, %.8f/%.8f/%.8f\n", time,
-					sun_obs_lower.azimuth*180.0/M_PI, az, sun_obs_upper.azimuth*180.0/M_PI,
-					sun_obs_lower.elevation*180.0/M_PI, el, sun_obs_upper.elevation*180.0/M_PI);
+					moon_obs_lower.azimuth*180.0/M_PI, az, moon_obs_upper.azimuth*180.0/M_PI,
+					moon_obs_lower.elevation*180.0/M_PI, el, moon_obs_upper.elevation*180.0/M_PI);
 
 			retval = -1;
 		}

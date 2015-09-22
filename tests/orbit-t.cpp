@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <predict/predict.h>
 
-#include "TestCase.h"
+#include "testcase.h"
 
 #include <iostream>
 using namespace std;
