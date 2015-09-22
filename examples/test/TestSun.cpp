@@ -73,7 +73,7 @@ int runtest(const char *filename)
 		struct predict_observation sun_obs_upper;
 
 		// Lower bound
-		predict_observe_sun(obs, predict_to_julian(time - DIFF), &sun_obs_lower);
+		predict_observe_sun(obs, predict_to_julian(time), &sun_obs_lower);
 
 		// Upper bound
 		predict_observe_sun(obs, predict_to_julian(time + DIFF), &sun_obs_upper);

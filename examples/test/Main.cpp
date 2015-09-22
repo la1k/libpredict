@@ -67,14 +67,6 @@ int runtest(const char *filename)
 		return -1;
 	}
 
-	// Used to calculate value for the exact UNIX epoch
-	predict_orbit_t *orbit = predict_create_orbit((const char**)tle);
-	if (!orbit) {
-		fprintf(stderr, "Failed to initialize orbit from tle!");
-		return -1;
-	}
-	
-
 	// Create observer object
 	predict_observer_t *obs = predict_create_observer("test", testcase.latitude()*M_PI/180.0, testcase.longitude()*M_PI/180.0, testcase.altitude());
 	if (!obs) {
@@ -99,19 +91,14 @@ int runtest(const char *filename)
 		const int DIFF = 1;
 		struct predict_observation orbit_obs_lower;
 		struct predict_observation orbit_obs_upper;
-		struct predict_observation orbit_obs;
 
 		// Lower bound
-		predict_orbit(orbit_lower, predict_to_julian(time - DIFF));
+		predict_orbit(orbit_lower, predict_to_julian(time));
 		predict_observe_orbit(obs, orbit_lower, &orbit_obs_lower);
 
 		// Upper bound
 		predict_orbit(orbit_upper, predict_to_julian(time + DIFF));
 		predict_observe_orbit(obs, orbit_upper, &orbit_obs_upper);
-
-		// At exact UNIX epoch
-		predict_orbit(orbit, predict_to_julian(time));
-		predict_observe_orbit(obs, orbit, &orbit_obs);
 
 		// Check values
 		string failed = "";

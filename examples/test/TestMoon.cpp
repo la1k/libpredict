@@ -73,7 +73,7 @@ int runtest(const char *filename)
 		struct predict_observation moon_obs_upper;
 
 		// Lower bound
-		predict_observe_moon(obs, predict_to_julian(time - DIFF), &moon_obs_lower);
+		predict_observe_moon(obs, predict_to_julian(time), &moon_obs_lower);
 
 		// Upper bound
 		predict_observe_moon(obs, predict_to_julian(time + DIFF), &moon_obs_upper);
