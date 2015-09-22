@@ -3,7 +3,6 @@
 #include <math.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <limits>
 #include <predict/predict.h>
 
 #include "TestCase.h"
@@ -37,35 +36,13 @@ int main(int argc, char **argv)
 	return retval;
 }
 
-
-bool fuzzyCompare(const double &x, const double &y, const double &epsilon = std::numeric_limits<double>::epsilon())
-{
-	return fabs(x - y) < epsilon;
-}
-
-bool fuzzyCompareWithBoundaries(const double &input_value_1, const double &input_value_2, const double &compared_value)
-{
-	double decimal_offset = 0.05; //predict outputs two decimals of each value, so add extra offset of 0.05 to each boundary value
-	double lower, upper;
-	if (input_value_2 > input_value_1)
-	{
-		lower = input_value_1;
-		upper = input_value_2;
-	}
-	else
-	{
-		lower = input_value_2;
-		upper = input_value_1;
-	}
-	return (compared_value < upper + decimal_offset) && (compared_value > lower - decimal_offset);
-}
-
 int runtest(const char *filename)
 {
 	
 	// Load testcase
 	TestCase testcase;
-	if (testcase.loadFromFile(filename)) {
+	testcase.loadFromFile(filename);
+	if (!(testcase.containsValidData() && (testcase.containsValidQth()) && (testcase.containsValidTLE()))){
 		fprintf(stderr, "Failed to load testfile: %s\n", filename);
 		return -1;
 	}

@@ -74,14 +74,14 @@ vector<string> tokenize(const string& str,const string& delimiters)
 	return tokens;
 }
 
-int TestCase::loadFromFile(const char *filename)
+void TestCase::loadFromFile(const char *filename)
 {
 	
 	ifstream file(filename);
 
 	if (!file) {
 		cout << "Unable to open file " << filename << endl;
-		return -1;
+		return;
 	}
 	
 	enum State {
@@ -152,15 +152,12 @@ int TestCase::loadFromFile(const char *filename)
 				} else if (key == "alt" || key == "altitude") {
 					stringstream(value) >> m_qth_altitude;
 				}
-			}break;
+			} break;
 
 			case DATA: {
 				// Tokenize on =
 				vector<string> tokens = tokenize(line, ",");
 
-				// Check size
-				if (tokens.size() < 6) continue;
-	
 				vector<double> d;
 				// Convert to double vector
 				for (int i=0;i<(int)tokens.size();i++) {
@@ -184,14 +181,6 @@ int TestCase::loadFromFile(const char *filename)
 	}
 
 	file.close();
-	
-	if (m_data.size() == 0) return -1;
-	if (m_tle[0].size() == 0) return -1;
-	if (m_tle[1].size() == 0) return -1;
-	if (::isnan(m_qth_latitude)) return -1;
-	if (::isnan(m_qth_longitude)) return -1;
-	
-	return 0;
 }
 	
 void TestCase::getTLE(char *tle[2])
@@ -200,4 +189,41 @@ void TestCase::getTLE(char *tle[2])
 	tle[1] = new char[m_tle[1].size()];
 	strcpy(tle[0], m_tle[0].c_str());
 	strcpy(tle[1], m_tle[1].c_str());
+}
+
+bool TestCase::containsValidData()
+{
+	return (m_data.size() != 0);
+}
+
+bool TestCase::containsValidQth()
+{
+	return (!(::isnan(m_qth_latitude)) && !(::isnan(m_qth_longitude)));
+}
+
+bool TestCase::containsValidTLE()
+{
+	return ((m_tle[0].size() != 0) && (m_tle[1].size() != 0));
+}
+
+bool fuzzyCompare(const double &x, const double &y, const double &epsilon)
+{
+	return fabs(x - y) < epsilon;
+}
+
+bool fuzzyCompareWithBoundaries(const double &input_value_1, const double &input_value_2, const double &compared_value)
+{
+	double decimal_offset = 0.05; //predict outputs two decimals of each value, so add extra offset of 0.05 to each boundary value
+	double lower, upper;
+	if (input_value_2 > input_value_1)
+	{
+		lower = input_value_1;
+		upper = input_value_2;
+	}
+	else
+	{
+		lower = input_value_2;
+		upper = input_value_1;
+	}
+	return (compared_value < upper + decimal_offset) && (compared_value > lower - decimal_offset);
 }
