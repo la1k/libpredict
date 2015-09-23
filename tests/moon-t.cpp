@@ -15,13 +15,11 @@ int runtest(const char *filename);
 
 int main(int argc, char **argv)
 {
-
 	// Check arguments
 	if (argc < 2) {
 		cout << "Usage: " << argv[0] << " <testfiles>" << endl;
 		return -1;
 	}
-
 
 	// Test all provided test files
 	int retval = 0;
@@ -41,11 +39,10 @@ int main(int argc, char **argv)
 
 int runtest(const char *filename)
 {
-	
 	// Load testcase
 	TestCase testcase;
 	testcase.loadFromFile(filename);
-	if (!(testcase.containsValidData() && (testcase.containsValidQth()))){
+	if (!(testcase.containsValidData() && (testcase.containsValidQth()))) {
 		fprintf(stderr, "Failed to load testfile: %s\n", filename);
 		return -1;
 	}
@@ -61,7 +58,6 @@ int runtest(const char *filename)
 	int retval = 0;
 	int line = 1;
 	for (auto d : testcase.data()) {
-
 		double time = d[0];
 		double az = d[1];
 		double el = d[2];
@@ -89,7 +85,6 @@ int runtest(const char *filename)
 
 		// Failed?
 		if (failed != "") {
-			
 			cout << filename << ": failed at data line " << line << ": " << failed << endl;
 
 			printf("%.8f, %.8f/%.8f/%.8f, %.8f/%.8f/%.8f\n", time,
@@ -101,9 +96,7 @@ int runtest(const char *filename)
 
 		// Increment data line number
 		++line;
-
 	}
 
 	return retval;
-
 }

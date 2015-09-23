@@ -4,9 +4,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <predict/predict.h>
-
 #include "testcase.h"
-
 #include <iostream>
 using namespace std;
 
@@ -14,13 +12,11 @@ int runtest(const char *filename);
 
 int main(int argc, char **argv)
 {
-
 	// Check arguments
 	if (argc < 2) {
 		cout << "Usage: " << argv[0] << " <testfiles>" << endl;
 		return -1;
 	}
-
 
 	// Test all provided test files
 	int retval = 0;
@@ -38,11 +34,10 @@ int main(int argc, char **argv)
 
 int runtest(const char *filename)
 {
-	
 	// Load testcase
 	TestCase testcase;
 	testcase.loadFromFile(filename);
-	if (!(testcase.containsValidData() && (testcase.containsValidQth()) && (testcase.containsValidTLE()))){
+	if (!(testcase.containsValidData() && (testcase.containsValidQth()) && (testcase.containsValidTLE()))) {
 		fprintf(stderr, "Failed to load testfile: %s\n", filename);
 		return -1;
 	}
@@ -80,18 +75,18 @@ int runtest(const char *filename)
 	const double ELEVATION_THRESH = 0.3; //this elevation threshold was used internal AOS/LOS calculations, so should hold also here.
 
 	// Check times until the AOS
-	while (curr_time < next_aos_time){
+	while (curr_time < next_aos_time) {
 		struct predict_observation orbit_obs;
 		predict_orbit(orbit, curr_time);
 		predict_observe_orbit(obs, orbit, &orbit_obs);
 
-		if ((next_los_time < next_aos_time) && (curr_time < next_los_time)){
+		if ((next_los_time < next_aos_time) && (curr_time < next_los_time)) {
 			//satellite should be above the horizon (satellite was in range at the start time)
-			if (orbit_obs.elevation*180/M_PI < -ELEVATION_THRESH){
+			if (orbit_obs.elevation*180/M_PI < -ELEVATION_THRESH) {
 				fprintf(stderr, "AOS failed sanity check: Satellite currently in range according to LOS/AOS state, but not above the horizon. Elevation: %f\n", orbit_obs.elevation*180/M_PI);
 				return -1;
 			}
-		} else if (curr_time < next_aos_time){
+		} else if (curr_time < next_aos_time) {
 			//satellite should be below the horizon
 			if (orbit_obs.elevation*180/M_PI > ELEVATION_THRESH){
 				fprintf(stderr, "AOS failed sanity check: Satellite has not reached AOS, but is above the horizon. Elevation: %f\n", orbit_obs.elevation*180/M_PI);
@@ -103,13 +98,13 @@ int runtest(const char *filename)
 
 	// Check times up till LOS
 	next_los_time = predict_next_los(obs, orbit, predict_to_julian(curr_time)); //recalculating within the pass in case LOS was for previous pass
-	while (curr_time < next_los_time){
+	while (curr_time < next_los_time) {
 		struct predict_observation orbit_obs;
 		predict_orbit(orbit, curr_time);
 		predict_observe_orbit(obs, orbit, &orbit_obs);
 
 		//satellite should be above the horizon
-		if (orbit_obs.elevation*180/M_PI < -ELEVATION_THRESH){
+		if (orbit_obs.elevation*180/M_PI < -ELEVATION_THRESH) {
 			fprintf(stderr, "AOS/LOS failed sanity check: Satellite has reached AOS, waiting for LOS, but not above the horizon. Elevation: %f\n", orbit_obs.elevation*180/M_PI);
 			return -1;
 		}
