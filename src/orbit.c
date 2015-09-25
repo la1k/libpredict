@@ -284,3 +284,31 @@ double predict_eclipse_depth(const predict_orbit_t *orbit)
 {
 	return orbit->eclipse_depth;
 }
+
+double predict_squint_angle(const predict_observer_t *observer, const predict_orbit_t *orbit, double alon, double alat)
+{
+	double squint;
+	if (orbit->ephemeris == EPHEMERIS_SDP4) {
+		const struct _sdp4* sdp4 = (struct _sdp4*)orbit->ephemeris_data;
+
+		double bx = cos(alat)*cos(alon + sdp4->deep_arg.omgadf);
+		double by = cos(alat)*sin(alon + sdp4->deep_arg.omgadf);
+		double bz = sin(alat);
+
+		double cx = bx;
+		double cy = by*cos(sdp4->xinck) - bz*sin(sdp4->xinck);
+		double cz = by*sin(sdp4->xinck) + bz*cos(sdp4->xinck);
+		double ax = cx*cos(sdp4->xnodek) - cy*sin(sdp4->xnodek);
+		double ay = cx*sin(sdp4->xnodek) + cy*cos(sdp4->xnodek);
+		double az = cz;
+
+		struct predict_observation obs;
+		predict_observe_orbit(observer, orbit, &obs);
+		squint = acos(-(ax*obs.range_x + ay*obs.range_y + az*obs.range_z)/obs.range);
+
+	} else {
+		printf("SGP4\n");
+		squint = nan("");
+	}
+	return squint;
+}

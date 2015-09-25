@@ -28,11 +28,11 @@ void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double po
 	double a, axn, ayn, aynl, beta, betal, capu, cos2u, cosepw, cosik,
 	cosnok, cosu, cosuk, ecose, elsq, epw, esine, pl, theta4, rdot,
 	rdotk, rfdot, rfdotk, rk, sin2u, sinepw, sinik, sinnok, sinu,
-	sinuk, tempe, templ, tsq, u, uk, ux, uy, uz, vx, vy, vz, xinck, xl,
-	xlt, xmam, xmdf, xmx, xmy, xnoddf, xnodek, xll, a1, a3ovk2, ao, c2,
+	sinuk, tempe, templ, tsq, u, uk, ux, uy, uz, vx, vy, vz, xl,
+	xlt, xmam, xmdf, xmx, xmy, xnoddf, xll, a1, a3ovk2, ao, c2,
 	coef, coef1, x1m5th, xhdot1, del1, r, delo, eeta, eta, etasq,
 	perigee, psisq, tsi, qoms24, s4, pinvsq, temp, tempa, temp1,
-	temp2, temp3, temp4, temp5, temp6/*, bx, by, bz, cx, cy, cz;*/;
+	temp2, temp3, temp4, temp5, temp6;
 
 	/* Initialization (if flag not set) */
 	if (!m->initialized) {
@@ -196,18 +196,18 @@ void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double po
 	/* Update for short periodics */
 	rk=r*(1-1.5*temp2*betal*m->x3thm1)+0.5*temp1*m->x1mth2*cos2u;
 	uk=u-0.25*temp2*m->x7thm1*sin2u;
-	xnodek=m->deep_arg.xnode+1.5*temp2*m->deep_arg.cosio*sin2u;
-	xinck=m->deep_arg.xinc+1.5*temp2*m->deep_arg.cosio*m->deep_arg.sinio*cos2u;
+	m->xnodek=m->deep_arg.xnode+1.5*temp2*m->deep_arg.cosio*sin2u;
+	m->xinck=m->deep_arg.xinc+1.5*temp2*m->deep_arg.cosio*m->deep_arg.sinio*cos2u;
 	rdotk=rdot-m->deep_arg.xn*temp1*m->x1mth2*sin2u;
 	rfdotk=rfdot+m->deep_arg.xn*temp1*(m->x1mth2*cos2u+1.5*m->x3thm1);
 
 	/* Orientation vectors */
 	sinuk=sin(uk);
 	cosuk=cos(uk);
-	sinik=sin(xinck);
-	cosik=cos(xinck);
-	sinnok=sin(xnodek);
-	cosnok=cos(xnodek);
+	sinik=sin(m->xinck);
+	cosik=cos(m->xinck);
+	sinnok=sin(m->xnodek);
+	cosnok=cos(m->xnodek);
 	xmx=-sinnok*cosik;
 	xmy=cosnok*cosik;
 	ux=xmx*sinuk+cosnok*cosuk;
@@ -225,21 +225,6 @@ void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double po
 	vel[1] = rdotk*uy+rfdotk*vy;
 	vel[2] = rdotk*uz+rfdotk*vz;
 
-	/* Calculations for squint angle begin here... */
-
-/*	if (calc_squint)
-	{
-		bx=cos(alat)*cos(alon+m->deep_arg.omgadf);
-		by=cos(alat)*sin(alon+m->deep_arg.omgadf);
-		bz=sin(alat);
-		cx=bx;
-		cy=by*cos(xinck)-bz*sin(xinck);
-		cz=by*sin(xinck)+bz*cos(xinck);
-		ax=cx*cos(xnodek)-cy*sin(xnodek);
-		ay=cx*sin(xnodek)+cy*cos(xnodek);
-		az=cz;
-	}
-*/	
 	/* Phase in radians */
 	m->phase=xlt-m->deep_arg.xnode-m->deep_arg.omgadf+twopi;
     
