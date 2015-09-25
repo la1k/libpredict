@@ -377,6 +377,7 @@ double predict_doppler_shift(const predict_observer_t *observer, const predict_o
  * \param orbit Current state of satellite orbit
  * \param alon Attitude longitude in radians (describes fixed point in space satellite is pointing towards at apogee)
  * \param alat Attidue latitude in radians (see above)
+ * \return Squint angle in radians. Will output nan if the satellite is not a SDP4 satellite
  **/
 double predict_squint_angle(const predict_observer_t *observer, const predict_orbit_t *orbit, double alon, double alat);
 
