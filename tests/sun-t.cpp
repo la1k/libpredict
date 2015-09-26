@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 int runtest(const char *filename)
 {
 	// Load testcase
-	TestCase testcase;
+	TestCaseReader testcase;
 	testcase.loadFromFile(filename);
 	if (!(testcase.containsValidData() && (testcase.containsValidQth()))) {
 		fprintf(stderr, "Failed to load testfile: %s\n", filename);

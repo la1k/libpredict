@@ -5,11 +5,11 @@
 #include <vector>
 #include <limits>
 
-class TestCase
+class TestCaseReader
 {
 public:
-	TestCase();
-	~TestCase();
+	TestCaseReader();
+	~TestCaseReader();
 
 	void loadFromFile(const char *filename);
 

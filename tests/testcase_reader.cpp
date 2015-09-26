@@ -14,14 +14,14 @@
 
 using namespace std;
 
-TestCase::TestCase()
+TestCaseReader::TestCaseReader()
 {
 	m_qth_latitude = NAN;
 	m_qth_longitude = NAN;
 	m_qth_altitude = 0;
 }
 
-TestCase::~TestCase()
+TestCaseReader::~TestCaseReader()
 {
 
 }
@@ -74,7 +74,7 @@ vector<string> tokenize(const string& str,const string& delimiters)
 	return tokens;
 }
 
-void TestCase::loadFromFile(const char *filename)
+void TestCaseReader::loadFromFile(const char *filename)
 {
 	
 	ifstream file(filename);
@@ -183,7 +183,7 @@ void TestCase::loadFromFile(const char *filename)
 	file.close();
 }
 	
-void TestCase::getTLE(char *tle[2])
+void TestCaseReader::getTLE(char *tle[2])
 {
 	tle[0] = new char[m_tle[0].size()];
 	tle[1] = new char[m_tle[1].size()];
@@ -191,17 +191,17 @@ void TestCase::getTLE(char *tle[2])
 	strcpy(tle[1], m_tle[1].c_str());
 }
 
-bool TestCase::containsValidData()
+bool TestCaseReader::containsValidData()
 {
 	return (m_data.size() != 0);
 }
 
-bool TestCase::containsValidQth()
+bool TestCaseReader::containsValidQth()
 {
 	return (!(::isnan(m_qth_latitude)) && !(::isnan(m_qth_longitude)));
 }
 
-bool TestCase::containsValidTLE()
+bool TestCaseReader::containsValidTLE()
 {
 	return ((m_tle[0].size() != 0) && (m_tle[1].size() != 0));
 }
