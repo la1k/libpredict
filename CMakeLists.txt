@@ -2,7 +2,8 @@
 # downwards if necessary.
 cmake_minimum_required(VERSION 2.8)
 
-project(libpredict C)
+project(libpredict C CXX)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x") #for tests written in C++
 
 include(GNUInstallDirs)
 
@@ -30,6 +31,9 @@ include_directories(AFTER ${LIBPREDICT_INCLUDE_DIR})
 
 # Tests and examples need to link with the library
 set(LIBPREDICT_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/src)
+
+# Testdata location
+set(LIBPREDICT_TEST_DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests/data)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
 
