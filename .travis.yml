@@ -1,4 +1,4 @@
-sudo: false
+#sudo: false
 
 language: c
 
@@ -21,11 +21,9 @@ before_install:
   - chmod 0600 travis/travisci_rsa
   - cp travis/travisci_rsa ~/.ssh/id_rsa
 
-# Disable Doxygen generation to avoid sudo and get on the new,
-# container-based infrastructure.
-# See http://docs.travis-ci.com/user/migrating-from-legacy/
-#install:
-#  - sudo apt-get install --yes doxygen graphviz
-#
-#after_success:
-#  - ./travis/publish-doxygen
+# Run on legacy infrastructure to generate Doxygen doc
+install:
+  - sudo apt-get install --yes doxygen graphviz
+
+after_success:
+  - ./travis/publish-doxygen
