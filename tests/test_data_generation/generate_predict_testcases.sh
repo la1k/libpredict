@@ -41,7 +41,7 @@ function generate_satellite_testcase(){
 	satellite_name="$3"
 	start_time="$4"
 	tot_secs="$5"
-	testcase_filename="test_data/testcase_satellite_${satellite_name}_$(echo $start_time | sed -r 's/[-|_|:| ]//g').dat"
+	testcase_filename="../test_data/sat_${satellite_name}_$(echo $start_time | sed -r 's/[-|_|:| ]//g').test"
 
 	#parse tle and qth information into testcase file
 	echo "[tle]" > $testcase_filename
@@ -92,7 +92,7 @@ function generate_sun_testcase(){
 	start_time="$1"
 	tot_secs="$2"
 	qth_file="$3"
-	testcase_filename="test_data/testcase_sun_$(echo $start_time | sed -r 's/[-|_|:| ]//g').dat"
+	testcase_filename="../test_data/sun_$(echo $start_time | sed -r 's/[-|_|:| ]//g').test"
 
 	#parse qth information into testcase file
 	echo "$(get_qth_string $qth_file)" >> $testcase_filename
@@ -123,7 +123,7 @@ function generate_moon_testcase(){
 	start_time="$1"
 	tot_secs="$2"
 	qth_file="$3"
-	testcase_filename="../test_data/testcase_moon_$(echo $start_time | sed -r 's/[-|_|:| ]//g').dat"
+	testcase_filename="../test_data/moon_$(echo $start_time | sed -r 's/[-|_|:| ]//g').test"
 
 	#parse qth information into testcase file
 	echo "$(get_qth_string $qth_file)" >> $testcase_filename
