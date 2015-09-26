@@ -13,7 +13,7 @@ target_link_libraries(orbit-t predict)
 file(GLOB files "${LIBPREDICT_TEST_DATA_DIR}/testcase_satellite_*")
 foreach(file ${files})
 	get_filename_component(testname ${file} NAME_WE)
-	add_test(NAME orbit-${testname} COMMAND orbit-t ${file})
+	add_test(NAME ${testname} COMMAND orbit-t ${file})
 endforeach()
 
 #test aos/los on satellite data
