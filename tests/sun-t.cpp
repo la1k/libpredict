@@ -6,7 +6,7 @@
 #include <limits>
 #include <predict/predict.h>
 
-#include "testcase.h"
+#include "testcase_reader.h"
 
 #include <iostream>
 using namespace std;

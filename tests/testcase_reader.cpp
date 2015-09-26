@@ -1,4 +1,4 @@
-#include "testcase.h"
+#include "testcase_reader.h"
 
 #include <iostream>
 #include <sstream>
