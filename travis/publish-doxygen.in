@@ -5,8 +5,9 @@ if [ -z "$TRAVIS" ]; then
     exit
 fi
 
-if [ "XX$TRAVIS_BRANCH" != "XXmaster" -o "XX$CC" != "XXgcc" ]; then
-    echo "Skipping documentation build for all except master with gcc."
+if [ "XX$TRAVIS_BRANCH" != "XXv@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@" -o "XX$CC" != "XXgcc" ]; then
+    echo "Skipping documentation build for all except gcc builds on the branch"
+    echo "named v<major>.<minor>."
     exit
 fi
 
