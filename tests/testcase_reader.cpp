@@ -19,6 +19,9 @@ TestCaseReader::TestCaseReader()
 	m_qth_latitude = NAN;
 	m_qth_longitude = NAN;
 	m_qth_altitude = 0;
+
+	m_alat = NAN;
+	m_alon = NAN;
 }
 
 TestCaseReader::~TestCaseReader()
@@ -151,6 +154,14 @@ void TestCaseReader::loadFromFile(const char *filename)
 					stringstream(value) >> m_qth_longitude;
 				} else if (key == "alt" || key == "altitude") {
 					stringstream(value) >> m_qth_altitude;
+				} else if (key == "alon"){
+					if (value != "No alon") {
+						stringstream(value) >> m_alon;
+					}
+				} else if (key == "alat"){
+					if (value != "No alat") {
+						stringstream(value) >> m_alat;
+					}
 				}
 			} break;
 
@@ -204,6 +215,11 @@ bool TestCaseReader::containsValidQth()
 bool TestCaseReader::containsValidTLE()
 {
 	return ((m_tle[0].size() != 0) && (m_tle[1].size() != 0));
+}
+
+bool TestCaseReader::containsValidAlonAlat()
+{
+	return (!(::isnan(m_alon)) && !(::isnan(m_alat)));
 }
 
 bool fuzzyCompare(const double &x, const double &y, const double &epsilon)

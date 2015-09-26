@@ -70,6 +70,8 @@ int runtest(const char *filename)
 		fprintf(stderr, "Failed to initialize observer!");
 		return -1;
 	}
+
+	bool check_squint_angle = testcase.containsValidAlonAlat() && (orbit_lower->ephemeris == EPHEMERIS_SDP4);
 	
 	// Test
 	int retval = 0;
@@ -81,6 +83,7 @@ int runtest(const char *filename)
 		double alt = d[3];
 		double az = d[4];
 		double el = d[5];
+		double squint = d[7];
 
 		// Compare values within (time - 1, time + 1) (i.e. up time + 1, but not including time + 1)
 		// (since we don't know the exact time predict generated its data, only within an error of 1 second)
@@ -114,16 +117,29 @@ int runtest(const char *filename)
 			failed += "(elevation)";
 		}
 
+		double squint_angle_lower, squint_angle_upper;
+		if (check_squint_angle) {
+			squint_angle_lower = predict_squint_angle(obs, orbit_lower, testcase.alon(), testcase.alat())*180.0/M_PI;
+			squint_angle_upper = predict_squint_angle(obs, orbit_upper, testcase.alon(), testcase.alat())*180/M_PI;
+			if (!fuzzyCompareWithBoundaries(squint_angle_lower, squint_angle_upper, squint)) {
+				failed += "(squint)";
+			}
+		}
+
 		// Failed?
 		if (failed != "") {
 			cout << filename << ": failed at data line " << line << ": " << failed << endl;
 
-			printf("%.8f, %.8f/%.8f/%.8f, %.8f/%.8f/%.8f, %.3f/%.3f/%.3f, %.3f/%.3f/%.3f, %.3f/%.3f/%.3f\n", time,
+			printf("%.8f, %.8f/%.8f/%.8f, %.8f/%.8f/%.8f, %.3f/%.3f/%.3f, %.3f/%.3f/%.3f, %.3f/%.3f/%.3f", time,
 					orbit_lower->latitude*180.0/M_PI, lat, orbit_upper->latitude*180.0/M_PI,
 					orbit_lower->longitude*180.0/M_PI, lon, orbit_upper->longitude*180.0/M_PI,
 					orbit_lower->altitude, alt, orbit_upper->altitude,
 					orbit_obs_lower.azimuth*180.0/M_PI, az, orbit_obs_upper.azimuth*180.0/M_PI,
 					orbit_obs_lower.elevation*180.0/M_PI, el, orbit_obs_upper.elevation*180.0/M_PI);
+			if (check_squint_angle) {
+				printf(" %.8f/%.8f/%.8f", squint_angle_lower, squint, squint_angle_upper);
+			}
+			printf("\n");
 
 			retval = -1;
 		}

@@ -65,7 +65,7 @@ function generate_satellite_testcase(){
 	fi
 	alatalon=$(echo $alatalon | sed -r 's/, alon/, No alon/g')
 	echo "alat=$(echo $alatalon | sed -r 's/(.*), .*/\1/g')" >> $testcase_filename
-	echo "alot=$(echo $alatalon | sed -r 's/.*, (.*)/\1/g')" >> $testcase_filename
+	echo "alon=$(echo $alatalon | sed -r 's/.*, (.*)/\1/g')" >> $testcase_filename
 
 	#predict orbit
 	echo "" >> $testcase_filename
