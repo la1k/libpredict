@@ -307,7 +307,6 @@ double predict_squint_angle(const predict_observer_t *observer, const predict_or
 		squint = acos(-(ax*obs.range_x + ay*obs.range_y + az*obs.range_z)/obs.range);
 
 	} else {
-		printf("SGP4\n");
 		squint = nan("");
 	}
 	return squint;
