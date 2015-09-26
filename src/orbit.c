@@ -14,7 +14,7 @@ bool is_eclipsed(const double pos[3], const double sol[3], double *depth);
  * This function is a combination of the original PreCalc() and
  * select_ephemeris() functions.
  **/
-predict_orbit_t *predict_create_orbit(const char *tle[])
+predict_orbit_t *predict_create_orbit(char *tle[])
 {
 	// Allocate memory for new orbit struct
 	predict_orbit_t *m = (predict_orbit_t*)malloc(sizeof(predict_orbit_t));

@@ -174,7 +174,7 @@ typedef struct {
  * \return Allocated orbit structure
  * \copyright GPLv2+
  **/
-predict_orbit_t *predict_create_orbit(const char *tle[]);
+predict_orbit_t *predict_create_orbit(char *tle[]);
 
 /**
  * Free memory allocated in orbit structure. 
