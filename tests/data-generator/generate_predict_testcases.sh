@@ -75,6 +75,7 @@ function generate_satellite_testcase(){
 	for timestemp in $steps; do
 		sleep 1
 		predict_response=($(./predict_client "GET_SAT $satellite_name"))
+		echo ${predict_response[@]} >> "test_file.dat"
 		time=$(./predict_client "GET_TIME")
 		doppler_shift=($(./predict_client "GET_DOPPLER $satellite_name"))
 		satname=${predict_response[0]}
@@ -165,13 +166,35 @@ killall predict
 #compile and prepare UDP client
 gcc -o predict_client predict_client.c
 
-#satellites
-#generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:15" "20"
-#generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:31" "20"
-generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "THOR_III" "2015-09-26 19:30" "20"
+#Elliptic orbit
+#Is SDP4, has defined alon, alat in .db-file for squint angle calc
+generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "MOLNIYA_1-29" "2015-09-26 18:00" "20"
+
+#Geostationary
+#Is SDP4, has defined alon, alat in .db-file for squint angle calc
+generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "THOR_III" "2015-09-26 18:00" "20"
+
+#Sun-synchronous
+generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "HINODE" "2015-09-26 18:00" "20"
+
+#Frozen orbit
+generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "ERS-1" "2015-09-26 18:00" "20"
+
+#High Earth Orbit
+generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "VELA-1" "2015-09-26 18:00" "20"
+
+#Medium Earth Orbit
+#Is SDP4, has defined alon, alat in .db-file for squint angle calc
+generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "GPS_BIIA-10" "2015-09-26 18:00" "20"
+
+#Tundra orbit
+generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "SIRIUS-1" "2015-09-26 18:00" "20"
+
+#Low Earth Orbit
+generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "ISS" "2015-09-26 18:00" "20"
 
 #sun and moon
-#generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth"
-#generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth"
-#generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth"
-#generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth"
+generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth"
+generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth"
+generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth"
+generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth"
