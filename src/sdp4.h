@@ -54,7 +54,8 @@ struct _sdp4 {
 	stepn, step2, preep, pl, sghs, xli, d2201, d2211, sghl, sh1, pinc,
 	pe, shs, zsingl, zcosgl, zsinhl, zcoshl, zsinil, zcosil;
 
-
+	//Variables that are used locally in SDP4(), but also are used to calculate squint angle elsewhere
+	double xnodek, xinck;
 };
 
 /**

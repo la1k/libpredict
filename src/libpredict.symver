@@ -17,6 +17,7 @@ VER_0.1 {
 		predict_decayed;
 		predict_is_eclipsed;
 		predict_eclipse_depth;
+		predict_squint_angle;
 		predict_create_observer;
 		predict_destroy_observer;
 		predict_observe_orbit;
