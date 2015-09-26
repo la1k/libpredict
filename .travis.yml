@@ -24,6 +24,9 @@ before_install:
 # Disable Doxygen generation to avoid sudo and get on the new,
 # container-based infrastructure.
 # See http://docs.travis-ci.com/user/migrating-from-legacy/
+# In any case, publish-doxygen should be changed to generate
+# the URL from the branch so that master doesn't overwrite a
+# stable version doc.
 #install:
 #  - sudo apt-get install --yes doxygen graphviz
 #
