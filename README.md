@@ -49,6 +49,8 @@ License
  Copyright 2013-2015 Thomas Ingebretsen (LA9ERA)
  
  Copyright 2013-2015 Norvald H. Ryeng (LA6YKA)
+ 
+ Copyright 2015 Asgeir Bjørgan (LA9SSA)
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
