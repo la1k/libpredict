@@ -36,12 +36,11 @@ var searchData=
   ['predict_5frefraction_5ffrom_5fapparent_5fext',['predict_refraction_from_apparent_ext',['../predict_8h.html#a86cbb73740df1a66f9e55f14257b80a7',1,'predict.h']]],
   ['predict_5frefraction_5frate',['predict_refraction_rate',['../predict_8h.html#a2002ac1695cb4d0765827e5af2e22156',1,'predict.h']]],
   ['predict_5frefraction_5frate_5fext',['predict_refraction_rate_ext',['../predict_8h.html#a041cd939c694488e34bf87777c945044',1,'predict.h']]],
-  ['predict_5fsquint_5fangle',['predict_squint_angle',['../predict_8h.html#a9f87c75cf9c7608cb67869aa78f69b62',1,'predict.h']]],
   ['predict_5ftle_5ft',['predict_tle_t',['../structpredict__tle__t.html',1,'']]],
   ['predict_5fto_5fjulian',['predict_to_julian',['../predict_8h.html#a65f9ca82ed8638e1b719700679c7fd42',1,'predict.h']]],
   ['predict_5fversion',['predict_version',['../predict_8h.html#aa548d71016a681aad026f56a3aa2e88e',1,'predict_version():&#160;predict.h'],['../predict_8h.html#abbceafdcd327036ca16cc01bf1d3cafd',1,'PREDICT_VERSION():&#160;predict.h']]],
   ['predict_5fversion_5fmajor',['PREDICT_VERSION_MAJOR',['../predict_8h.html#a58af86f66c3c1dde1cef10628b89a21a',1,'PREDICT_VERSION_MAJOR():&#160;predict.h'],['../predict_8h.html#a4e3f6f898df1e6661cf1e69856e91430',1,'predict_version_major():&#160;predict.h']]],
-  ['predict_5fversion_5fminor',['PREDICT_VERSION_MINOR',['../predict_8h.html#afdbc34e83c5e17d6cc77e1fd5d7c84a1',1,'PREDICT_VERSION_MINOR():&#160;predict.h'],['../predict_8h.html#ad7cc64e61a93d26421fa0eec7f5c773b',1,'predict_version_minor():&#160;predict.h']]],
+  ['predict_5fversion_5fminor',['predict_version_minor',['../predict_8h.html#ad7cc64e61a93d26421fa0eec7f5c773b',1,'predict_version_minor():&#160;predict.h'],['../predict_8h.html#afdbc34e83c5e17d6cc77e1fd5d7c84a1',1,'PREDICT_VERSION_MINOR():&#160;predict.h']]],
   ['predict_5fversion_5fpatch',['PREDICT_VERSION_PATCH',['../predict_8h.html#a6397e05f7f49034b23c4faeb09c8881e',1,'PREDICT_VERSION_PATCH():&#160;predict.h'],['../predict_8h.html#a38b374abf1da1f2fed68ba353e0fd722',1,'predict_version_patch():&#160;predict.h']]],
-  ['predict_5fversion_5fstring',['PREDICT_VERSION_STRING',['../predict_8h.html#ab8b29d5506120f6654b52a668f17754d',1,'PREDICT_VERSION_STRING():&#160;predict.h'],['../predict_8h.html#a95db5f5f388275b8849291d48803a84e',1,'predict_version_string():&#160;predict.h']]]
+  ['predict_5fversion_5fstring',['predict_version_string',['../predict_8h.html#a95db5f5f388275b8849291d48803a84e',1,'predict_version_string():&#160;predict.h'],['../predict_8h.html#ab8b29d5506120f6654b52a668f17754d',1,'PREDICT_VERSION_STRING():&#160;predict.h']]]
 ];

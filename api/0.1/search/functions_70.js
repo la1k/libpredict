@@ -29,7 +29,6 @@ var searchData=
   ['predict_5frefraction_5ffrom_5fapparent_5fext',['predict_refraction_from_apparent_ext',['../predict_8h.html#a86cbb73740df1a66f9e55f14257b80a7',1,'predict.h']]],
   ['predict_5frefraction_5frate',['predict_refraction_rate',['../predict_8h.html#a2002ac1695cb4d0765827e5af2e22156',1,'predict.h']]],
   ['predict_5frefraction_5frate_5fext',['predict_refraction_rate_ext',['../predict_8h.html#a041cd939c694488e34bf87777c945044',1,'predict.h']]],
-  ['predict_5fsquint_5fangle',['predict_squint_angle',['../predict_8h.html#a9f87c75cf9c7608cb67869aa78f69b62',1,'predict.h']]],
   ['predict_5fto_5fjulian',['predict_to_julian',['../predict_8h.html#a65f9ca82ed8638e1b719700679c7fd42',1,'predict.h']]],
   ['predict_5fversion',['predict_version',['../predict_8h.html#aa548d71016a681aad026f56a3aa2e88e',1,'predict.h']]],
   ['predict_5fversion_5fmajor',['predict_version_major',['../predict_8h.html#a4e3f6f898df1e6661cf1e69856e91430',1,'predict.h']]],
