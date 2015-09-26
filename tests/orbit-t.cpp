@@ -119,8 +119,8 @@ int runtest(const char *filename)
 
 		double squint_angle_lower, squint_angle_upper;
 		if (check_squint_angle) {
-			squint_angle_lower = predict_squint_angle(obs, orbit_lower, testcase.alon(), testcase.alat())*180.0/M_PI;
-			squint_angle_upper = predict_squint_angle(obs, orbit_upper, testcase.alon(), testcase.alat())*180/M_PI;
+			squint_angle_lower = predict_squint_angle(obs, orbit_lower, testcase.alon()*M_PI/180.0, testcase.alat()*M_PI/180.0)*180.0/M_PI;
+			squint_angle_upper = predict_squint_angle(obs, orbit_upper, testcase.alon()*M_PI/180.0, testcase.alat()*M_PI/180.0)*180/M_PI;
 			if (!fuzzyCompareWithBoundaries(squint_angle_lower, squint_angle_upper, squint)) {
 				failed += "(squint)";
 			}
