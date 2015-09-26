@@ -26,6 +26,9 @@ set_target_properties(predict PROPERTIES PUBLIC_HEADER "${predict_public_header}
 # Maybe needed on Mac OS?
 #set_target_properties(predict PROPERTIES FRAMEWORK TRUE)
 
+target_link_libraries(predict m)
+target_link_libraries(predict_static m)
+
 # Tell the linker to use the symbol version script
 get_property(predict_link_flags TARGET predict PROPERTY LINK_FLAGS)
 set(predict_link_flags "${predict_link_flags} -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libpredict.symver")
