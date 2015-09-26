@@ -38,19 +38,34 @@ function get_qth_string(){
 function generate_satellite_testcase(){
 	tle_file="$1"
 	qth_file="$2"
-	satellite_name="$3"
-	start_time="$4"
-	tot_secs="$5"
+	db_file="$3"
+	satellite_name="$4"
+	start_time="$5"
+	tot_secs="$6"
 	testcase_filename="../data/sat_${satellite_name}_$(echo $start_time | sed -r 's/[-|_|:| ]//g').test"
+
+	#move db file where predict can find it
+	mkdir -p .predict
+	cp $db_file .predict/predict.db
+	HOME="."
 
 	#parse tle and qth information into testcase file
 	echo "[tle]" > $testcase_filename
-	grep -A 2 $satellite_name $tle_file | tail -2 >> $testcase_filename
+	grep -A 2 "$satellite_name" $tle_file | tail -2 >> $testcase_filename
 
 	echo "" >> $testcase_filename
 	echo "$(get_qth_string $qth_file)" >> $testcase_filename
 
 	echo "freq=0" >> $testcase_filename
+
+	#parse alat, alon into testcase file
+	alatalon=$(echo $(grep "$satellite_name" "$db_file" -A 2 | sed '3!d' | sed -rn 's/(.*)/\1/p'))
+	if [ -z "$alatalon" ]; then
+		alatalon="No alat, alon" #in case there was no entry for the satellite in the .db file
+	fi
+	alatalon=$(echo $alatalon | sed -r 's/, alon/, No alon/g')
+	echo "alat=$(echo $alatalon | sed -r 's/(.*), .*/\1/g')" >> $testcase_filename
+	echo "alot=$(echo $alatalon | sed -r 's/.*, (.*)/\1/g')" >> $testcase_filename
 
 	#predict orbit
 	echo "" >> $testcase_filename
@@ -77,7 +92,7 @@ function generate_satellite_testcase(){
 		phase=${predict_response[12]}
 		eclipse_depth=${predict_response[13]}
 		squint=${predict_response[14]}
-		echo "$time,$lat,$lon,$alt,$az,$el,$doppler_shift" >> $testcase_filename
+		echo "$time,$lat,$lon,$alt,$az,$el,$doppler_shift,$squint" >> $testcase_filename
 	done
 	killall predict
 	sleep 1
@@ -151,11 +166,12 @@ killall predict
 gcc -o predict_client predict_client.c
 
 #satellites
-generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:15" "20"
-generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:31" "20"
+#generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:15" "20"
+#generate_satellite_testcase "testcase.tle" "testcase.qth" "OSCAR-7" "2015-09-20 19:31" "20"
+generate_satellite_testcase "testcase.tle" "testcase.qth" "testcase.db" "THOR_III" "2015-09-26 19:30" "20"
 
 #sun and moon
-generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth"
-generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth"
-generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth"
-generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth"
+#generate_sun_testcase "2015-09-20 19:33" "20" "testcase.qth"
+#generate_sun_testcase "2015-09-21 06:00" "20" "testcase.qth"
+#generate_moon_testcase "2015-09-20 10:00" "20" "testcase.qth"
+#generate_moon_testcase "2015-09-20 16:00" "20" "testcase.qth"
