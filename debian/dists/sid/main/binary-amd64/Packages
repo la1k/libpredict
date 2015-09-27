@@ -1,0 +1,37 @@
+Package: libpredict1
+Version: 1.0.0-1
+Architecture: amd64
+Maintainer: Norvald H. Ryeng <norvald@ryeng.name>
+Installed-Size: 83
+Depends: libc6 (>= 2.4)
+Homepage: https://la1k.github.io/libpredict/
+Priority: optional
+Section: libs
+Filename: pool/main/libp/libpredict1/libpredict1_1.0.0-1_amd64.deb
+Size: 28532
+SHA256: 261e434c4001f97f357281407419511fb5cca077901d6b502d29b4a91acf8494
+SHA1: e8817541351e92af78fe8f097e76227a6d622ffc
+MD5sum: 89dcfa518eab15665f90dbc48ba1134f
+Description: Satellite orbit prediction library
+ Libpredict provides functions to calculate solar, lunar and satellite
+ positions from orbit parameters.
+
+Package: libpredict1-dev
+Source: libpredict1
+Version: 1.0.0-1
+Architecture: amd64
+Maintainer: Norvald H. Ryeng <norvald@ryeng.name>
+Installed-Size: 158
+Depends: libpredict1 (= 1.0.0-1)
+Homepage: https://la1k.github.io/libpredict/
+Priority: optional
+Section: libdevel
+Filename: pool/main/libp/libpredict1/libpredict1-dev_1.0.0-1_amd64.deb
+Size: 34978
+SHA256: e1efe4e218fc46f3ec5a15bfa4e794ca7b640bba60b50ce4c52028336d19bc49
+SHA1: 484b367b45b9d733526b5f63bc2ae0f045e7fed7
+MD5sum: 763bc61b1ebeec2324bb91570dcf1b8c
+Description: Development files for libpredict1
+ Libpredict provides functions to calculate solar, lunar and satellite
+ positions from orbit parameters.
+

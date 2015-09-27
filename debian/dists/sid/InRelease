@@ -1,0 +1,39 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Origin: libpredict
+Label: libpredict
+Codename: sid
+Date: Sun, 27 Sep 2015 08:38:12 UTC
+Architectures: amd64
+Components: main
+Description: Apt repository for libpredict
+MD5Sum:
+ b59b7e1a51ab98171c339e59c2c94176 1287 main/binary-amd64/Packages
+ 39c34b8e0610bf2ab321283fcf86fc03 602 main/binary-amd64/Packages.gz
+ ae80d94318f25c97d4dd815446c23807 116 main/binary-amd64/Release
+SHA1:
+ 4d46e9cadba38237b20b87bd35b3e81af8bb5269 1287 main/binary-amd64/Packages
+ 7b393e3d6ebaeec34ba895bc3ac0b5ea6574fae4 602 main/binary-amd64/Packages.gz
+ 5a0a63c78d5a1ba844a33e6dacf8cebb2a2e81c8 116 main/binary-amd64/Release
+SHA256:
+ f17e2c303d5b91f2081591f3a3b06dfb14c7aa5a9baddb02969b39f949b93eac 1287 main/binary-amd64/Packages
+ 775b4334d2594c4ab915c44ef805c8b09c3398a777a95eba4dc411c36a5f1bff 602 main/binary-amd64/Packages.gz
+ 2dee9cdd1e780d27fe1c2b933d7537c6fe69e9c2dbadd9f51b4b7aa4e3762df1 116 main/binary-amd64/Release
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJWB6r+AAoJEHvc5yp5TXitgNwP/idOm6z2k4uxvh9Swbx6yhHy
+NbUgvHr2U3xCzRONvUi0Wf7vqcgXpu05OOzqzHtvsICTDNvwmIJWG13HFodRtJ7/
+492CdP0uvRv7vfAqRMnBIKn1XIYFza8ICEaWquhfcMhMKZVIoz8hxFOV8K6mNJA7
+PsSuTUa7Bjck4ER0H/4EzLPZ2VSxWEe8vlKruueDRTmGA+lOam/E5v6ehDikeIsw
+Uz2hqwvgfasD4rw9la7wrBUMWqOJ4CFrhgjh8fsEDPyxOGxrz3+CjUbt8OyKyZSa
+QoVB+pioc9N/aqMDLn4oa2TYDMfguODjXSsXrU8KuLAVECkaYzrMwknzKfx47Wy4
+lxVhsgAM4TgkVklGZuPqCbEfrCzkz2eMESKt9/EWZjAkah65WVW6CPYRxefKQAj+
+70oZZ3K6LGEuIeB3o7OfiCB6n7JkZlni7mjQqn89D9i7g8sxkxs32qFAiBgDvwc1
+uqGlXC9T3jOVoHjKa5chQUhNS7jbPxdKIc/6GVzh5ZuWBdKYzq+nMMjuMqXWGsti
+IyTD92Htkui1zPaZB0v/uRw5xkNbps2Q8nIdGbvOsLQxsHmnSfLiPH5hGRn2Vuom
+YGm2FCaPVuyKEXCPryG2qj2C04PQm4pZnZ9o2nOxnqQlAcm7Bfs2fy51zDqhvdlp
++75/CHSw0tKwKKdEn3tm
+=K5n7
+-----END PGP SIGNATURE-----

@@ -1,0 +1,19 @@
+Origin: libpredict
+Label: libpredict
+Codename: sid
+Date: Sun, 27 Sep 2015 08:38:12 UTC
+Architectures: amd64
+Components: main
+Description: Apt repository for libpredict
+MD5Sum:
+ b59b7e1a51ab98171c339e59c2c94176 1287 main/binary-amd64/Packages
+ 39c34b8e0610bf2ab321283fcf86fc03 602 main/binary-amd64/Packages.gz
+ ae80d94318f25c97d4dd815446c23807 116 main/binary-amd64/Release
+SHA1:
+ 4d46e9cadba38237b20b87bd35b3e81af8bb5269 1287 main/binary-amd64/Packages
+ 7b393e3d6ebaeec34ba895bc3ac0b5ea6574fae4 602 main/binary-amd64/Packages.gz
+ 5a0a63c78d5a1ba844a33e6dacf8cebb2a2e81c8 116 main/binary-amd64/Release
+SHA256:
+ f17e2c303d5b91f2081591f3a3b06dfb14c7aa5a9baddb02969b39f949b93eac 1287 main/binary-amd64/Packages
+ 775b4334d2594c4ab915c44ef805c8b09c3398a777a95eba4dc411c36a5f1bff 602 main/binary-amd64/Packages.gz
+ 2dee9cdd1e780d27fe1c2b933d7537c6fe69e9c2dbadd9f51b4b7aa4e3762df1 116 main/binary-amd64/Release

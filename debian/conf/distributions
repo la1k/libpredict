@@ -1,0 +1,7 @@
+Origin: libpredict
+Label: libpredict
+Codename: sid
+Architectures: amd64
+Components: main
+Description: Apt repository for libpredict
+SignWith: 794D78AD
