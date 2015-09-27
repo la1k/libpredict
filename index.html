@@ -46,6 +46,16 @@
 
 <p>Find the latest and previous releases on <a href="http://github.com/la1k/libpredict/tags">the GitHub release page</a>.</p>
 
+<h3>
+<a id="debian-repo" class="anchor" href="#debian-repo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Debian </h3>
+
+<p>We have an apt repo with binaries for amd64. To use it, please add the following to <code>/etc/apt/sources.list.d/libpredict.list</code>:</p>
+
+<pre>deb [arch=amd64] http://la1k.github.io/libpredict/debian sid main</pre>
+
+<p>The packages are signed by one of the developers. To install the key run this command as root:</p>
+<pre>wget -O - http://ryeng.name/keys/CEB746D9.asc | apt-key add -</pre>
+
       </section>
     </div>
 
