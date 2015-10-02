@@ -214,11 +214,11 @@ int predict_orbit(predict_orbit_t *m, double utc)
 	switch (m->ephemeris) {
 		case EPHEMERIS_SDP4:
 			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, &m->tle, m->position, m->velocity);
-			m->phase = ((struct _sdp4*)m->ephemeris_data->phase;
+			m->phase = ((struct _sdp4*)m->ephemeris_data)->phase;
 			break;
 		case EPHEMERIS_SGP4:
 			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, &m->tle, m->position, m->velocity);
-			m->phase = ((struct _sgp4*)m->ephemeris_data->phase;
+			m->phase = ((struct _sgp4*)m->ephemeris_data)->phase;
 			break;
 		default:
 			//Panic!
