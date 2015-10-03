@@ -84,6 +84,8 @@ int runtest(const char *filename)
 		double az = d[4];
 		double el = d[5];
 		double squint = d[7];
+		double phase = d[8];
+		long revolutions = d[9];
 
 		// Compare values within (time - 1, time + 1) (i.e. up time + 1, but not including time + 1)
 		// (since we don't know the exact time predict generated its data, only within an error of 1 second)
@@ -125,6 +127,12 @@ int runtest(const char *filename)
 				failed += "(squint)";
 			}
 		}
+		if (!fuzzyCompareWithBoundaries(orbit_lower->phase*180.0/M_PI, orbit_upper->phase*180.0/M_PI, phase)) {
+			failed += "(phase)";
+		}
+		if (!fuzzyCompareWithBoundaries(orbit_lower->revolutions, orbit_upper->revolutions, revolutions)) {
+			failed += "(revolutions)";
+		}
 
 		// Failed?
 		if (failed != "") {
@@ -137,8 +145,9 @@ int runtest(const char *filename)
 					orbit_obs_lower.azimuth*180.0/M_PI, az, orbit_obs_upper.azimuth*180.0/M_PI,
 					orbit_obs_lower.elevation*180.0/M_PI, el, orbit_obs_upper.elevation*180.0/M_PI);
 			if (check_squint_angle) {
-				printf(" %.8f/%.8f/%.8f", squint_angle_lower, squint, squint_angle_upper);
+				printf(", %.8f/%.8f/%.8f", squint_angle_lower, squint, squint_angle_upper);
 			}
+			printf(", %.8f/%.8f/%.8f, %d/%d/%d", orbit_lower->phase*180.0/M_PI, phase, orbit_upper->phase*180.0/M_PI, orbit_lower->revolutions, revolutions, orbit_upper->revolutions);
 			printf("\n");
 
 			retval = -1;
