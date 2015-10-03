@@ -127,6 +127,8 @@ typedef struct {
 	double eclipse_depth;
 	///Orbital phase
 	double phase;
+	///The current number of revolutions around Earth
+	long revolutions;
 	///Which perturbation model to use
 	enum predict_ephemeris ephemeris;
 	///Original TLE line number one:
