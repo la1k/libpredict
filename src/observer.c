@@ -50,7 +50,7 @@ void predict_observe_orbit(const predict_observer_t *observer, const predict_orb
 	obs->visible = false;
 	struct predict_observation sun_obs;
 	predict_observe_sun(observer, orbit->time, &sun_obs);
-	if (!(orbit->eclipsed) && (sun_obs.elevation < VISIBILITY_SUN_ELE_UPPER_THRESH) && (obs->elevation > VISIBILITY_ORBIT_ELE_LOWER_THRESH)) {
+	if (!(orbit->eclipsed) && (sun_obs.elevation*180.0/M_PI < VISIBILITY_SUN_ELE_UPPER_THRESH) && (obs->elevation*180.0/M_PI > VISIBILITY_ORBIT_ELE_LOWER_THRESH)) {
 		obs->visible = true;
 	}
 }
