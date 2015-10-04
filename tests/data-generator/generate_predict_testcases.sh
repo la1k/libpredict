@@ -91,10 +91,23 @@ function generate_satellite_testcase(){
 		vel=${predict_response[9]}
 		revolutions=${predict_response[10]}
 		visibility=${predict_response[11]}
+
+		case $visibility in
+			N)
+				visibility="0"
+				;;
+			D)
+				visibility="1"
+				;;
+			V)
+				visibility="2"
+				;;
+		esac
+
 		phase=${predict_response[12]}
 		eclipse_depth=${predict_response[13]}
 		squint=${predict_response[14]}
-		echo "$time,$lat,$lon,$alt,$az,$el,$doppler_shift,$squint,$phase,$revolutions" >> $testcase_filename
+		echo "$time,$lat,$lon,$alt,$az,$el,$doppler_shift,$squint,$phase,$revolutions,$footprint,$range,$vel,$visibility,$eclipse_depth" >> $testcase_filename
 	done
 	killall predict
 	sleep 1
