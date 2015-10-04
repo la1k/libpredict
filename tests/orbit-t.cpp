@@ -151,12 +151,14 @@ int runtest(const char *filename)
 		if (!fuzzyCompareWithBoundaries(orbit_obs_lower.range, orbit_obs_upper.range, range)) {
 			failed += "(range)";
 		}
-		if (!fuzzyCompareWithBoundaries(orbit_obs_lower.velocity, orbit_obs_upper.velocity, velocity)) {
+		double velocity_lower = sqrt(pow(orbit_lower->velocity[0], 2.0) + pow(orbit_lower->velocity[1], 2.0) + pow(orbit_lower->velocity[2], 2.0));
+		double velocity_upper = sqrt(pow(orbit_upper->velocity[0], 2.0) + pow(orbit_upper->velocity[1], 2.0) + pow(orbit_upper->velocity[2], 2.0));
+		if (!fuzzyCompareWithBoundaries(velocity_lower, velocity_upper, velocity)) {
 			failed += "(velocity)";
 		}
 
 		// Eclipse depth
-		if (!fuzzyCompareWithBoundaries(orbit_lower->eclipse_depth, orbit_upper->eclipse_depth, eclipse_depth)) {
+		if (!fuzzyCompareWithBoundaries(orbit_lower->eclipse_depth*180.0/M_PI, orbit_upper->eclipse_depth*180.0/M_PI, eclipse_depth)) {
 			failed += "(eclipse_depth)";
 		}
 
