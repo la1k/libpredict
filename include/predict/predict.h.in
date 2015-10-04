@@ -287,6 +287,8 @@ struct predict_observation {
 	double range_x, range_y, range_z; 
 	///Range velocity (km/s) 
 	double range_rate;      
+	///Visibility status, whether satellite can be seen through optical means
+	bool visible;
 };
 
 /**
