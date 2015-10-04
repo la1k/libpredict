@@ -83,9 +83,30 @@ int runtest(const char *filename)
 		double alt = d[3];
 		double az = d[4];
 		double el = d[5];
+		double doppler = d[6];
 		double squint = d[7];
 		double phase = d[8];
 		long revolutions = d[9];
+		double footprint = d[10];
+		double range = d[11];
+		double velocity = d[12];
+		double visibility = d[13];
+		double eclipse_depth = d[14];
+
+		bool is_in_sunlight = false;
+		bool is_visible = false;
+
+		// Parse visibility value
+		if (visibility == 0.0) {
+			is_in_sunlight = false;
+			is_visible = false;
+		} else if (visibility == 1.0) {
+			is_in_sunlight = true;
+			is_visible = false;
+		} else if (visibility == 2.0) {
+			is_in_sunlight = true;
+			is_visible = true;
+		}
 
 		// Compare values within (time - 1, time + 1) (i.e. up time + 1, but not including time + 1)
 		// (since we don't know the exact time predict generated its data, only within an error of 1 second)
@@ -103,6 +124,8 @@ int runtest(const char *filename)
 
 		// Check values
 		string failed = "";
+
+		// Lat, lon, alt
 		if (!fuzzyCompareWithBoundaries(orbit_lower->latitude*180.0/M_PI, orbit_upper->latitude*180/M_PI, lat)) {
 			failed += "(latitude)";
 		}
@@ -112,6 +135,8 @@ int runtest(const char *filename)
 		if (!fuzzyCompareWithBoundaries(orbit_lower->altitude, orbit_upper->altitude, alt)) {
 			failed += "(altitude)";
 		}
+
+		// Azi, ele
 		if (!fuzzyCompareWithBoundaries(orbit_obs_lower.azimuth*180.0/M_PI, orbit_obs_upper.azimuth*180.0/M_PI, az)) {
 			failed += "(azimuth)";
 		}
@@ -119,6 +144,31 @@ int runtest(const char *filename)
 			failed += "(elevation)";
 		}
 
+		// Footprint, range, velocity
+		if (!fuzzyCompareWithBoundaries(orbit_lower->footprint, orbit_upper->footprint, footprint)) {
+			failed += "(footprint)";
+		}
+		if (!fuzzyCompareWithBoundaries(orbit_obs_lower.range, orbit_obs_upper.range, range)) {
+			failed += "(range)";
+		}
+		if (!fuzzyCompareWithBoundaries(orbit_obs_lower.velocity, orbit_obs_upper.velocity, velocity)) {
+			failed += "(velocity)";
+		}
+
+		// Eclipse depth
+		if (!fuzzyCompareWithBoundaries(orbit_lower->eclipse_depth, orbit_upper->eclipse_depth, eclipse_depth)) {
+			failed += "(eclipse_depth)";
+		}
+
+		// Visibility status
+		if (!(orbit_lower->eclipsed) != is_in_sunlight) {
+			failed += "(eclipsed)";
+		}
+		if (orbit_obs_lower.visible != is_visible) {
+			failed += "(visibility)";
+		}
+
+		// Squint angle
 		double squint_angle_lower, squint_angle_upper;
 		if (check_squint_angle) {
 			squint_angle_lower = predict_squint_angle(obs, orbit_lower, testcase.alon()*M_PI/180.0, testcase.alat()*M_PI/180.0)*180.0/M_PI;
