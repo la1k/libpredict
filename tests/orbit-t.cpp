@@ -176,7 +176,7 @@ int runtest(const char *filename)
 			if (!fuzzyCompareWithBoundaries(squint_angle_lower, squint_angle_upper, squint)) {
 				failed += "(squint)";
 			}
-		} 
+		}
 
 		// Phase
 		if (!fuzzyCompareWithBoundaries(orbit_lower->phase*180.0/M_PI, orbit_upper->phase*180.0/M_PI, phase)) {
