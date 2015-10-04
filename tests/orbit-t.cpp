@@ -144,7 +144,13 @@ int runtest(const char *filename)
 			failed += "(elevation)";
 		}
 
-		// Footprint, range, velocity
+		// Doppler shift, footprint, range, velocity
+		double frequency = 0;
+		double doppler_lower = predict_doppler_shift(obs, orbit_lower, frequency);
+		double doppler_upper = predict_doppler_shift(obs, orbit_upper, frequency);
+		if (!fuzzyCompareWithBoundaries(doppler_lower, doppler_upper, doppler)) {
+			failed += "(doppler)";
+		}
 		if (!fuzzyCompareWithBoundaries(orbit_lower->footprint, orbit_upper->footprint, footprint)) {
 			failed += "(footprint)";
 		}
@@ -200,6 +206,14 @@ int runtest(const char *filename)
 					orbit_lower->altitude, alt, orbit_upper->altitude,
 					orbit_obs_lower.azimuth*180.0/M_PI, az, orbit_obs_upper.azimuth*180.0/M_PI,
 					orbit_obs_lower.elevation*180.0/M_PI, el, orbit_obs_upper.elevation*180.0/M_PI);
+			printf(", %.8f/%.8f/%.8f", doppler_lower, doppler, doppler_upper);
+			printf(", %.8f/%.8f/%.8f", orbit_lower->footprint, footprint, orbit_upper->footprint);
+			printf(", %.8f/%.8f/%.8f", orbit_obs_lower.range, range, orbit_obs_upper.range);
+			printf(", %.8f/%.8f/%.8f", velocity_lower, velocity, velocity_upper);
+			printf(", %.8f/%.8f/%.8f", orbit_lower->eclipse_depth*180.0/M_PI, eclipse_depth, orbit_upper->eclipse_depth*180.0/M_PI);
+			printf(", %d/%d", !(orbit_lower->eclipsed), is_in_sunlight);
+			printf(", %d/%d", orbit_obs_lower.visible, is_visible);
+
 			if (check_squint_angle) {
 				printf(", %.8f/%.8f/%.8f", squint_angle_lower, squint, squint_angle_upper);
 			}
