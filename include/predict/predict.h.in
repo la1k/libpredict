@@ -125,7 +125,7 @@ typedef struct {
 	int eclipsed;
 	///Eclipse depth
 	double eclipse_depth;
-	///Orbital phase
+	///Orbital phase (mean anomaly)
 	double phase;
 	///The current number of revolutions around Earth
 	long revolutions;
