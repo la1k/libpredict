@@ -287,7 +287,11 @@ struct predict_observation {
 	double range_x, range_y, range_z; 
 	///Range velocity (km/s) 
 	double range_rate;      
-	///Visibility status, whether satellite can be seen through optical means
+	///Visibility status, whether satellite can be seen by optical means.
+	///The satellite is defined to be visible if:
+	//	- The satellite is in sunlight
+	//	- The satellite is above the horizon
+	//	- The sky is dark enough (sun elevation is below a fixed threshold)
 	bool visible;
 };
 
