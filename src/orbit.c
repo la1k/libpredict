@@ -241,7 +241,7 @@ int predict_orbit(predict_orbit_t *m, double utc)
 	m->eclipsed = is_eclipsed(m->position, solar_vector, &m->eclipse_depth);
 
 	// Calculate footprint
-	m->footprint = 12756.33*acos(xkmper/(xkmper + m->altitude));
+	m->footprint = 2.0*xkmper*acos(xkmper/(xkmper + m->altitude));
 
 	return 0;
 }
