@@ -119,6 +119,8 @@ typedef struct {
 	double longitude;
 	///Altitude in km
 	double altitude;
+	///Footprint diameter in km
+	double footprint;
 	///Whether satellite is eclipsed by the earth
 	int eclipsed;
 	///Eclipse depth

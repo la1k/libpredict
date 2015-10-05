@@ -32,6 +32,7 @@ predict_orbit_t *predict_create_orbit(char *tle[])
 	m->altitude = nan("");
 	m->eclipsed = false;
 	m->eclipse_depth = nan("");
+	m->footprint = nan("");
 
 	//Parse TLE
 	double tempnum;
@@ -238,6 +239,9 @@ int predict_orbit(predict_orbit_t *m, double utc)
 
 	// Find eclipse depth and if sat is eclipsed
 	m->eclipsed = is_eclipsed(m->position, solar_vector, &m->eclipse_depth);
+
+	// Calculate footprint
+	m->footprint = 2.0*xkmper*acos(xkmper/(xkmper + m->altitude));
 
 	return 0;
 }
