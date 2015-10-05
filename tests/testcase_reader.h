@@ -49,8 +49,9 @@ bool fuzzyCompare(const double &x, const double &y, const double &epsilon = std:
  * \param boundary_value_1 Boundary value 1
  * \param boundary_value_2 Boundary value 2
  * \param compared_value Compared value
+ * \param offset Offset added to each boundary value in order to permit larger deviations from the allowed range. Defaults to 0.05, since predict usually is accurate to two decimals
  * \return True if the compared value lies within the boundary values
  **/
-bool fuzzyCompareWithBoundaries(const double &boundary_value_1, const double &boundary_value_2, const double &compared_value);
+bool fuzzyCompareWithBoundaries(const double &boundary_value_1, const double &boundary_value_2, const double &compared_value, double offset = 0.05);
 
 #endif

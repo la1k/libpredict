@@ -151,7 +151,7 @@ int runtest(const char *filename)
 		if (!fuzzyCompareWithBoundaries(doppler_lower, doppler_upper, doppler)) {
 			failed += "(doppler)";
 		}
-		if (!fuzzyCompareWithBoundaries(orbit_lower->footprint, orbit_upper->footprint, footprint)) {
+		if (!fuzzyCompareWithBoundaries(orbit_lower->footprint, orbit_upper->footprint, footprint, 1)) {
 			failed += "(footprint)";
 		}
 		if (!fuzzyCompareWithBoundaries(orbit_obs_lower.range, orbit_obs_upper.range, range)) {
