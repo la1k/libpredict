@@ -47,6 +47,7 @@ function generate_satellite_testcase(){
 	#move db file where predict can find it
 	mkdir -p .predict
 	cp $db_file .predict/predict.db
+	prevhome="$HOME"
 	HOME="."
 
 	#parse tle and qth information into testcase file
@@ -88,15 +89,16 @@ function generate_satellite_testcase(){
 		range=${predict_response[7]}
 		alt=${predict_response[8]}
 		vel=${predict_response[9]}
-		orbitnum=${predict_response[10]}
+		revolutions=${predict_response[10]}
 		visibility=${predict_response[11]}
 		phase=${predict_response[12]}
 		eclipse_depth=${predict_response[13]}
 		squint=${predict_response[14]}
-		echo "$time,$lat,$lon,$alt,$az,$el,$doppler_shift,$squint" >> $testcase_filename
+		echo "$time,$lat,$lon,$alt,$az,$el,$doppler_shift,$squint,$phase,$revolutions" >> $testcase_filename
 	done
 	killall predict
 	sleep 1
+	HOME="$prevhome"
 }
 
 # Generate testcase data for sun tracking. 

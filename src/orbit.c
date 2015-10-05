@@ -33,6 +33,8 @@ predict_orbit_t *predict_create_orbit(char *tle[])
 	m->eclipsed = false;
 	m->eclipse_depth = nan("");
 	m->footprint = nan("");
+	m->phase = nan("");
+	m->revolutions = 0;
 
 	//Parse TLE
 	double tempnum;
@@ -207,15 +209,16 @@ int predict_orbit(predict_orbit_t *m, double utc)
 
 	double jul_epoch = Julian_Date_of_Epoch(m->tle.epoch);
 	double tsince = (julTime - jul_epoch)*xmnpda;
-	//double age=m->time-jul_epoch;
 
 	/* Call NORAD routines according to deep-space flag. */
 	switch (m->ephemeris) {
 		case EPHEMERIS_SDP4:
 			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, &m->tle, m->position, m->velocity);
+			m->phase = ((struct _sdp4*)m->ephemeris_data)->phase;
 			break;
 		case EPHEMERIS_SGP4:
 			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, &m->tle, m->position, m->velocity);
+			m->phase = ((struct _sgp4*)m->ephemeris_data)->phase;
 			break;
 		default:
 			//Panic!
@@ -242,6 +245,10 @@ int predict_orbit(predict_orbit_t *m, double utc)
 
 	// Calculate footprint
 	m->footprint = 2.0*xkmper*acos(xkmper/(xkmper + m->altitude));
+	
+	// Calculate current number of revolutions around Earth
+	double age = julTime - jul_epoch;
+	m->revolutions = (long)floor((m->tle.xno*xmnpda/(M_PI*2.0) + age*m->tle.bstar*ae)*age + m->tle.xmo/(2.0*M_PI)) + m->tle.revnum;
 
 	return 0;
 }
