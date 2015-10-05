@@ -227,9 +227,8 @@ bool fuzzyCompare(const double &x, const double &y, const double &epsilon)
 	return fabs(x - y) < epsilon;
 }
 
-bool fuzzyCompareWithBoundaries(const double &input_value_1, const double &input_value_2, const double &compared_value)
+bool fuzzyCompareWithBoundaries(const double &input_value_1, const double &input_value_2, const double &compared_value, double offset)
 {
-	double decimal_offset = 0.05; //predict outputs two decimals of each value, so add extra offset of 0.05 to each boundary value
 	double lower, upper;
 	if (input_value_2 > input_value_1)
 	{
@@ -241,5 +240,5 @@ bool fuzzyCompareWithBoundaries(const double &input_value_1, const double &input
 		lower = input_value_2;
 		upper = input_value_1;
 	}
-	return (compared_value < upper + decimal_offset) && (compared_value > lower - decimal_offset);
+	return (compared_value < upper + offset) && (compared_value > lower - offset);
 }
