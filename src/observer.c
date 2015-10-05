@@ -29,6 +29,9 @@ void predict_destroy_observer(predict_observer_t *obs)
 	}
 }
 
+
+#define VISIBILITY_SUN_ELE_UPPER_THRESH -12.0
+#define VISIBILITY_ORBIT_ELE_LOWER_THRESH 0.0
 /**
  * \brief Calculates range, azimuth, elevation and relative velocity.
  *
@@ -43,6 +46,13 @@ void predict_observe_orbit(const predict_observer_t *observer, const predict_orb
 
 	observer_calculate(observer, julTime, orbit->position, orbit->velocity, obs);
 
+	// Calculate visibility status of the orbit: Orbit is visible if sun elevation is low enough and the orbit is above the horizon, but still in sunlight.
+	obs->visible = false;
+	struct predict_observation sun_obs;
+	predict_observe_sun(observer, orbit->time, &sun_obs);
+	if (!(orbit->eclipsed) && (sun_obs.elevation*180.0/M_PI < VISIBILITY_SUN_ELE_UPPER_THRESH) && (obs->elevation*180.0/M_PI > VISIBILITY_ORBIT_ELE_LOWER_THRESH)) {
+		obs->visible = true;
+	}
 }
 
 void observer_calculate(const predict_observer_t *observer, double time, const double pos[3], const double vel[3], struct predict_observation *result)
