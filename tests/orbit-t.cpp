@@ -51,14 +51,14 @@ int runtest(const char *filename)
 	// Create orbit objects
 
 	// Used in lower bound in value check
-	predict_orbit_t *orbit_lower = predict_create_orbit(tle);
+	predict_orbit_t *orbit_lower = predict_create_orbit(predict_tle_from_string(tle));
 	if (!orbit_lower) {
 		fprintf(stderr, "Failed to initialize orbit from tle!");
 		return -1;
 	}
 
 	// Used in upper bound in value check
-	predict_orbit_t *orbit_upper = predict_create_orbit(tle);
+	predict_orbit_t *orbit_upper = predict_create_orbit(predict_tle_from_string(tle));
 	if (!orbit_upper) {
 		fprintf(stderr, "Failed to initialize orbit from tle!");
 		return -1;

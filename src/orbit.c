@@ -8,17 +8,36 @@
 
 bool is_eclipsed(const double pos[3], const double sol[3], double *depth);
 
-/**
- * \brief Allocates memory and prepares internal data.
- *
- * This function is a combination of the original PreCalc() and
- * select_ephemeris() functions.
- **/
-predict_orbit_t *predict_create_orbit(char *tle[])
+predict_tle_t predict_tle_from_string(char *tle[2])
+{
+	double tempnum;
+	predict_tle_t ret_tle;
+	ret_tle.satellite_number = atol(SubString(tle[0],2,6));
+	ret_tle.element_number = atol(SubString(tle[0],64,67));
+	ret_tle.epoch_year = atoi(SubString(tle[0],18,19));
+	ret_tle.epoch_day = atof(SubString(tle[0],20,31));
+	ret_tle.inclination = atof(SubString(tle[1],8,15));
+	ret_tle.right_ascension = atof(SubString(tle[1],17,24));
+	ret_tle.eccentricity = 1.0e-07*atof(SubString(tle[1],26,32));
+	ret_tle.argument_of_perigee = atof(SubString(tle[1],34,41));
+	ret_tle.mean_anomaly = atof(SubString(tle[1],43,50));
+	ret_tle.mean_motion = atof(SubString(tle[1],52,62));
+	ret_tle.derivative_mean_motion  = atof(SubString(tle[0],33,42));
+	tempnum=1.0e-5*atof(SubString(tle[0],44,49));
+	ret_tle.second_derivative_mean_motion = tempnum/pow(10.0,(tle[0][51]-'0'));
+	tempnum=1.0e-5*atof(SubString(tle[0],53,58));
+	ret_tle.bstar_drag_term = tempnum/pow(10.0,(tle[0][60]-'0'));
+	ret_tle.revolutions = atof(SubString(tle[1],63,67));
+	return ret_tle;
+}
+
+predict_orbit_t *predict_create_orbit(predict_tle_t tle)
 {
 	// Allocate memory for new orbit struct
 	predict_orbit_t *m = (predict_orbit_t*)malloc(sizeof(predict_orbit_t));
 	if (m == NULL) return NULL;
+
+	m->tle = tle;
 
 	m->time = nan("");
 	m->position[0] = nan("");
@@ -36,25 +55,6 @@ predict_orbit_t *predict_create_orbit(char *tle[])
 	m->phase = nan("");
 	m->revolutions = 0;
 
-	//Parse TLE
-	double tempnum;
-	m->tle.satellite_number = atol(SubString(tle[0],2,6));
-	m->tle.element_number = atol(SubString(tle[0],64,67));
-	m->tle.epoch_year = atoi(SubString(tle[0],18,19));
-	m->tle.epoch_day = atof(SubString(tle[0],20,31));
-	m->tle.inclination = atof(SubString(tle[1],8,15));
-	m->tle.right_ascension = atof(SubString(tle[1],17,24));
-	m->tle.eccentricity = 1.0e-07*atof(SubString(tle[1],26,32));
-	m->tle.argument_of_perigee = atof(SubString(tle[1],34,41));
-	m->tle.mean_anomaly = atof(SubString(tle[1],43,50));
-	m->tle.mean_motion = atof(SubString(tle[1],52,62));
-	m->tle.derivative_mean_motion  = atof(SubString(tle[0],33,42));
-	tempnum=1.0e-5*atof(SubString(tle[0],44,49));
-	m->tle.second_derivative_mean_motion = tempnum/pow(10.0,(tle[0][51]-'0'));
-	tempnum=1.0e-5*atof(SubString(tle[0],53,58));
-	m->tle.bstar_drag_term = tempnum/pow(10.0,(tle[0][60]-'0'));
-	m->tle.revolutions = atof(SubString(tle[1],63,67));
-	
 	/* Period > 225 minutes is deep space */
 	double ao, xnodp, dd1, dd2, delo, a1, del1, r1;
 	double temp = twopi/xmnpda/xmnpda;

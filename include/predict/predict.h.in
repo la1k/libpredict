@@ -107,6 +107,15 @@ typedef struct {
 } predict_tle_t; 
 
 /**
+ * Create predict_tle_t from TLE strings.
+ *
+ * \param tle NORAD two-line element set strings
+ * \return Processed TLE parameters
+ * \copyright GPLv2+
+ **/
+predict_tle_t predict_tle_from_string(char *tle[2]);
+
+/**
  * Simplified perturbation models used in modeling the satellite orbits. 
  **/
 enum predict_ephemeris {
@@ -158,11 +167,11 @@ typedef struct {
 
 /**
  * Create orbit structure. Allocate memory and prepare internal data.
- * \param tle NORAD two-line element set as string array
+ * \param tle Processed NORAD two-line element set
  * \return Allocated orbit structure
  * \copyright GPLv2+
  **/
-predict_orbit_t *predict_create_orbit(char *tle[]);
+predict_orbit_t *predict_create_orbit(predict_tle_t tle);
 
 /**
  * Free memory allocated in orbit structure. 

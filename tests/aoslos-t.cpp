@@ -47,7 +47,7 @@ int runtest(const char *filename)
 	testcase.getTLE(tle);
 
 	// Create orbit object
-	predict_orbit_t *orbit = predict_create_orbit(tle);
+	predict_orbit_t *orbit = predict_create_orbit(predict_tle_from_string(tle));
 	if (!orbit) {
 		fprintf(stderr, "Failed to initialize orbit from tle!");
 		return -1;
