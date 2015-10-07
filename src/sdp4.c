@@ -23,6 +23,15 @@ void sdp4_init(struct _sdp4 *m)
 
 void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double pos[3], double vel[3])
 {
+	//Calculate old TLE field values as used in the original sdp4
+	double temp_tle = twopi/xmnpda/xmnpda;
+	double bstar = tle->bstar / ae;
+	double xincl = tle->incl * M_PI / 180.0;
+	double xnodeo = tle->raan * M_PI / 180.0;
+	double eo = tle->eccn;
+	double omegao = tle->argper * M_PI / 180.0;
+	double xmo = tle->meanan * M_PI / 180.0;
+	double xno = tle->meanmo*temp_tle*xmnpda;
 
 	int i;
 	double a, axn, ayn, aynl, beta, betal, capu, cos2u, cosepw, cosik,
@@ -43,17 +52,17 @@ void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double po
 		/* Recover original mean motion (xnodp) and   */
 		/* semimajor axis (aodp) from input elements. */
 	  
-		a1=pow(xke/tle->xno,tothrd);
-		m->deep_arg.cosio=cos(tle->xincl);
+		a1=pow(xke/xno,tothrd);
+		m->deep_arg.cosio=cos(xincl);
 		m->deep_arg.theta2=m->deep_arg.cosio*m->deep_arg.cosio;
 		m->x3thm1=3*m->deep_arg.theta2-1;
-		m->deep_arg.eosq=tle->eo*tle->eo;
+		m->deep_arg.eosq=eo*eo;
 		m->deep_arg.betao2=1-m->deep_arg.eosq;
 		m->deep_arg.betao=sqrt(m->deep_arg.betao2);
 		del1=1.5*ck2*m->x3thm1/(a1*a1*m->deep_arg.betao*m->deep_arg.betao2);
 		ao=a1*(1-del1*(0.5*tothrd+del1*(1+134/81*del1)));
 		delo=1.5*ck2*m->x3thm1/(ao*ao*m->deep_arg.betao*m->deep_arg.betao2);
-		m->deep_arg.xnodp=tle->xno/(1+delo);
+		m->deep_arg.xnodp=xno/(1+delo);
 		m->deep_arg.aodp=ao/(1-delo);
 
 		/* For perigee below 156 km, the values */
@@ -61,7 +70,7 @@ void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double po
 	  
 		s4=s;
 		qoms24=qoms2t;
-		perigee=(m->deep_arg.aodp*(1-tle->eo)-ae)*xkmper;
+		perigee=(m->deep_arg.aodp*(1-eo)-ae)*xkmper;
 	  
 		if (perigee<156.0)
 		{
@@ -75,21 +84,21 @@ void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double po
 		}
 
 		pinvsq=1/(m->deep_arg.aodp*m->deep_arg.aodp*m->deep_arg.betao2*m->deep_arg.betao2);
-		m->deep_arg.sing=sin(tle->omegao);
-		m->deep_arg.cosg=cos(tle->omegao);
+		m->deep_arg.sing=sin(omegao);
+		m->deep_arg.cosg=cos(omegao);
 		tsi=1/(m->deep_arg.aodp-s4);
-		eta=m->deep_arg.aodp*tle->eo*tsi;
+		eta=m->deep_arg.aodp*eo*tsi;
 		etasq=eta*eta;
-		eeta=tle->eo*eta;
+		eeta=eo*eta;
 		psisq=fabs(1-etasq);
 		coef=qoms24*pow(tsi,4);
 		coef1=coef/pow(psisq,3.5);
 		c2=coef1*m->deep_arg.xnodp*(m->deep_arg.aodp*(1+1.5*etasq+eeta*(4+etasq))+0.75*ck2*tsi/psisq*m->x3thm1*(8+3*etasq*(8+etasq)));
-		m->c1=tle->bstar*c2;
-		m->deep_arg.sinio=sin(tle->xincl);
+		m->c1=bstar*c2;
+		m->deep_arg.sinio=sin(xincl);
 		a3ovk2=-xj3/ck2*pow(ae,3);
 		m->x1mth2=1-m->deep_arg.theta2;
-		m->c4=2*m->deep_arg.xnodp*coef1*m->deep_arg.aodp*m->deep_arg.betao2*(eta*(2+0.5*etasq)+tle->eo*(0.5+2*etasq)-2*ck2*tsi/(m->deep_arg.aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*tle->omegao)));
+		m->c4=2*m->deep_arg.xnodp*coef1*m->deep_arg.aodp*m->deep_arg.betao2*(eta*(2+0.5*etasq)+eo*(0.5+2*etasq)-2*ck2*tsi/(m->deep_arg.aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*omegao)));
 		theta4=m->deep_arg.theta2*m->deep_arg.theta2;
 		temp1=3*ck2*pinvsq*m->deep_arg.xnodp;
 		temp2=temp1*ck2*pinvsq;
@@ -110,13 +119,13 @@ void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double po
 	}
 		
 	/* Update for secular gravity and atmospheric drag */
-	xmdf=tle->xmo+m->deep_arg.xmdot*tsince;
-	m->deep_arg.omgadf=tle->omegao+m->deep_arg.omgdot*tsince;
-	xnoddf=tle->xnodeo+m->deep_arg.xnodot*tsince;
+	xmdf=xmo+m->deep_arg.xmdot*tsince;
+	m->deep_arg.omgadf=omegao+m->deep_arg.omgdot*tsince;
+	xnoddf=xnodeo+m->deep_arg.xnodot*tsince;
 	tsq=tsince*tsince;
 	m->deep_arg.xnode=xnoddf+m->xnodcf*tsq;
 	tempa=1-m->c1*tsince;
-	tempe=tle->bstar*m->c4*tsince;
+	tempe=bstar*m->c4*tsince;
 	templ=m->t2cof*tsq;
 	m->deep_arg.xn=m->deep_arg.xnodp;
 
@@ -277,6 +286,14 @@ void sdp4_deep(struct _sdp4 *m, int ientry, predict_tle_t * tle, deep_arg_t * de
 	/* This function is used by SDP4 to add lunar and solar */
 	/* perturbation effects to deep-space orbit objects.    */
 
+	//Calculate old TLE field values as used in the original sdp4
+	double epoch = 1000.0*tle->year + tle->refepoch;
+	double xincl = tle->incl * M_PI / 180.0;
+	double xnodeo = tle->raan * M_PI / 180.0;
+	double eo = tle->eccn;
+	double omegao = tle->argper * M_PI / 180.0;
+	double xmo = tle->meanan * M_PI / 180.0;
+
 	double a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, ainv2, alfdp, aqnv,
 	sgh, sini2, sinis, sinok, sh, si, sil, day, betdp, dalf, bfact, c,
 	cc, cosis, cosok, cosq, ctem, f322, zx, zy, dbet, dls, eoc, eq, f2,
@@ -292,16 +309,16 @@ void sdp4_deep(struct _sdp4 *m, int ientry, predict_tle_t * tle, deep_arg_t * de
 	switch (ientry)
 	{
 		case DPInit:  /* Entrance for deep space initialization */
-		m->thgr=ThetaG(tle->epoch,deep_arg);
-		eq=tle->eo;
+		m->thgr=ThetaG(epoch,deep_arg);
+		eq=eo;
 		m->xnq=deep_arg->xnodp;
 		aqnv=1/deep_arg->aodp;
-		m->xqncl=tle->xincl;
-		xmao=tle->xmo;
+		m->xqncl=xincl;
+		xmao=xmo;
 		xpidot=deep_arg->omgdot+deep_arg->xnodot;
-		sinq=sin(tle->xnodeo);
-		cosq=cos(tle->xnodeo);
-		m->omegaq=tle->omegao;
+		sinq=sin(xnodeo);
+		cosq=cos(xnodeo);
+		m->omegaq=omegao;
 
 		/* Initialize lunar solar terms */
 		day=deep_arg->ds50+18261.5;  /* Days since 1900 Jan 0.5 */
@@ -541,7 +558,7 @@ void sdp4_deep(struct _sdp4 *m, int ientry, predict_tle_t * tle, deep_arg_t * de
 			temp=2*temp1*root54;
 			m->d5421=temp*f542*g521;
 			m->d5433=temp*f543*g533;
-			m->xlamo=xmao+tle->xnodeo+tle->xnodeo-m->thgr-m->thgr;
+			m->xlamo=xmao+xnodeo+xnodeo-m->thgr-m->thgr;
 			bfact=deep_arg->xmdot+deep_arg->xnodot+deep_arg->xnodot-thdt-thdt;
 			bfact=bfact+m->ssl+m->ssh+m->ssh;
 		}
@@ -566,7 +583,7 @@ void sdp4_deep(struct _sdp4 *m, int ientry, predict_tle_t * tle, deep_arg_t * de
 			m->fasx2=0.13130908;
 			m->fasx4=2.8843198;
 			m->fasx6=0.37448087;
-			m->xlamo=xmao+tle->xnodeo+tle->omegao-m->thgr;
+			m->xlamo=xmao+xnodeo+omegao-m->thgr;
 			bfact=deep_arg->xmdot+xpidot-thdt;
 			bfact=bfact+m->ssl+m->ssg+m->ssh;
 		}
@@ -588,8 +605,8 @@ void sdp4_deep(struct _sdp4 *m, int ientry, predict_tle_t * tle, deep_arg_t * de
 		deep_arg->xll=deep_arg->xll+m->ssl*deep_arg->t;
 		deep_arg->omgadf=deep_arg->omgadf+m->ssg*deep_arg->t;
 		deep_arg->xnode=deep_arg->xnode+m->ssh*deep_arg->t;
-		deep_arg->em=tle->eo+m->sse*deep_arg->t;
-		deep_arg->xinc=tle->xincl+m->ssi*deep_arg->t;
+		deep_arg->em=eo+m->sse*deep_arg->t;
+		deep_arg->xinc=xincl+m->ssi*deep_arg->t;
 	  
 		if (deep_arg->xinc<0)
 		{

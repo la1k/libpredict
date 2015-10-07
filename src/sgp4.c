@@ -11,6 +11,16 @@ void sgp4_init(struct _sgp4 *m)
 
 void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos[3], double vel[3])
 {
+	//Calculate old TLE field values as used in the original sgp4
+	double temp_tle = twopi/xmnpda/xmnpda;
+	double bstar = tle->bstar / ae;
+	double xincl = tle->incl * M_PI / 180.0;
+	double xnodeo = tle->raan * M_PI / 180.0;
+	double eo = tle->eccn;
+	double omegao = tle->argper * M_PI / 180.0;
+	double xmo = tle->meanan * M_PI / 180.0;
+	double xno = tle->meanmo*temp_tle*xmnpda;
+
 	double cosuk, sinuk, rfdotk, vx, vy, vz, ux, uy, uz, xmy, xmx, cosnok,
 	sinnok, cosik, sinik, rdotk, xinck, xnodek, uk, rk, cos2u, sin2u,
 	u, sinu, cosu, betal, rfdot, rdot, r, pl, elsq, esine, ecose, epw,
@@ -33,17 +43,17 @@ void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos
 		/* Recover original mean motion (m->xnodp) and   */
 		/* semimajor axis (m->aodp) from input elements. */
 
-		a1=pow(xke/tle->xno,tothrd);
-		m->cosio=cos(tle->xincl);
+		a1=pow(xke/xno,tothrd);
+		m->cosio=cos(xincl);
 		theta2=m->cosio*m->cosio;
 		m->x3thm1=3*theta2-1.0;
-		eosq=tle->eo*tle->eo;
+		eosq=eo*eo;
 		betao2=1.0-eosq;
 		betao=sqrt(betao2);
 		del1=1.5*ck2*m->x3thm1/(a1*a1*betao*betao2);
 		ao=a1*(1.0-del1*(0.5*tothrd+del1*(1.0+134.0/81.0*del1)));
 		delo=1.5*ck2*m->x3thm1/(ao*ao*betao*betao2);
-		m->xnodp=tle->xno/(1.0+delo);
+		m->xnodp=xno/(1.0+delo);
 		m->aodp=ao/(1.0-delo);
 
 		/* For perigee less than 220 kilometers, the "simple"     */
@@ -52,7 +62,7 @@ void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos
 		/* anomaly.  Also, the c3 term, the delta omega term, and */
 		/* the delta m term are dropped.                          */
 
-		if ((m->aodp*(1-tle->eo)/ae)<(220/xkmper+ae))
+		if ((m->aodp*(1-eo)/ae)<(220/xkmper+ae))
 			m->simpleFlag = true;
 		else
 			m->simpleFlag = false;
@@ -62,7 +72,7 @@ void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos
 
 		s4=s;
 		qoms24=qoms2t;
-		perigee=(m->aodp*(1-tle->eo)-ae)*xkmper;
+		perigee=(m->aodp*(1-eo)-ae)*xkmper;
 
 		if (perigee<156.0)
 		{
@@ -77,20 +87,20 @@ void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos
 
 		pinvsq=1/(m->aodp*m->aodp*betao2*betao2);
 		tsi=1/(m->aodp-s4);
-		m->eta=m->aodp*tle->eo*tsi;
+		m->eta=m->aodp*eo*tsi;
 		etasq=m->eta*m->eta;
-		eeta=tle->eo*m->eta;
+		eeta=eo*m->eta;
 		psisq=fabs(1-etasq);
 		coef=qoms24*pow(tsi,4);
 		coef1=coef/pow(psisq,3.5);
 		c2=coef1*m->xnodp*(m->aodp*(1+1.5*etasq+eeta*(4+etasq))+0.75*ck2*tsi/psisq*m->x3thm1*(8+3*etasq*(8+etasq)));
-		m->c1=tle->bstar*c2;
-		m->sinio=sin(tle->xincl);
+		m->c1=bstar*c2;
+		m->sinio=sin(xincl);
 		a3ovk2=-xj3/ck2*pow(ae,3);
-		c3=coef*tsi*a3ovk2*m->xnodp*ae*m->sinio/tle->eo;
+		c3=coef*tsi*a3ovk2*m->xnodp*ae*m->sinio/eo;
 		m->x1mth2=1-theta2;
 
-		m->c4=2*m->xnodp*coef1*m->aodp*betao2*(m->eta*(2+0.5*etasq)+tle->eo*(0.5+2*etasq)-2*ck2*tsi/(m->aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*tle->omegao)));
+		m->c4=2*m->xnodp*coef1*m->aodp*betao2*(m->eta*(2+0.5*etasq)+eo*(0.5+2*etasq)-2*ck2*tsi/(m->aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*omegao)));
 		m->c5=2*coef1*m->aodp*betao2*(1+2.75*(etasq+eeta)+eeta*etasq);
 
 		theta4=theta2*theta2;
@@ -102,14 +112,14 @@ void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos
 		m->omgdot=-0.5*temp1*x1m5th+0.0625*temp2*(7-114*theta2+395*theta4)+temp3*(3-36*theta2+49*theta4);
 		xhdot1=-temp1*m->cosio;
 		m->xnodot=xhdot1+(0.5*temp2*(4-19*theta2)+2*temp3*(3-7*theta2))*m->cosio;
-		m->omgcof=tle->bstar*c3*cos(tle->omegao);
-		m->xmcof=-tothrd*coef*tle->bstar*ae/eeta;
+		m->omgcof=bstar*c3*cos(omegao);
+		m->xmcof=-tothrd*coef*bstar*ae/eeta;
 		m->xnodcf=3.5*betao2*xhdot1*m->c1;
 		m->t2cof=1.5*m->c1;
 		m->xlcof=0.125*a3ovk2*m->sinio*(3+5*m->cosio)/(1+m->cosio);
 		m->aycof=0.25*a3ovk2*m->sinio;
-		m->delmo=pow(1+m->eta*cos(tle->xmo),3);
-		m->sinmo=sin(tle->xmo);
+		m->delmo=pow(1+m->eta*cos(xmo),3);
+		m->sinmo=sin(xmo);
 		m->x7thm1=7*theta2-1;
 
 		if (!m->simpleFlag) {
@@ -125,15 +135,15 @@ void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos
 	}
 
 	/* Update for secular gravity and atmospheric drag. */
-	xmdf=tle->xmo+m->xmdot*tsince;
-	omgadf=tle->omegao+m->omgdot*tsince;
-	xnoddf=tle->xnodeo+m->xnodot*tsince;
+	xmdf=xmo+m->xmdot*tsince;
+	omgadf=omegao+m->omgdot*tsince;
+	xnoddf=xnodeo+m->xnodot*tsince;
 	omega=omgadf;
 	xmp=xmdf;
 	tsq=tsince*tsince;
 	xnode=xnoddf+m->xnodcf*tsq;
 	tempa=1-m->c1*tsince;
-	tempe=tle->bstar*m->c4*tsince;
+	tempe=bstar*m->c4*tsince;
 	templ=m->t2cof*tsq;
     
 	if (!m->simpleFlag) {
@@ -146,12 +156,12 @@ void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos
 		tcube=tsq*tsince;
 		tfour=tsince*tcube;
 		tempa=tempa-m->d2*tsq-m->d3*tcube-m->d4*tfour;
-		tempe=tempe+tle->bstar*m->c5*(sin(xmp)-m->sinmo);
+		tempe=tempe+bstar*m->c5*(sin(xmp)-m->sinmo);
 		templ=templ+m->t3cof*tcube+tfour*(m->t4cof+tsince*m->t5cof);
 	}
 
 	a=m->aodp*pow(tempa,2);
-	e=tle->eo-tempe;
+	e=eo-tempe;
 	xl=xmp+omega+xnode+m->xnodp*templ;
 	beta=sqrt(1-e*e);
 	xn=xke/pow(a,1.5);
@@ -212,7 +222,7 @@ void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos
 	rk=r*(1-1.5*temp2*betal*m->x3thm1)+0.5*temp1*m->x1mth2*cos2u;
 	uk=u-0.25*temp2*m->x7thm1*sin2u;
 	xnodek=xnode+1.5*temp2*m->cosio*sin2u;
-	xinck=tle->xincl+1.5*temp2*m->cosio*m->sinio*cos2u;
+	xinck=xincl+1.5*temp2*m->cosio*m->sinio*cos2u;
 	rdotk=rdot-xn*temp1*m->x1mth2*sin2u;
 	rfdotk=rfdot+xn*temp1*(m->x1mth2*cos2u+1.5*m->x3thm1);
 

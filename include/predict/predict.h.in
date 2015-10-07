@@ -74,19 +74,36 @@ time_t predict_from_julian(predict_julian_date_t date);
  * Container for processed TLE data from TLE strings.
  **/
 typedef struct {
-	double epoch;
-	double xndt2o;
-	double xndd6o;
+	///Satellite number (line 1, field 2)
+	int catnum;
+	///Element number (line 1, field 13)
+	long setnum;
+	///International designator (line 1, fields 4, 5, 6)
+	char designator[10];
+	///Epoch year (last two digits) (line 1, field 7)
+	int year;
+	///Epoch day (day of year and fractional portion of day, line 1, field 8)
+	double refepoch;
+	///Inclination (line 2, field 3)
+	double incl;
+	///Right Ascension of the Ascending Node [Degrees] (line 2, field 4)
+	double raan;
+	///Eccentricity (decimal point assumed) (line 2, field 5)
+	double eccn;
+	///Argument of Perigee [Degrees] (line 2, field 6)
+	double argper;
+	///Mean Anomaly [Degrees] (line 2, field 7)
+	double meanan;
+	///Mean Motion [Revs per day] (line 2, field 8)
+	double meanmo;
+	///First Time Derivative of the Mean Motion divided by two (line 1, field 9)
+	double drag;
+	///Second Time Derivative of Mean Motion divided by six (decimal point assumed, line 1, field 10)
+	double nddot6;
+	///BSTAR drag term (decimal point assumed, line 1, field 11)
 	double bstar;
-	double xincl;
-	double xnodeo;
-	double eo;
-	double omegao;
-	double xmo;
-	double xno;
- 	int catnum;
-	int elset;
-	int revnum;
+	///Orbital number (line 2, field 9)
+	int orbitnum;
 } predict_tle_t; 
 
 /**
@@ -131,44 +148,13 @@ typedef struct {
 	long revolutions;
 	///Which perturbation model to use
 	enum predict_ephemeris ephemeris;
+
 	///Original TLE line number one:
 	char line1[70];
 	///Original TLE line number two:
 	char line2[70];
 	///Original tle_t used to hold processed tle parameters used in calculations.
 	predict_tle_t tle;
-
-	///Satellite number (line 1, field 2)
-	int catnum;
-	///Element number (line 1, field 13)
-	long setnum;
-	///International designator (line 1, fields 4, 5, 6)
-	char designator[10];
-	///Epoch year (last two digits) (line 1, field 7)
-	int year;
-	///Epoch day (day of year and fractional portion of day, line 1, field 8)
-	double refepoch;
-	///Inclination (line 2, field 3)
-	double incl;
-	///Right Ascension of the Ascending Node [Degrees] (line 2, field 4)
-	double raan;
-	///Eccentricity (decimal point assumed) (line 2, field 5)
-	double eccn;
-	///Argument of Perigee [Degrees] (line 2, field 6)
-	double argper;
-	///Mean Anomaly [Degrees] (line 2, field 7)
-	double meanan;
-	///Mean Motion [Revs per day] (line 2, field 8)
-	double meanmo;
-	///First Time Derivative of the Mean Motion divided by two (line 1, field 9)
-	double drag;
-	///Second Time Derivative of Mean Motion divided by six (decimal point assumed, line 1, field 10)
-	double nddot6;
-	///BSTAR drag term (decimal point assumed, line 1, field 11)
-	double bstar;
-	///Orbital number (line 2, field 9)
-	int orbitnum;
-
 	///Ephemeris data structure pointer
 	void *ephemeris_data;
 } predict_orbit_t;
