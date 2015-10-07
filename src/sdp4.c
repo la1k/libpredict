@@ -25,13 +25,13 @@ void sdp4_predict(struct _sdp4 *m, double tsince, predict_tle_t * tle, double po
 {
 	//Calculate old TLE field values as used in the original sdp4
 	double temp_tle = twopi/xmnpda/xmnpda;
-	double bstar = tle->bstar / ae;
-	double xincl = tle->incl * M_PI / 180.0;
-	double xnodeo = tle->raan * M_PI / 180.0;
-	double eo = tle->eccn;
-	double omegao = tle->argper * M_PI / 180.0;
-	double xmo = tle->meanan * M_PI / 180.0;
-	double xno = tle->meanmo*temp_tle*xmnpda;
+	double bstar = tle->bstar_drag_term / ae;
+	double xincl = tle->inclination * M_PI / 180.0;
+	double xnodeo = tle->right_ascension * M_PI / 180.0;
+	double eo = tle->eccentricity;
+	double omegao = tle->argument_of_perigee * M_PI / 180.0;
+	double xmo = tle->mean_anomaly * M_PI / 180.0;
+	double xno = tle->mean_motion*temp_tle*xmnpda;
 
 	int i;
 	double a, axn, ayn, aynl, beta, betal, capu, cos2u, cosepw, cosik,
@@ -287,12 +287,12 @@ void sdp4_deep(struct _sdp4 *m, int ientry, predict_tle_t * tle, deep_arg_t * de
 	/* perturbation effects to deep-space orbit objects.    */
 
 	//Calculate old TLE field values as used in the original sdp4
-	double epoch = 1000.0*tle->year + tle->refepoch;
-	double xincl = tle->incl * M_PI / 180.0;
-	double xnodeo = tle->raan * M_PI / 180.0;
-	double eo = tle->eccn;
-	double omegao = tle->argper * M_PI / 180.0;
-	double xmo = tle->meanan * M_PI / 180.0;
+	double epoch = 1000.0*tle->epoch_year + tle->epoch_day;
+	double xincl = tle->inclination * M_PI / 180.0;
+	double xnodeo = tle->right_ascension * M_PI / 180.0;
+	double eo = tle->eccentricity;
+	double omegao = tle->argument_of_perigee * M_PI / 180.0;
+	double xmo = tle->mean_anomaly * M_PI / 180.0;
 
 	double a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, ainv2, alfdp, aqnv,
 	sgh, sini2, sinis, sinok, sh, si, sil, day, betdp, dalf, bfact, c,

@@ -75,35 +75,35 @@ time_t predict_from_julian(predict_julian_date_t date);
  **/
 typedef struct {
 	///Satellite number (line 1, field 2)
-	int catnum;
+	int satellite_number;
 	///Element number (line 1, field 13)
-	long setnum;
+	long element_number;
 	///International designator (line 1, fields 4, 5, 6)
 	char designator[10];
 	///Epoch year (last two digits) (line 1, field 7)
-	int year;
+	int epoch_year;
 	///Epoch day (day of year and fractional portion of day, line 1, field 8)
-	double refepoch;
+	double epoch_day;
 	///Inclination (line 2, field 3)
-	double incl;
+	double inclination;
 	///Right Ascension of the Ascending Node [Degrees] (line 2, field 4)
-	double raan;
+	double right_ascension;
 	///Eccentricity (decimal point assumed) (line 2, field 5)
-	double eccn;
+	double eccentricity;
 	///Argument of Perigee [Degrees] (line 2, field 6)
-	double argper;
+	double argument_of_perigee;
 	///Mean Anomaly [Degrees] (line 2, field 7)
-	double meanan;
+	double mean_anomaly;
 	///Mean Motion [Revs per day] (line 2, field 8)
-	double meanmo;
+	double mean_motion;
 	///First Time Derivative of the Mean Motion divided by two (line 1, field 9)
-	double drag;
+	double derivative_mean_motion;
 	///Second Time Derivative of Mean Motion divided by six (decimal point assumed, line 1, field 10)
-	double nddot6;
+	double second_derivative_mean_motion;
 	///BSTAR drag term (decimal point assumed, line 1, field 11)
-	double bstar;
+	double bstar_drag_term;
 	///Orbital number (line 2, field 9)
-	int orbitnum;
+	int revolutions;
 } predict_tle_t; 
 
 /**
