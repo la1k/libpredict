@@ -88,7 +88,7 @@ typedef struct {
 	double inclination;
 	///Right Ascension of the Ascending Node [Degrees] (line 2, field 4)
 	double right_ascension;
-	///Eccentricity (decimal point assumed) (line 2, field 5)
+	///Eccentricity (line 2, field 5)
 	double eccentricity;
 	///Argument of Perigee [Degrees] (line 2, field 6)
 	double argument_of_perigee;
@@ -98,11 +98,11 @@ typedef struct {
 	double mean_motion;
 	///First Time Derivative of the Mean Motion divided by two (line 1, field 9)
 	double derivative_mean_motion;
-	///Second Time Derivative of Mean Motion divided by six (decimal point assumed, line 1, field 10)
+	///Second Time Derivative of Mean Motion divided by six (line 1, field 10)
 	double second_derivative_mean_motion;
 	///BSTAR drag term (decimal point assumed, line 1, field 11)
 	double bstar_drag_term;
-	///Orbital number (line 2, field 9)
+	///Number of revolutions around Earth at epoch (line 2, field 9)
 	int revolutions;
 } predict_tle_t; 
 
