@@ -103,7 +103,7 @@ typedef struct {
 	///BSTAR drag term (decimal point assumed, line 1, field 11)
 	double bstar_drag_term;
 	///Number of revolutions around Earth at epoch (line 2, field 9)
-	int revolutions;
+	int revolutions_at_epoch;
 } predict_tle_t; 
 
 /**

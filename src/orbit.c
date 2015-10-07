@@ -27,7 +27,7 @@ predict_tle_t predict_tle_from_string(char *tle[2])
 	ret_tle.second_derivative_mean_motion = tempnum/pow(10.0,(tle[0][51]-'0'));
 	tempnum=1.0e-5*atof(SubString(tle[0],53,58));
 	ret_tle.bstar_drag_term = tempnum/pow(10.0,(tle[0][60]-'0'));
-	ret_tle.revolutions = atof(SubString(tle[1],63,67));
+	ret_tle.revolutions_at_epoch = atof(SubString(tle[1],63,67));
 	return ret_tle;
 }
 
@@ -238,7 +238,7 @@ int predict_orbit(predict_orbit_t *m, double utc)
 	double age = julTime - jul_epoch;
 	double xno = m->tle.mean_motion*temp*xmnpda;
 	double xmo = m->tle.mean_anomaly * M_PI / 180.0;
-	m->revolutions = (long)floor((xno*xmnpda/(M_PI*2.0) + age*m->tle.bstar_drag_term)*age + xmo/(2.0*M_PI)) + m->tle.revolutions;
+	m->revolutions = (long)floor((xno*xmnpda/(M_PI*2.0) + age*m->tle.bstar_drag_term)*age + xmo/(2.0*M_PI)) + m->tle.revolutions_at_epoch;
 
 	return 0;
 }
