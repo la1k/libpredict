@@ -149,10 +149,6 @@ typedef struct {
 	///Which perturbation model to use
 	enum predict_ephemeris ephemeris;
 
-	///Original TLE line number one:
-	char line1[70];
-	///Original TLE line number two:
-	char line2[70];
 	///Original tle_t used to hold processed tle parameters used in calculations.
 	predict_tle_t tle;
 	///Ephemeris data structure pointer
