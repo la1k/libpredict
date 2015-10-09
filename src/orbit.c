@@ -8,17 +8,36 @@
 
 bool is_eclipsed(const double pos[3], const double sol[3], double *depth);
 
-/**
- * \brief Allocates memory and prepares internal data.
- *
- * This function is a combination of the original PreCalc() and
- * select_ephemeris() functions.
- **/
-predict_orbit_t *predict_create_orbit(char *tle[])
+predict_orbital_elements_t predict_parse_tle(char *tle[2])
+{
+	double tempnum;
+	predict_orbital_elements_t ret_orbital_elements;
+	ret_orbital_elements.satellite_number = atol(SubString(tle[0],2,6));
+	ret_orbital_elements.element_number = atol(SubString(tle[0],64,67));
+	ret_orbital_elements.epoch_year = atoi(SubString(tle[0],18,19));
+	ret_orbital_elements.epoch_day = atof(SubString(tle[0],20,31));
+	ret_orbital_elements.inclination = atof(SubString(tle[1],8,15));
+	ret_orbital_elements.right_ascension = atof(SubString(tle[1],17,24));
+	ret_orbital_elements.eccentricity = 1.0e-07*atof(SubString(tle[1],26,32));
+	ret_orbital_elements.argument_of_perigee = atof(SubString(tle[1],34,41));
+	ret_orbital_elements.mean_anomaly = atof(SubString(tle[1],43,50));
+	ret_orbital_elements.mean_motion = atof(SubString(tle[1],52,62));
+	ret_orbital_elements.derivative_mean_motion  = atof(SubString(tle[0],33,42));
+	tempnum=1.0e-5*atof(SubString(tle[0],44,49));
+	ret_orbital_elements.second_derivative_mean_motion = tempnum/pow(10.0,(tle[0][51]-'0'));
+	tempnum=1.0e-5*atof(SubString(tle[0],53,58));
+	ret_orbital_elements.bstar_drag_term = tempnum/pow(10.0,(tle[0][60]-'0'));
+	ret_orbital_elements.revolutions_at_epoch = atof(SubString(tle[1],63,67));
+	return ret_orbital_elements;
+}
+
+predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_elements)
 {
 	// Allocate memory for new orbit struct
 	predict_orbit_t *m = (predict_orbit_t*)malloc(sizeof(predict_orbit_t));
 	if (m == NULL) return NULL;
+
+	m->orbital_elements = orbital_elements;
 
 	m->time = nan("");
 	m->position[0] = nan("");
@@ -36,52 +55,20 @@ predict_orbit_t *predict_create_orbit(char *tle[])
 	m->phase = nan("");
 	m->revolutions = 0;
 
-	//Parse TLE
-	double tempnum;
-	m->catnum = atol(SubString(tle[0],2,6));
-	m->setnum = atol(SubString(tle[0],64,67));
-	m->year = atoi(SubString(tle[0],18,19));
-	m->refepoch = atof(SubString(tle[0],20,31));
-	m->incl = atof(SubString(tle[1],8,15));
-	m->raan = atof(SubString(tle[1],17,24));
-	m->eccn = 1.0e-07*atof(SubString(tle[1],26,32));
-	m->argper = atof(SubString(tle[1],34,41));
-	m->meanan = atof(SubString(tle[1],43,50));
-	m->meanmo = atof(SubString(tle[1],52,62));
-	m->drag  = atof(SubString(tle[0],33,42));
-	tempnum=1.0e-5*atof(SubString(tle[0],44,49));
-	m->nddot6 = tempnum/pow(10.0,(tle[0][51]-'0'));
-	tempnum=1.0e-5*atof(SubString(tle[0],53,58));
-	m->bstar = tempnum/pow(10.0,(tle[0][60]-'0'));
-	m->orbitnum = atof(SubString(tle[1],63,67));
-	
-	/* Fill in tle structure: */
-	double temp = twopi/xmnpda/xmnpda;
-	m->tle.catnum = m->catnum;
-	m->tle.epoch = 1000.0*m->year + m->refepoch;
-	m->tle.xndt2o = m->drag*temp;
-	m->tle.xndd6o = m->nddot6*temp/xmnpda;
-	m->tle.bstar = m->bstar / ae;
-	m->tle.xincl = m->incl * M_PI / 180.0;
-	m->tle.xnodeo = m->raan * M_PI / 180.0;
-	m->tle.eo = m->eccn;
-	m->tle.omegao = m->argper * M_PI / 180.0;
-	m->tle.xmo = m->meanan * M_PI / 180.0;
-	m->tle.xno = m->meanmo*temp*xmnpda;
-	m->tle.revnum = m->orbitnum;
-	
 	/* Period > 225 minutes is deep space */
 	double ao, xnodp, dd1, dd2, delo, a1, del1, r1;
-	dd1=(xke/m->tle.xno);
+	double temp = twopi/xmnpda/xmnpda;
+	double xno = m->orbital_elements.mean_motion*temp*xmnpda; //from old TLE struct
+	dd1=(xke/xno);
 	dd2=tothrd;
 	a1=pow(dd1,dd2);
-	r1=cos(m->tle.xincl);
-	dd1=(1.0-m->tle.eo*m->tle.eo);
+	r1=cos(m->orbital_elements.inclination*M_PI/180.0);
+	dd1=(1.0-m->orbital_elements.eccentricity*m->orbital_elements.eccentricity);
 	temp=ck2*1.5f*(r1*r1*3.0-1.0)/pow(dd1,1.5);
 	del1=temp/(a1*a1);
 	ao=a1*(1.0-del1*(tothrd*.5+del1*(del1*1.654320987654321+1.0)));
 	delo=temp/(ao*ao);
-	xnodp=m->tle.xno/(delo+1.0);
+	xnodp=xno/(delo+1.0);
 
 		
 	/* Select a deep-space/near-earth ephemeris */
@@ -134,7 +121,7 @@ void predict_destroy_orbit(predict_orbit_t *orbit)
  **/
 bool predict_is_geostationary(const predict_orbit_t *m)
 {
-	if (fabs(m->meanmo-1.0027)<0.0002) {
+	if (fabs(m->orbital_elements.mean_motion-1.0027)<0.0002) {
 		return true;
 	}else {
 		return false;
@@ -143,18 +130,18 @@ bool predict_is_geostationary(const predict_orbit_t *m)
 
 double predict_apogee(const predict_orbit_t *m)
 {
-	double sma = 331.25*exp(log(1440.0/m->meanmo)*(2.0/3.0));
-	return sma*(1.0+m->eccn)-xkmper;
+	double sma = 331.25*exp(log(1440.0/m->orbital_elements.mean_motion)*(2.0/3.0));
+	return sma*(1.0+m->orbital_elements.eccentricity)-xkmper;
 }
 		
 double predict_perigee(const predict_orbit_t *m)
 {
-	double xno = m->meanmo*twopi/xmnpda;
+	double xno = m->orbital_elements.mean_motion*twopi/xmnpda;
 	double a1=pow(xke/xno,tothrd);
-	double cosio=cos(m->incl*M_PI/180.0);
+	double cosio=cos(m->orbital_elements.inclination*M_PI/180.0);
 	double theta2=cosio*cosio;
 	double x3thm1=3*theta2-1.0;
-	double eosq=m->eccn*m->eccn;
+	double eosq=m->orbital_elements.eccentricity*m->orbital_elements.eccentricity;
 	double betao2=1.0-eosq;
 	double betao=sqrt(betao2);
 	double del1=1.5*ck2*x3thm1/(a1*a1*betao*betao2);
@@ -162,7 +149,7 @@ double predict_perigee(const predict_orbit_t *m)
 	double delo=1.5*ck2*x3thm1/(ao*ao*betao*betao2);
 	double aodp=ao/(1.0-delo);
 
-	return (aodp*(1-m->eccn)-ae)*xkmper;
+	return (aodp*(1-m->orbital_elements.eccentricity)-ae)*xkmper;
 }
 
 bool predict_aos_happens(const predict_orbit_t *m, double latitude)
@@ -172,16 +159,16 @@ bool predict_aos_happens(const predict_orbit_t *m, double latitude)
 
 	double lin, sma, apogee;
 
-	if (m->meanmo==0.0)
+	if (m->orbital_elements.mean_motion==0.0)
 		return false;
 	else
 	{
-		lin = m->incl;
+		lin = m->orbital_elements.inclination;
 
 		if (lin >= 90.0) lin = 180.0-lin;
 
-		sma = 331.25*exp(log(1440.0/m->meanmo)*(2.0/3.0));
-		apogee = sma*(1.0+m->eccn)-xkmper;
+		sma = 331.25*exp(log(1440.0/m->orbital_elements.mean_motion)*(2.0/3.0));
+		apogee = sma*(1.0+m->orbital_elements.eccentricity)-xkmper;
 
 		if ((acos(xkmper/(apogee+xkmper))+(lin*M_PI/180.0)) > fabs(latitude*M_PI/180.0))
 			return true;
@@ -206,18 +193,18 @@ int predict_orbit(predict_orbit_t *m, double utc)
 
 	/* Convert satellite's epoch time to Julian  */
 	/* and calculate time since epoch in minutes */
-
-	double jul_epoch = Julian_Date_of_Epoch(m->tle.epoch);
+	double epoch = 1000.0*m->orbital_elements.epoch_year + m->orbital_elements.epoch_day;
+	double jul_epoch = Julian_Date_of_Epoch(epoch);
 	double tsince = (julTime - jul_epoch)*xmnpda;
 
 	/* Call NORAD routines according to deep-space flag. */
 	switch (m->ephemeris) {
 		case EPHEMERIS_SDP4:
-			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, &m->tle, m->position, m->velocity);
+			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, &m->orbital_elements, m->position, m->velocity);
 			m->phase = ((struct _sdp4*)m->ephemeris_data)->phase;
 			break;
 		case EPHEMERIS_SGP4:
-			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, &m->tle, m->position, m->velocity);
+			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, &m->orbital_elements, m->position, m->velocity);
 			m->phase = ((struct _sgp4*)m->ephemeris_data)->phase;
 			break;
 		default:
@@ -247,8 +234,11 @@ int predict_orbit(predict_orbit_t *m, double utc)
 	m->footprint = 2.0*xkmper*acos(xkmper/(xkmper + m->altitude));
 	
 	// Calculate current number of revolutions around Earth
+	double temp = twopi/xmnpda/xmnpda;
 	double age = julTime - jul_epoch;
-	m->revolutions = (long)floor((m->tle.xno*xmnpda/(M_PI*2.0) + age*m->tle.bstar*ae)*age + m->tle.xmo/(2.0*M_PI)) + m->tle.revnum;
+	double xno = m->orbital_elements.mean_motion*temp*xmnpda;
+	double xmo = m->orbital_elements.mean_anomaly * M_PI / 180.0;
+	m->revolutions = (long)floor((xno*xmnpda/(M_PI*2.0) + age*m->orbital_elements.bstar_drag_term)*age + xmo/(2.0*M_PI)) + m->orbital_elements.revolutions_at_epoch;
 
 	return 0;
 }
@@ -257,10 +247,10 @@ bool predict_decayed(const predict_orbit_t *orbit)
 {
 	double time = orbit->time;
 	double satepoch;
-	satepoch=DayNum(1,0,orbit->year)+orbit->refepoch;
+	satepoch=DayNum(1,0,orbit->orbital_elements.epoch_year)+orbit->orbital_elements.epoch_day;
 
 	bool has_decayed = false;
-	if (satepoch + ((16.666666 - orbit->meanmo)/(10.0*fabs(orbit->drag))) < time)
+	if (satepoch + ((16.666666 - orbit->orbital_elements.mean_motion)/(10.0*fabs(orbit->orbital_elements.derivative_mean_motion))) < time)
 	{
 		has_decayed = true;
 	}
