@@ -395,18 +395,19 @@ void predict_observe_moon(const predict_observer_t *observer, double time, struc
 
 #define ELEVATION_ZERO_TOLERANCE 0.3 //threshold for fine-tuning of AOS/LOS
 #define DAYNUM_MINUTE 1.0/(24*60) //number of days corresponding to a minute
-double predict_next_aos(const predict_observer_t *observer, predict_orbit_t *orbit, double start_utc)
+double predict_next_aos(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double start_utc)
 {
 	double ret_aos_time = 0;
 	double curr_time = start_utc;
 	struct predict_observation obs;
 	double time_step = 0;
 	
-	predict_orbit(orbit, curr_time);
+	predict_orbit_t *orbit = predict_create_orbit(*orbital_elements);
+	predict_orbit(orbital_elements, orbit, curr_time);
 	predict_observe_orbit(observer, orbit, &obs);
 
 	//check whether AOS can happen after specified start time
-	if (predict_aos_happens(orbit, observer->latitude) && !predict_is_geostationary(orbit) && !predict_decayed(orbit))
+	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geostationary(orbital_elements) && !predict_decayed(orbital_elements, curr_time))
 	{
 		//TODO: Time steps have been found in FindAOS/LOS(). 
 		//Might be based on some pre-existing source, root-finding techniques
@@ -419,9 +420,9 @@ double predict_next_aos(const predict_observer_t *observer, predict_orbit_t *orb
 		//skip the rest of the pass if the satellite is currently in range, since we want the _next_ AOS. 
 		if (obs.elevation > 0.0)
 		{
-			curr_time = predict_next_los(observer, orbit, curr_time);
+			curr_time = predict_next_los(observer, orbital_elements, curr_time);
 			curr_time += DAYNUM_MINUTE*20; //skip 20 minutes. LOS might still be within the elevation threshold. (rough quickfix from predict) 
-			predict_orbit(orbit, curr_time);
+			predict_orbit(orbital_elements, orbit, curr_time);
 			predict_observe_orbit(observer, orbit, &obs);
 		}
 
@@ -430,7 +431,7 @@ double predict_next_aos(const predict_observer_t *observer, predict_orbit_t *orb
 		{
 			time_step = 0.00035*(obs.elevation*180.0/M_PI*((orbit->altitude/8400.0)+0.46)-2.0);
 			curr_time -= time_step;
-			predict_orbit(orbit, curr_time);
+			predict_orbit(orbital_elements, orbit, curr_time);
 			predict_observe_orbit(observer, orbit, &obs);
 		}
 
@@ -439,33 +440,35 @@ double predict_next_aos(const predict_observer_t *observer, predict_orbit_t *orb
 		{
 			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/530000.0;
 			curr_time -= time_step;
-			predict_orbit(orbit, curr_time);
+			predict_orbit(orbital_elements, orbit, curr_time);
 			predict_observe_orbit(observer, orbit, &obs);
 		}
 
 		ret_aos_time = curr_time;
 	}
+	predict_destroy_orbit(orbit);
 	return ret_aos_time;
 }
 
-double predict_next_los(const predict_observer_t *observer, predict_orbit_t *orbit, double start_utc)
+double predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double start_utc)
 {
 	double ret_los_time = 0;
 	double curr_time = start_utc;
 	struct predict_observation obs;
 	double time_step = 0;
 
-	predict_orbit(orbit, curr_time);
+	predict_orbit_t *orbit = predict_create_orbit(*orbital_elements);
+	predict_orbit(orbital_elements, orbit, curr_time);
 	predict_observe_orbit(observer, orbit, &obs);
 
 	//check whether AOS/LOS can happen after specified start time
-	if (predict_aos_happens(orbit, observer->latitude) && !predict_is_geostationary(orbit) && !predict_decayed(orbit))
+	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geostationary(orbital_elements) && !predict_decayed(orbital_elements, curr_time))
 	{
 		//iterate until next satellite pass
 		if (obs.elevation < 0.0)
 		{
-			curr_time = predict_next_aos(observer, orbit, curr_time);
-			predict_orbit(orbit, curr_time);
+			curr_time = predict_next_aos(observer, orbital_elements, curr_time);
+			predict_orbit(orbital_elements, orbit, curr_time);
 			predict_observe_orbit(observer, orbit, &obs);
 		}
 
@@ -474,7 +477,7 @@ double predict_next_los(const predict_observer_t *observer, predict_orbit_t *orb
 		{
 			time_step = cos(obs.elevation - 1.0)*sqrt(orbit->altitude)/25000.0; 
 			curr_time += time_step;
-			predict_orbit(orbit, curr_time);
+			predict_orbit(orbital_elements, orbit, curr_time);
 			predict_observe_orbit(observer, orbit, &obs);
 		} 
 		while (obs.elevation >= 0.0);
@@ -484,13 +487,14 @@ double predict_next_los(const predict_observer_t *observer, predict_orbit_t *orb
 		{
 			time_step = obs.elevation*180.0/M_PI*sqrt(orbit->altitude)/502500.0;
 			curr_time += time_step;
-			predict_orbit(orbit, curr_time);
+			predict_orbit(orbital_elements, orbit, curr_time);
 			predict_observe_orbit(observer, orbit, &obs);
 		}
 		while (fabs(obs.elevation*180.0/M_PI) > ELEVATION_ZERO_TOLERANCE);
 
 		ret_los_time = curr_time;
 	}
+	predict_destroy_orbit(orbit);
 	return ret_los_time;
 
 }

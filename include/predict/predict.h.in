@@ -86,8 +86,6 @@ enum predict_ephemeris {
 typedef struct {
 	///Name of satellite
 	char name[128];
-	///Which perturbation model to use
-	enum predict_ephemeris ephemeris;
 
 	///Satellite number (line 1, field 2)
 	int satellite_number;
@@ -159,6 +157,8 @@ typedef struct {
 	///The current number of revolutions around Earth
 	long revolutions;
 
+	///Which perturbation model to use
+	enum predict_ephemeris ephemeris;
 	///Ephemeris data structure pointer
 	void *ephemeris_data;
 } predict_orbit_t;
@@ -169,7 +169,7 @@ typedef struct {
  * \return Allocated orbit structure
  * \copyright GPLv2+
  **/
-predict_orbit_t *predict_create_orbit();
+predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_elements);
 
 /**
  * Free memory allocated in orbit structure. 

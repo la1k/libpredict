@@ -40,6 +40,6 @@ void sgp4_init(struct _sgp4 *m);
  * \param vel Output velocity in m/s
  * \copyright GPLv2+
  **/
-void sgp4_predict(struct _sgp4 *m, double tsince, predict_orbital_elements_t *orbital_elements, double pos[3], double vel[3]);
+void sgp4_predict(struct _sgp4 *m, double tsince, const predict_orbital_elements_t *orbital_elements, double pos[3], double vel[3]);
 
 #endif

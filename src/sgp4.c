@@ -9,7 +9,7 @@ void sgp4_init(struct _sgp4 *m)
 	m->simpleFlag = 0;
 }
 
-void sgp4_predict(struct _sgp4 *m, double tsince, predict_orbital_elements_t *orbital_elements, double pos[3], double vel[3])
+void sgp4_predict(struct _sgp4 *m, double tsince, const predict_orbital_elements_t *orbital_elements, double pos[3], double vel[3])
 {
 	//Calculate old TLE field values as used in the original sgp4
 	double temp_tle = twopi/xmnpda/xmnpda;
