@@ -9,17 +9,17 @@ void sgp4_init(struct _sgp4 *m)
 	m->simpleFlag = 0;
 }
 
-void sgp4_predict(struct _sgp4 *m, double tsince, predict_tle_t *tle, double pos[3], double vel[3])
+void sgp4_predict(struct _sgp4 *m, double tsince, predict_orbital_elements_t *orbital_elements, double pos[3], double vel[3])
 {
 	//Calculate old TLE field values as used in the original sgp4
 	double temp_tle = twopi/xmnpda/xmnpda;
-	double bstar = tle->bstar_drag_term / ae;
-	double xincl = tle->inclination * M_PI / 180.0;
-	double xnodeo = tle->right_ascension * M_PI / 180.0;
-	double eo = tle->eccentricity;
-	double omegao = tle->argument_of_perigee * M_PI / 180.0;
-	double xmo = tle->mean_anomaly * M_PI / 180.0;
-	double xno = tle->mean_motion*temp_tle*xmnpda;
+	double bstar = orbital_elements->bstar_drag_term / ae;
+	double xincl = orbital_elements->inclination * M_PI / 180.0;
+	double xnodeo = orbital_elements->right_ascension * M_PI / 180.0;
+	double eo = orbital_elements->eccentricity;
+	double omegao = orbital_elements->argument_of_perigee * M_PI / 180.0;
+	double xmo = orbital_elements->mean_anomaly * M_PI / 180.0;
+	double xno = orbital_elements->mean_motion*temp_tle*xmnpda;
 
 	double cosuk, sinuk, rfdotk, vx, vy, vz, ux, uy, uz, xmy, xmx, cosnok,
 	sinnok, cosik, sinik, rdotk, xinck, xnodek, uk, rk, cos2u, sin2u,

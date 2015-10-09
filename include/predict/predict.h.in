@@ -104,16 +104,16 @@ typedef struct {
 	double bstar_drag_term;
 	///Number of revolutions around Earth at epoch (line 2, field 9)
 	int revolutions_at_epoch;
-} predict_tle_t; 
+} predict_orbital_elements_t;
 
 /**
- * Create predict_tle_t from TLE strings.
+ * Create predict_orbital_elements_t from TLE strings.
  *
  * \param tle NORAD two-line element set strings
  * \return Processed TLE parameters
  * \copyright GPLv2+
  **/
-predict_tle_t predict_tle_from_string(char *tle[2]);
+predict_orbital_elements_t predict_parse_tle(char *tle[2]);
 
 /**
  * Simplified perturbation models used in modeling the satellite orbits. 
@@ -159,7 +159,7 @@ typedef struct {
 	enum predict_ephemeris ephemeris;
 
 	///Original tle_t used to hold processed tle parameters used in calculations.
-	predict_tle_t tle;
+	predict_orbital_elements_t orbital_elements;
 	///Ephemeris data structure pointer
 	void *ephemeris_data;
 } predict_orbit_t;
@@ -167,11 +167,11 @@ typedef struct {
 
 /**
  * Create orbit structure. Allocate memory and prepare internal data.
- * \param tle Processed NORAD two-line element set
+ * \param orbital_elements Processed NORAD two-line element set
  * \return Allocated orbit structure
  * \copyright GPLv2+
  **/
-predict_orbit_t *predict_create_orbit(predict_tle_t tle);
+predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_elements);
 
 /**
  * Free memory allocated in orbit structure. 
