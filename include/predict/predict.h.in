@@ -158,7 +158,7 @@ typedef struct {
 	///Which perturbation model to use
 	enum predict_ephemeris ephemeris;
 
-	///Original tle_t used to hold processed tle parameters used in calculations.
+	///Original predict_orbital_elements_t used to hold processed tle parameters used in calculations.
 	predict_orbital_elements_t orbital_elements;
 	///Ephemeris data structure pointer
 	void *ephemeris_data;
