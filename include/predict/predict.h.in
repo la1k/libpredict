@@ -135,6 +135,10 @@ predict_orbital_elements_t predict_parse_tle(char *tle[2]);
 typedef struct {
 	///Timestamp for last call to orbit_predict
 	predict_julian_date_t time;
+
+	///Whether the orbit has decayed
+	bool decayed;
+
 	///ECI position in km
 	double position[3];
 	///ECI velocity in km/s
@@ -223,16 +227,6 @@ double predict_perigee(const predict_orbital_elements_t *x);
  * \copyright GPLv2+
  **/
 bool predict_aos_happens(const predict_orbital_elements_t *x, double latitude);
-
-/** 
- * Find whether an orbit has decayed.
- *
- * \param x Orbital elements
- * \param time Time
- * \return true if orbit has decayed, otherwise false
- * \copyright GPLv2+
- **/
-bool predict_decayed(const predict_orbital_elements_t *x, predict_julian_date_t time);
 
 /** 
  * Find whether a satellite is currently eclipsed.

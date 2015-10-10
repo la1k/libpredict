@@ -8,6 +8,7 @@
 #include "sun.h"
 
 bool is_eclipsed(const double pos[3], const double sol[3], double *depth);
+bool predict_decayed(const predict_orbital_elements_t *orbital_elements, predict_julian_date_t time);
 
 predict_orbital_elements_t predict_parse_tle(char *tle[2])
 {
@@ -239,6 +240,9 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, predict_or
 	double xno = orbital_elements->mean_motion*temp*xmnpda;
 	double xmo = orbital_elements->mean_anomaly * M_PI / 180.0;
 	m->revolutions = (long)floor((xno*xmnpda/(M_PI*2.0) + age*orbital_elements->bstar_drag_term)*age + xmo/(2.0*M_PI)) + orbital_elements->revolutions_at_epoch;
+
+	//calculate whether orbit is decayed
+	m->decayed = predict_decayed(orbital_elements, utc);
 
 	return 0;
 }
