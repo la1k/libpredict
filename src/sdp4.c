@@ -116,52 +116,52 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
 	temp2, temp3, temp4, temp5, temp6;
 
 	/* Initialize dynamic part of deep_arg */
-	deep_arg_dynamic_t deep_dyn;
+	deep_arg_dynamic_t deep_dyn = m->deep_dyn;
 	deep_arg_dynamic_init(m, &deep_dyn);
 
 
 	/* Update for secular gravity and atmospheric drag */
 	xmdf=xmo+m->deep_arg.xmdot*tsince;
-	m->deep_arg.omgadf=omegao+m->deep_arg.omgdot*tsince;
+	deep_dyn.omgadf=omegao+m->deep_arg.omgdot*tsince;
 	xnoddf=xnodeo+m->deep_arg.xnodot*tsince;
 	tsq=tsince*tsince;
-	m->deep_arg.xnode=xnoddf+m->xnodcf*tsq;
+	deep_dyn.xnode=xnoddf+m->xnodcf*tsq;
 	tempa=1-m->c1*tsince;
 	tempe=bstar*m->c4*tsince;
 	templ=m->t2cof*tsq;
-	m->deep_arg.xn=m->deep_arg.xnodp;
+	deep_dyn.xn=m->deep_arg.xnodp;
 
 	/* Update for deep-space secular effects */
-	m->deep_arg.xll=xmdf;
-	m->deep_arg.t=tsince;
+	deep_dyn.xll=xmdf;
+	deep_dyn.t=tsince;
 
 	sdp4_deep(m, DPSecular, tle, &m->deep_arg, &deep_dyn);
 
-	xmdf=m->deep_arg.xll;
-	a=pow(xke/m->deep_arg.xn,tothrd)*tempa*tempa;
-	m->deep_arg.em=m->deep_arg.em-tempe;
+	xmdf=deep_dyn.xll;
+	a=pow(xke/deep_dyn.xn,tothrd)*tempa*tempa;
+	deep_dyn.em=deep_dyn.em-tempe;
 	xmam=xmdf+m->deep_arg.xnodp*templ;
 
 	/* Update for deep-space periodic effects */
-	m->deep_arg.xll=xmam;
+	deep_dyn.xll=xmam;
 
 	sdp4_deep(m, DPPeriodic,tle,&m->deep_arg, &deep_dyn);
 
-	xmam=m->deep_arg.xll;
-	xl=xmam+m->deep_arg.omgadf+m->deep_arg.xnode;
-	beta=sqrt(1-m->deep_arg.em*m->deep_arg.em);
-	m->deep_arg.xn=xke/pow(a,1.5);
+	xmam=deep_dyn.xll;
+	xl=xmam+deep_dyn.omgadf+deep_dyn.xnode;
+	beta=sqrt(1-deep_dyn.em*deep_dyn.em);
+	deep_dyn.xn=xke/pow(a,1.5);
 
 	/* Long period periodics */
-	axn=m->deep_arg.em*cos(m->deep_arg.omgadf);
+	axn=deep_dyn.em*cos(deep_dyn.omgadf);
 	temp=1/(a*beta*beta);
 	xll=temp*m->xlcof*axn;
 	aynl=temp*m->aycof;
 	xlt=xl+xll;
-	ayn=m->deep_arg.em*sin(m->deep_arg.omgadf)+aynl;
+	ayn=deep_dyn.em*sin(deep_dyn.omgadf)+aynl;
 
 	/* Solve Kepler's Equation */
-	capu=FMod2p(xlt-m->deep_arg.xnode);
+	capu=FMod2p(xlt-deep_dyn.xnode);
 	temp2=capu;
 	i=0;
 
@@ -207,10 +207,10 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
 	/* Update for short periodics */
 	rk=r*(1-1.5*temp2*betal*m->x3thm1)+0.5*temp1*m->x1mth2*cos2u;
 	uk=u-0.25*temp2*m->x7thm1*sin2u;
-	m->xnodek=m->deep_arg.xnode+1.5*temp2*m->deep_arg.cosio*sin2u;
-	m->xinck=m->deep_arg.xinc+1.5*temp2*m->deep_arg.cosio*m->deep_arg.sinio*cos2u;
-	rdotk=rdot-m->deep_arg.xn*temp1*m->x1mth2*sin2u;
-	rfdotk=rfdot+m->deep_arg.xn*temp1*(m->x1mth2*cos2u+1.5*m->x3thm1);
+	m->xnodek=deep_dyn.xnode+1.5*temp2*m->deep_arg.cosio*sin2u;
+	m->xinck=deep_dyn.xinc+1.5*temp2*m->deep_arg.cosio*m->deep_arg.sinio*cos2u;
+	rdotk=rdot-deep_dyn.xn*temp1*m->x1mth2*sin2u;
+	rfdotk=rfdot+deep_dyn.xn*temp1*(m->x1mth2*cos2u+1.5*m->x3thm1);
 
 	/* Orientation vectors */
 	sinuk=sin(uk);
@@ -237,12 +237,14 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
 	vel[2] = rdotk*uz+rfdotk*vz;
 
 	/* Phase in radians */
-	m->phase=xlt-m->deep_arg.xnode-m->deep_arg.omgadf+twopi;
+	m->phase=xlt-deep_dyn.xnode-deep_dyn.omgadf+twopi;
 
 	if (m->phase<0.0)
 		m->phase+=twopi;
 
 	m->phase=FMod2p(m->phase);
+
+	m->deep_dyn = deep_dyn;
 }
 
 /**
@@ -603,7 +605,7 @@ void deep_arg_dynamic_init(const struct _sdp4 *m, deep_arg_dynamic_t *deep_dyn){
 	deep_dyn->atime=0;
 }
 
-void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, deep_arg_t * deep_arg, deep_arg_dynamic_t *deep_dyn)
+void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, const deep_arg_t * deep_arg, deep_arg_dynamic_t *deep_dyn)
 {
 	/* This function is used by SDP4 to add lunar and solar */
 	/* perturbation effects to deep-space orbit objects.    */
@@ -625,17 +627,17 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements
 
 		case DPSecular:  /* Entrance for deep space secular effects */
 
-		deep_arg->xll=deep_arg->xll+m->ssl*deep_arg->t;
-		deep_arg->omgadf=deep_arg->omgadf+m->ssg*deep_arg->t;
-		deep_arg->xnode=deep_arg->xnode+m->ssh*deep_arg->t;
-		deep_arg->em=eo+m->sse*deep_arg->t;
-		deep_arg->xinc=xincl+m->ssi*deep_arg->t;
+		deep_dyn->xll=deep_dyn->xll+m->ssl*deep_dyn->t;
+		deep_dyn->omgadf=deep_dyn->omgadf+m->ssg*deep_dyn->t;
+		deep_dyn->xnode=deep_dyn->xnode+m->ssh*deep_dyn->t;
+		deep_dyn->em=eo+m->sse*deep_dyn->t;
+		deep_dyn->xinc=xincl+m->ssi*deep_dyn->t;
 
-		if (deep_arg->xinc<0)
+		if (deep_dyn->xinc<0)
 		{
-			deep_arg->xinc=-deep_arg->xinc;
-			deep_arg->xnode=deep_arg->xnode+pi;
-			deep_arg->omgadf=deep_arg->omgadf-pi;
+			deep_dyn->xinc=-deep_dyn->xinc;
+			deep_dyn->xnode=deep_dyn->xnode+pi;
+			deep_dyn->omgadf=deep_dyn->omgadf-pi;
 		}
 
 		if (!m->resonanceFlag) {
@@ -644,11 +646,11 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements
 
 		do
 		{
-			if ((deep_dyn->atime==0) || ((deep_arg->t>=0) && (deep_dyn->atime<0)) || ((deep_arg->t<0) && (deep_dyn->atime>=0)))
+			if ((deep_dyn->atime==0) || ((deep_dyn->t>=0) && (deep_dyn->atime<0)) || ((deep_dyn->t<0) && (deep_dyn->atime>=0)))
 			{
 				/* Epoch restart */
 
-				if (deep_arg->t>=0)
+				if (deep_dyn->t>=0)
 					delt=m->stepp;
 				else
 					delt=m->stepn;
@@ -660,9 +662,9 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements
 
 			else
 			{
-				if (fabs(deep_arg->t)>=fabs(deep_dyn->atime))
+				if (fabs(deep_dyn->t)>=fabs(deep_dyn->atime))
 				{
-					if (deep_arg->t>0)
+					if (deep_dyn->t>0)
 						delt=m->stepp;
 					else
 						delt=m->stepn;
@@ -671,7 +673,7 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements
 
 			do
 			{
-				if (fabs(deep_arg->t-deep_dyn->atime)>=m->stepp)
+				if (fabs(deep_dyn->t-deep_dyn->atime)>=m->stepp)
 				{
 					deep_dyn->loopFlag = 1;
 					deep_dyn->epochRestartFlag = 0;
@@ -679,13 +681,13 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements
 
 				else
 				{
-					ft=deep_arg->t-deep_dyn->atime;
+					ft=deep_dyn->t-deep_dyn->atime;
 					deep_dyn->loopFlag = 0;
 				}
 
-				if (fabs(deep_arg->t)<fabs(deep_dyn->atime))
+				if (fabs(deep_dyn->t)<fabs(deep_dyn->atime))
 				{
-					if (deep_arg->t>=0)
+					if (deep_dyn->t>=0)
 						delt=m->stepn;
 					else
 						delt=m->stepp;
@@ -720,26 +722,26 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements
 			} while (deep_dyn->loopFlag && !deep_dyn->epochRestartFlag);
 		} while (deep_dyn->loopFlag && deep_dyn->epochRestartFlag);
 
-		deep_arg->xn=deep_dyn->xni+xndot*ft+xnddt*ft*ft*0.5;
+		deep_dyn->xn=deep_dyn->xni+xndot*ft+xnddt*ft*ft*0.5;
 		xl=deep_dyn->xli+xldot*ft+xndot*ft*ft*0.5;
-		temp=-deep_arg->xnode+m->thgr+deep_arg->t*thdt;
+		temp=-deep_dyn->xnode+m->thgr+deep_dyn->t*thdt;
 
 		if (!m->synchronousFlag) {
-			deep_arg->xll=xl+temp+temp;
+			deep_dyn->xll=xl+temp+temp;
 		}else{
-			deep_arg->xll=xl-deep_arg->omgadf+temp;
+			deep_dyn->xll=xl-deep_dyn->omgadf+temp;
 		}
 
 		return;
 
 		case DPPeriodic:	 /* Entrance for lunar-solar periodics */
-		sinis=sin(deep_arg->xinc);
-		cosis=cos(deep_arg->xinc);
+		sinis=sin(deep_dyn->xinc);
+		cosis=cos(deep_dyn->xinc);
 
-		if (fabs(deep_dyn->savtsn-deep_arg->t)>=30)
+		if (fabs(deep_dyn->savtsn-deep_dyn->t)>=30)
 		{
-			deep_dyn->savtsn=deep_arg->t;
-			zm=m->zmos+zns*deep_arg->t;
+			deep_dyn->savtsn=deep_dyn->t;
+			zm=m->zmos+zns*deep_dyn->t;
 			zf=zm+2*zes*sin(zm);
 			sinzf=sin(zf);
 			f2=0.5*sinzf*sinzf-0.25;
@@ -749,7 +751,7 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements
 			sls=m->sl2*f2+m->sl3*f3+m->sl4*sinzf;
 			deep_dyn->sghs=m->sgh2*f2+m->sgh3*f3+m->sgh4*sinzf;
 			deep_dyn->shs=m->sh2*f2+m->sh3*f3;
-			zm=m->zmol+znl*deep_arg->t;
+			zm=m->zmol+znl*deep_dyn->t;
 			zf=zm+2*zel*sin(zm);
 			sinzf=sin(zf);
 			f2=0.5*sinzf*sinzf-0.25;
@@ -766,50 +768,50 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements
 
 		pgh=deep_dyn->sghs+deep_dyn->sghl;
 		ph=deep_dyn->shs+deep_dyn->sh1;
-		deep_arg->xinc=deep_arg->xinc+deep_dyn->pinc;
-		deep_arg->em=deep_arg->em+deep_dyn->pe;
+		deep_dyn->xinc=deep_dyn->xinc+deep_dyn->pinc;
+		deep_dyn->em=deep_dyn->em+deep_dyn->pe;
 
 		if (m->xqncl>=0.2)
 		{
 			/* Apply periodics directly */
 			ph=ph/deep_arg->sinio;
 			pgh=pgh-deep_arg->cosio*ph;
-			deep_arg->omgadf=deep_arg->omgadf+pgh;
-			deep_arg->xnode=deep_arg->xnode+ph;
-			deep_arg->xll=deep_arg->xll+deep_dyn->pl;
+			deep_dyn->omgadf=deep_dyn->omgadf+pgh;
+			deep_dyn->xnode=deep_dyn->xnode+ph;
+			deep_dyn->xll=deep_dyn->xll+deep_dyn->pl;
 		}
 
 		else
 		{
 			/* Apply periodics with Lyddane modification */
-			sinok=sin(deep_arg->xnode);
-			cosok=cos(deep_arg->xnode);
+			sinok=sin(deep_dyn->xnode);
+			cosok=cos(deep_dyn->xnode);
 			alfdp=sinis*sinok;
 			betdp=sinis*cosok;
 			dalf=ph*cosok+deep_dyn->pinc*cosis*sinok;
 			dbet=-ph*sinok+deep_dyn->pinc*cosis*cosok;
 			alfdp=alfdp+dalf;
 			betdp=betdp+dbet;
-			deep_arg->xnode=FMod2p(deep_arg->xnode);
-			xls=deep_arg->xll+deep_arg->omgadf+cosis*deep_arg->xnode;
-			dls=deep_dyn->pl+pgh-deep_dyn->pinc*deep_arg->xnode*sinis;
+			deep_dyn->xnode=FMod2p(deep_dyn->xnode);
+			xls=deep_dyn->xll+deep_dyn->omgadf+cosis*deep_dyn->xnode;
+			dls=deep_dyn->pl+pgh-deep_dyn->pinc*deep_dyn->xnode*sinis;
 			xls=xls+dls;
-			xnoh=deep_arg->xnode;
-			deep_arg->xnode=AcTan(alfdp,betdp);
+			xnoh=deep_dyn->xnode;
+			deep_dyn->xnode=AcTan(alfdp,betdp);
 
 			/* This is a patch to Lyddane modification */
 			/* suggested by Rob Matson. */
 
-			if (fabs(xnoh-deep_arg->xnode)>pi)
+			if (fabs(xnoh-deep_dyn->xnode)>pi)
 			{
-			      if (deep_arg->xnode<xnoh)
-				  deep_arg->xnode+=twopi;
+			      if (deep_dyn->xnode<xnoh)
+				  deep_dyn->xnode+=twopi;
 			      else
-				  deep_arg->xnode-=twopi;
+				  deep_dyn->xnode-=twopi;
 			}
 
-			deep_arg->xll=deep_arg->xll+deep_dyn->pl;
-			deep_arg->omgadf=xls-deep_arg->xll-cos(deep_arg->xinc)*deep_arg->xnode;
+			deep_dyn->xll=deep_dyn->xll+deep_dyn->pl;
+			deep_dyn->omgadf=xls-deep_dyn->xll-cos(deep_dyn->xinc)*deep_dyn->xnode;
 		}
 		return;
 	}

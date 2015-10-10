@@ -294,8 +294,8 @@ double predict_squint_angle(const predict_observer_t *observer, const predict_or
 	if (orbit->ephemeris == EPHEMERIS_SDP4) {
 		const struct _sdp4* sdp4 = (struct _sdp4*)orbit->ephemeris_data;
 
-		double bx = cos(alat)*cos(alon + sdp4->deep_arg.omgadf);
-		double by = cos(alat)*sin(alon + sdp4->deep_arg.omgadf);
+		double bx = cos(alat)*cos(alon + sdp4->deep_dyn.omgadf);
+		double by = cos(alat)*sin(alon + sdp4->deep_dyn.omgadf);
 		double bz = sin(alat);
 
 		double cx = bx;

@@ -11,9 +11,6 @@ typedef struct	{
 		   double  eosq, sinio, cosio, betao, aodp, theta2,
 			   sing, cosg, betao2, xmdot, omgdot, xnodot, xnodp;
 
-			   /* Used by dpsec and dpper parts of Deep() */
-		   double  xll, omgadf, xnode, em, xinc, xn, t;
-
 		 	   /* Used by thetg and Deep() */
 		   double  ds50;
 
@@ -32,6 +29,7 @@ typedef struct {
  * Output from deep space perturbations.
  **/
 typedef struct {
+	/* Moved from deep_arg_t. */
 	/* Used by dpsec and dpper parts of Deep() */
 	double  xll, omgadf, xnode, em, xinc, xn, t;
 
@@ -78,6 +76,8 @@ struct _sdp4 {
 	zsingl, zcosgl, zsinhl, zcoshl, zsinil, zcosil;
 	//Variables that are used locally in SDP4(), but also are used to calculate squint angle elsewhere
 	double xnodek, xinck;
+
+	deep_arg_dynamic_t deep_dyn;
 };
 
 /**
@@ -109,7 +109,7 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
  * \param deep_arg Deep perturbation parameters
  * \copyright GPLv2+
  **/
-void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, deep_arg_t * deep_arg, deep_arg_dynamic_t *deep_dyn);
+void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, const deep_arg_t * deep_arg, deep_arg_dynamic_t *deep_dyn);
 
 
 #endif // ifndef _SDP4_H_
