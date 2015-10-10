@@ -402,7 +402,7 @@ double predict_next_aos(const predict_observer_t *observer, const predict_orbita
 	struct predict_observation obs;
 	double time_step = 0;
 	
-	predict_orbit_t *orbit = predict_create_orbit(*orbital_elements);
+	predict_orbit_t *orbit = predict_create_orbit();
 	predict_orbit(orbital_elements, orbit, curr_time);
 	predict_observe_orbit(observer, orbit, &obs);
 
@@ -457,7 +457,7 @@ double predict_next_los(const predict_observer_t *observer, const predict_orbita
 	struct predict_observation obs;
 	double time_step = 0;
 
-	predict_orbit_t *orbit = predict_create_orbit(*orbital_elements);
+	predict_orbit_t *orbit = predict_create_orbit();
 	predict_orbit(orbital_elements, orbit, curr_time);
 	predict_observe_orbit(observer, orbit, &obs);
 

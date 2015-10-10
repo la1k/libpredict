@@ -10,30 +10,74 @@
 bool is_eclipsed(const double pos[3], const double sol[3], double *depth);
 bool predict_decayed(const predict_orbital_elements_t *orbital_elements, predict_julian_date_t time);
 
-predict_orbital_elements_t predict_parse_tle(char *tle[2])
+predict_orbital_elements_t* predict_parse_tle(char *tle[2])
 {
 	double tempnum;
-	predict_orbital_elements_t ret_orbital_elements;
-	ret_orbital_elements.satellite_number = atol(SubString(tle[0],2,6));
-	ret_orbital_elements.element_number = atol(SubString(tle[0],64,67));
-	strncpy(ret_orbital_elements.designator, SubString(tle[0],9,16),8);
-	ret_orbital_elements.epoch_year = atoi(SubString(tle[0],18,19));
-	ret_orbital_elements.epoch_day = atof(SubString(tle[0],20,31));
-	ret_orbital_elements.inclination = atof(SubString(tle[1],8,15));
-	ret_orbital_elements.right_ascension = atof(SubString(tle[1],17,24));
-	ret_orbital_elements.eccentricity = 1.0e-07*atof(SubString(tle[1],26,32));
-	ret_orbital_elements.argument_of_perigee = atof(SubString(tle[1],34,41));
-	ret_orbital_elements.mean_anomaly = atof(SubString(tle[1],43,50));
-	ret_orbital_elements.mean_motion = atof(SubString(tle[1],52,62));
-	ret_orbital_elements.derivative_mean_motion  = atof(SubString(tle[0],33,42));
+	predict_orbital_elements_t *m = (predict_orbital_elements_t*)malloc(sizeof(predict_orbital_elements_t));
+	if (m == NULL) return NULL;
+
+	m->satellite_number = atol(SubString(tle[0],2,6));
+	m->element_number = atol(SubString(tle[0],64,67));
+	m->epoch_year = atoi(SubString(tle[0],18,19));
+	strncpy(m->designator, SubString(tle[0],9,16),8);
+	m->epoch_day = atof(SubString(tle[0],20,31));
+	m->inclination = atof(SubString(tle[1],8,15));
+	m->right_ascension = atof(SubString(tle[1],17,24));
+	m->eccentricity = 1.0e-07*atof(SubString(tle[1],26,32));
+	m->argument_of_perigee = atof(SubString(tle[1],34,41));
+	m->mean_anomaly = atof(SubString(tle[1],43,50));
+	m->mean_motion = atof(SubString(tle[1],52,62));
+	m->derivative_mean_motion  = atof(SubString(tle[0],33,42));
 	tempnum=1.0e-5*atof(SubString(tle[0],44,49));
-	ret_orbital_elements.second_derivative_mean_motion = tempnum/pow(10.0,(tle[0][51]-'0'));
+	m->second_derivative_mean_motion = tempnum/pow(10.0,(tle[0][51]-'0'));
 	tempnum=1.0e-5*atof(SubString(tle[0],53,58));
-	ret_orbital_elements.bstar_drag_term = tempnum/pow(10.0,(tle[0][60]-'0'));
-	ret_orbital_elements.revolutions_at_epoch = atof(SubString(tle[1],63,67));
+	m->bstar_drag_term = tempnum/pow(10.0,(tle[0][60]-'0'));
+	m->revolutions_at_epoch = atof(SubString(tle[1],63,67));
 
+	/* Period > 225 minutes is deep space */
+	double ao, xnodp, dd1, dd2, delo, a1, del1, r1;
+	double temp = twopi/xmnpda/xmnpda;
+	double xno = m->mean_motion*temp*xmnpda; //from old TLE struct
+	dd1=(xke/xno);
+	dd2=tothrd;
+	a1=pow(dd1,dd2);
+	r1=cos(m->inclination*M_PI/180.0);
+	dd1=(1.0-m->eccentricity*m->eccentricity);
+	temp=ck2*1.5f*(r1*r1*3.0-1.0)/pow(dd1,1.5);
+	del1=temp/(a1*a1);
+	ao=a1*(1.0-del1*(tothrd*.5+del1*(del1*1.654320987654321+1.0)));
+	delo=temp/(ao*ao);
+	xnodp=xno/(delo+1.0);
 
-	return ret_orbital_elements;
+	/* Select a deep-space/near-earth ephemeris */
+	if (twopi/xnodp/xmnpda >= 0.15625) {
+		m->ephemeris = EPHEMERIS_SDP4;
+		
+		// Allocate memory for ephemeris data
+		m->ephemeris_data = malloc(sizeof(struct _sdp4));
+
+		if (m->ephemeris_data == NULL) {
+			predict_destroy_orbital_elements(m);
+			return NULL;
+		}
+		// Initialize ephemeris data structure
+		sdp4_init(m, (struct _sdp4*)m->ephemeris_data);
+
+	} else {
+		m->ephemeris = EPHEMERIS_SGP4;
+		
+		// Allocate memory for ephemeris data
+		m->ephemeris_data = malloc(sizeof(struct _sgp4));
+
+		if (m->ephemeris_data == NULL) {
+			predict_destroy_orbital_elements(m);
+			return NULL;
+		}
+		// Initialize ephemeris data structure
+		sgp4_init(m, (struct _sgp4*)m->ephemeris_data);
+	}
+
+	return m;
 }
 
 predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_elements)
@@ -58,48 +102,6 @@ predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_element
 	m->phase = nan("");
 	m->revolutions = 0;
 
-	/* Period > 225 minutes is deep space */
-	double ao, xnodp, dd1, dd2, delo, a1, del1, r1;
-	double temp = twopi/xmnpda/xmnpda;
-	double xno = orbital_elements.mean_motion*temp*xmnpda; //from old TLE struct
-	dd1=(xke/xno);
-	dd2=tothrd;
-	a1=pow(dd1,dd2);
-	r1=cos(orbital_elements.inclination*M_PI/180.0);
-	dd1=(1.0-orbital_elements.eccentricity*orbital_elements.eccentricity);
-	temp=ck2*1.5f*(r1*r1*3.0-1.0)/pow(dd1,1.5);
-	del1=temp/(a1*a1);
-	ao=a1*(1.0-del1*(tothrd*.5+del1*(del1*1.654320987654321+1.0)));
-	delo=temp/(ao*ao);
-	xnodp=xno/(delo+1.0);
-
-	/* Select a deep-space/near-earth ephemeris */
-	if (twopi/xnodp/xmnpda >= 0.15625) {
-		m->ephemeris = EPHEMERIS_SDP4;
-		
-		// Allocate memory for ephemeris data
-		m->ephemeris_data = malloc(sizeof(struct _sdp4));
-
-		if (m->ephemeris_data == NULL) {
-			predict_destroy_orbit(m);
-			return NULL;
-		}
-		// Initialize ephemeris data structure
-		sdp4_init(&orbital_elements, (struct _sdp4*)m->ephemeris_data);
-
-	} else {
-		m->ephemeris = EPHEMERIS_SGP4;
-		
-		// Allocate memory for ephemeris data
-		m->ephemeris_data = malloc(sizeof(struct _sgp4));
-
-		if (m->ephemeris_data == NULL) {
-			predict_destroy_orbit(m);
-			return NULL;
-		}
-		// Initialize ephemeris data structure
-		sgp4_init(&orbital_elements, (struct _sgp4*)m->ephemeris_data);
-	}
 
 	return m;
 }
@@ -108,11 +110,18 @@ void predict_destroy_orbit(predict_orbit_t *orbit)
 {
 	if (orbit == NULL) return;
 
-	if (orbit->ephemeris_data != NULL) {
-		free(orbit->ephemeris_data);
+	free(orbit);
+}
+
+void predict_destroy_orbital_elements(predict_orbital_elements_t *m)
+{
+	if (m == NULL) return;
+
+	if (m->ephemeris_data != NULL) {
+		free(m->ephemeris_data);
 	}
 
-	free(orbit);
+	free(m);
 }
 
 /**
@@ -200,12 +209,12 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, predict_or
 
 	/* Call NORAD routines according to deep-space flag. */
 	struct model_output output;
-	switch (m->ephemeris) {
+	switch (orbital_elements->ephemeris) {
 		case EPHEMERIS_SDP4:
-			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, &output);
+			sdp4_predict((struct _sdp4*)orbital_elements->ephemeris_data, tsince, &output);
 			break;
 		case EPHEMERIS_SGP4:
-			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, &output);
+			sgp4_predict((struct _sgp4*)orbital_elements->ephemeris_data, tsince, &output);
 			break;
 		default:
 			//Panic!

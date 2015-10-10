@@ -117,6 +117,11 @@ typedef struct {
 	double bstar_drag_term;
 	///Number of revolutions around Earth at epoch (line 2, field 9)
 	int revolutions_at_epoch;
+
+	///Which perturbation model to use
+	enum predict_ephemeris ephemeris;
+	///Ephemeris data structure pointer
+	void *ephemeris_data;
 } predict_orbital_elements_t;
 
 /**
@@ -126,7 +131,13 @@ typedef struct {
  * \return Processed TLE parameters
  * \copyright GPLv2+
  **/
-predict_orbital_elements_t predict_parse_tle(char *tle[2]);
+predict_orbital_elements_t* predict_parse_tle(char *tle[2]);
+
+/**
+ * Free memory allocated in orbital elements structure.
+ * \param orbital_elements Orbit to free
+ **/
+void predict_destroy_orbital_elements(predict_orbital_elements_t *orbital_elements);
 
 
 /**
@@ -167,11 +178,6 @@ typedef struct {
 	double right_ascension;
 	///Current argument of perigee (from omgadf within sgp4/sdp4)
 	double argument_of_perigee;
-
-	///Which perturbation model to use
-	enum predict_ephemeris ephemeris;
-	///Ephemeris data structure pointer
-	void *ephemeris_data;
 } predict_orbit_t;
 
 
@@ -180,7 +186,7 @@ typedef struct {
  * \return Allocated orbit structure
  * \copyright GPLv2+
  **/
-predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_elements);
+predict_orbit_t *predict_create_orbit();
 
 /**
  * Free memory allocated in orbit structure. 

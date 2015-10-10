@@ -49,17 +49,17 @@ int runtest(const char *filename)
 	testcase.getTLE(tle);
 
 	// Create orbit objects
-	predict_orbital_elements_t orbital_elements = predict_parse_tle(tle);
+	predict_orbital_elements_t *orbital_elements = predict_parse_tle(tle);
 
 	// Used in lower bound in value check
-	predict_orbit_t *orbit_lower = predict_create_orbit(orbital_elements);
+	predict_orbit_t *orbit_lower = predict_create_orbit();
 	if (!orbit_lower) {
 		fprintf(stderr, "Failed to initialize orbit from tle!");
 		return -1;
 	}
 
 	// Used in upper bound in value check
-	predict_orbit_t *orbit_upper = predict_create_orbit(orbital_elements);
+	predict_orbit_t *orbit_upper = predict_create_orbit();
 	if (!orbit_upper) {
 		fprintf(stderr, "Failed to initialize orbit from tle!");
 		return -1;
@@ -72,7 +72,7 @@ int runtest(const char *filename)
 		return -1;
 	}
 
-	bool check_squint_angle = testcase.containsValidAlonAlat() && (orbit_lower->ephemeris == EPHEMERIS_SDP4);
+	bool check_squint_angle = testcase.containsValidAlonAlat() && (orbital_elements->ephemeris == EPHEMERIS_SDP4);
 	
 	// Test
 	int retval = 0;
@@ -116,11 +116,11 @@ int runtest(const char *filename)
 		struct predict_observation orbit_obs_upper;
 
 		// Lower bound
-		predict_orbit(&orbital_elements, orbit_lower, predict_to_julian(time));
+		predict_orbit(orbital_elements, orbit_lower, predict_to_julian(time));
 		predict_observe_orbit(obs, orbit_lower, &orbit_obs_lower);
 
 		// Upper bound
-		predict_orbit(&orbital_elements, orbit_upper, predict_to_julian(time + DIFF));
+		predict_orbit(orbital_elements, orbit_upper, predict_to_julian(time + DIFF));
 		predict_observe_orbit(obs, orbit_upper, &orbit_obs_upper);
 
 		// Check values
