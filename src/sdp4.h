@@ -16,6 +16,7 @@ typedef struct	{
 
 		 	   /* Used by thetg and Deep() */
 		   double  ds50;
+
 		}  deep_arg_t;
 
 /**
@@ -36,7 +37,15 @@ typedef struct {
 
 	/* Used by thetg and Deep() */
 	double  ds50;
+
+	/* Previously a part of _sdp4, moved here. */
+	double pl, pinc, pe, sh1, sghl, shs, savtsn, atime, xni, xli, sghs;
+	///Do loop flag:
+	int loopFlag;
+	///Epoch restart flag:
+	int epochRestartFlag;
 } deep_arg_dynamic_t;
+
 
 /**
  * Parameters relevant for SDP4 (simplified deep space perturbations) orbital model.
@@ -52,10 +61,6 @@ struct _sdp4 {
 	int resonanceFlag;
 	///Synchronous flag:
 	int synchronousFlag;
-	///Do loop flag:
-	int loopFlag;
-	///Epoch restart flag:
-	int epochRestartFlag;
 
 
 	///Static variables from SDP4():
@@ -64,14 +69,13 @@ struct _sdp4 {
 	deep_arg_t deep_arg;
 
 	///Static variables from Deep():
-	double thgr, xnq, xqncl, omegaq, zmol, zmos, savtsn, ee2, e3,
+	double thgr, xnq, xqncl, omegaq, zmol, zmos, ee2, e3,
 	xi2, xl2, xl3, xl4, xgh2, xgh3, xgh4, xh2, xh3, sse, ssi, ssg, xi3,
 	se2, si2, sl2, sgh2, sh2, se3, si3, sl3, sgh3, sh3, sl4, sgh4, ssl,
 	ssh, d3210, d3222, d4410, d4422, d5220, d5232, d5421, d5433, del1,
-	del2, del3, fasx2, fasx4, fasx6, xlamo, xfact, xni, atime, stepp,
-	stepn, step2, preep, pl, sghs, xli, d2201, d2211, sghl, sh1, pinc,
-	pe, shs, zsingl, zcosgl, zsinhl, zcoshl, zsinil, zcosil;
-
+	del2, del3, fasx2, fasx4, fasx6, xlamo, xfact, stepp,
+	stepn, step2, preep, d2201, d2211,
+	zsingl, zcosgl, zsinhl, zcoshl, zsinil, zcosil;
 	//Variables that are used locally in SDP4(), but also are used to calculate squint angle elsewhere
 	double xnodek, xinck;
 };
@@ -105,7 +109,7 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
  * \param deep_arg Deep perturbation parameters
  * \copyright GPLv2+
  **/
-void sdp4_deep(struct _sdp4 *m, int ientry, const predict_orbital_elements_t * orbital_elements, deep_arg_t * deep_arg);
+void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, deep_arg_t * deep_arg, deep_arg_dynamic_t *deep_dyn);
 
 
 #endif // ifndef _SDP4_H_
