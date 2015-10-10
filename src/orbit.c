@@ -203,24 +203,24 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, predict_or
 	switch (m->ephemeris) {
 		case EPHEMERIS_SDP4:
 			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, orbital_elements, &output);
-			m->position[0] = output.pos[0];
-			m->position[1] = output.pos[1];
-			m->position[2] = output.pos[2];
-			m->velocity[0] = output.vel[0];
-			m->velocity[1] = output.vel[1];
-			m->velocity[2] = output.vel[2];
-			m->phase = output.phase;
-			m->argument_of_perigee = output.omgadf;
-			m->inclination = output.xinck;
-			m->right_ascension = output.xnodek;
 			break;
 		case EPHEMERIS_SGP4:
-			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, m->position, m->velocity, &(m->phase));
+			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, &output);
 			break;
 		default:
 			//Panic!
 			return -1;
 	}
+	m->position[0] = output.pos[0];
+	m->position[1] = output.pos[1];
+	m->position[2] = output.pos[2];
+	m->velocity[0] = output.vel[0];
+	m->velocity[1] = output.vel[1];
+	m->velocity[2] = output.vel[2];
+	m->phase = output.phase;
+	m->argument_of_perigee = output.omgadf;
+	m->inclination = output.xinck;
+	m->right_ascension = output.xnodek;
 
 	/* TODO: Remove? Scale position and velocity vectors to km and km/sec */
 	Convert_Sat_State(m->position, m->velocity);

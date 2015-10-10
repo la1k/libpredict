@@ -2,6 +2,7 @@
 #define SGP4_H_
 
 #include <predict/predict.h>
+#include "sdp4.h"
 
 /**
  * Parameters relevant for SGP4 (simplified general perturbations) orbital model.
@@ -43,6 +44,6 @@ void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 
  * \param phase Output phase (mean anomaly)
  * \copyright GPLv2+
  **/
-void sgp4_predict(const struct _sgp4 *m, double tsince, double pos[3], double vel[3], double *phase);
+void sgp4_predict(const struct _sgp4 *m, double tsince, struct model_output *output);
 
 #endif

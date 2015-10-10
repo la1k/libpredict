@@ -117,7 +117,7 @@ void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 
 	}
 }
 
-void sgp4_predict(const struct _sgp4 *m, double tsince, double pos[3], double vel[3], double *phase)
+void sgp4_predict(const struct _sgp4 *m, double tsince, struct model_output *output)
 {
 	double cosuk, sinuk, rfdotk, vx, vy, vz, ux, uy, uz, xmy, xmx, cosnok,
 	sinnok, cosik, sinik, rdotk, xinck, xnodek, uk, rk, cos2u, sin2u,
@@ -238,19 +238,23 @@ void sgp4_predict(const struct _sgp4 *m, double tsince, double pos[3], double ve
 	vz=sinik*cosuk;
 
 	/* Position and velocity */
-	pos[0] = rk*ux;
-	pos[1] = rk*uy;
-	pos[2] = rk*uz;
-	vel[0] = rdotk*ux+rfdotk*vx;
-	vel[1] = rdotk*uy+rfdotk*vy;
-	vel[2] = rdotk*uz+rfdotk*vz;
+	output->pos[0] = rk*ux;
+	output->pos[1] = rk*uy;
+	output->pos[2] = rk*uz;
+	output->vel[0] = rdotk*ux+rfdotk*vx;
+	output->vel[1] = rdotk*uy+rfdotk*vy;
+	output->vel[2] = rdotk*uz+rfdotk*vz;
 
 	/* Phase in radians */
-	*phase=xlt-xnode-omgadf+twopi;
+	output->phase=xlt-xnode-omgadf+twopi;
 
-	if (*phase<0.0)
-		*phase+=twopi;
+	if (output->phase<0.0)
+		output->phase+=twopi;
 
-	*phase=FMod2p(*phase);
+	output->phase=FMod2p(output->phase);
+
+	output->xinck = xinck;
+	output->omgadf = omgadf;
+	output->xnodek = xnodek;
 
 }
