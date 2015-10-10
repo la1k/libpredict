@@ -98,7 +98,7 @@ predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_element
 			return NULL;
 		}
 		// Initialize ephemeris data structure
-		sgp4_init((struct _sgp4*)m->ephemeris_data);
+		sgp4_init(&orbital_elements, (struct _sgp4*)m->ephemeris_data);
 	}
 
 	return m;
@@ -205,8 +205,7 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, predict_or
 			m->phase = ((struct _sdp4*)m->ephemeris_data)->phase;
 			break;
 		case EPHEMERIS_SGP4:
-			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, orbital_elements, m->position, m->velocity);
-			m->phase = ((struct _sgp4*)m->ephemeris_data)->phase;
+			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, m->position, m->velocity, &(m->phase));
 			break;
 		default:
 			//Panic!
