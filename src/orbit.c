@@ -202,7 +202,7 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, predict_or
 	struct model_output output;
 	switch (m->ephemeris) {
 		case EPHEMERIS_SDP4:
-			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, orbital_elements, &output);
+			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, &output);
 			break;
 		case EPHEMERIS_SGP4:
 			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, &output);

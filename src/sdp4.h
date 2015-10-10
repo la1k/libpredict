@@ -70,6 +70,16 @@ struct _sdp4 {
 	del2, del3, fasx2, fasx4, fasx6, xlamo, xfact, stepp,
 	stepn, step2, preep, d2201, d2211,
 	zsingl, zcosgl, zsinhl, zcoshl, zsinil, zcosil;
+
+	//converted fields from predict_orbital_elements_t.
+	double xnodeo;
+	double omegao;
+	double xmo;
+	double xincl;
+	double eo;
+	double xno;
+	double bstar;
+	double epoch;
 };
 
 /**
@@ -90,7 +100,7 @@ void sdp4_init(const predict_orbital_elements_t *orbital_elements, struct _sdp4 
  * \param vel Output velocity in m/s
  * \copyright GPLv2+
  **/
-void sdp4_predict(const struct _sdp4 *m, double tsince, const predict_orbital_elements_t * orbital_elements, struct model_output *output);
+void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *output);
 
 /**
  * Deep space perturbations. Original Deep() function.
@@ -101,7 +111,7 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, const predict_orbital_el
  * \param deep_arg Deep perturbation parameters
  * \copyright GPLv2+
  **/
-void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, const deep_arg_fixed_t * deep_arg, deep_arg_dynamic_t *deep_dyn);
+void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_arg, deep_arg_dynamic_t *deep_dyn);
 
 
 #endif // ifndef _SDP4_H_

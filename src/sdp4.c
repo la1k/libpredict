@@ -19,28 +19,32 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	m->resonanceFlag = 0;
 	m->synchronousFlag = 0;
 
+	//Calculate old TLE field values as used in the original sdp4
+	double temp_tle = twopi/xmnpda/xmnpda;
+	m->xnodeo = tle->right_ascension * M_PI / 180.0;
+	m->omegao = tle->argument_of_perigee * M_PI / 180.0;
+	m->xmo = tle->mean_anomaly * M_PI / 180.0;
+	m->xincl = tle->inclination * M_PI / 180.0;
+	m->eo = tle->eccentricity;
+	m->xno = tle->mean_motion*temp_tle*xmnpda;
+	m->bstar = tle->bstar_drag_term / ae;
+	m->epoch = 1000.0*tle->epoch_year + tle->epoch_day;
+
 	/* Recover original mean motion (xnodp) and   */
 	/* semimajor axis (aodp) from input elements. */
-	double temp_tle = twopi/xmnpda/xmnpda;
-	double xincl = tle->inclination * M_PI / 180.0;
-	double eo = tle->eccentricity;
-	double xno = tle->mean_motion*temp_tle*xmnpda;
-	double bstar = tle->bstar_drag_term / ae;
-	double omegao = tle->argument_of_perigee * M_PI / 180.0;
-
 	double temp1, temp2, temp3, theta4, a1, a3ovk2, ao, c2, coef, coef1, x1m5th, xhdot1, del1, delo, eeta, eta, etasq, perigee, psisq, tsi, qoms24, s4, pinvsq;
 
-	a1=pow(xke/xno,tothrd);
-	m->deep_arg.cosio=cos(xincl);
+	a1=pow(xke/m->xno,tothrd);
+	m->deep_arg.cosio=cos(m->xincl);
 	m->deep_arg.theta2=m->deep_arg.cosio*m->deep_arg.cosio;
 	m->x3thm1=3*m->deep_arg.theta2-1;
-	m->deep_arg.eosq=eo*eo;
+	m->deep_arg.eosq=m->eo*m->eo;
 	m->deep_arg.betao2=1-m->deep_arg.eosq;
 	m->deep_arg.betao=sqrt(m->deep_arg.betao2);
 	del1=1.5*ck2*m->x3thm1/(a1*a1*m->deep_arg.betao*m->deep_arg.betao2);
 	ao=a1*(1-del1*(0.5*tothrd+del1*(1+134/81*del1)));
 	delo=1.5*ck2*m->x3thm1/(ao*ao*m->deep_arg.betao*m->deep_arg.betao2);
-	m->deep_arg.xnodp=xno/(1+delo);
+	m->deep_arg.xnodp=m->xno/(1+delo);
 	m->deep_arg.aodp=ao/(1-delo);
 
 	/* For perigee below 156 km, the values */
@@ -48,7 +52,7 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 
 	s4=s;
 	qoms24=qoms2t;
-	perigee=(m->deep_arg.aodp*(1-eo)-ae)*xkmper;
+	perigee=(m->deep_arg.aodp*(1-m->eo)-ae)*xkmper;
 
 	if (perigee<156.0)
 	{
@@ -62,21 +66,21 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	}
 
 	pinvsq=1/(m->deep_arg.aodp*m->deep_arg.aodp*m->deep_arg.betao2*m->deep_arg.betao2);
-	m->deep_arg.sing=sin(omegao);
-	m->deep_arg.cosg=cos(omegao);
+	m->deep_arg.sing=sin(m->omegao);
+	m->deep_arg.cosg=cos(m->omegao);
 	tsi=1/(m->deep_arg.aodp-s4);
-	eta=m->deep_arg.aodp*eo*tsi;
+	eta=m->deep_arg.aodp*m->eo*tsi;
 	etasq=eta*eta;
-	eeta=eo*eta;
+	eeta=m->eo*eta;
 	psisq=fabs(1-etasq);
 	coef=qoms24*pow(tsi,4);
 	coef1=coef/pow(psisq,3.5);
 	c2=coef1*m->deep_arg.xnodp*(m->deep_arg.aodp*(1+1.5*etasq+eeta*(4+etasq))+0.75*ck2*tsi/psisq*m->x3thm1*(8+3*etasq*(8+etasq)));
-	m->c1=bstar*c2;
-	m->deep_arg.sinio=sin(xincl);
+	m->c1=m->bstar*c2;
+	m->deep_arg.sinio=sin(m->xincl);
 	a3ovk2=-xj3/ck2*pow(ae,3);
 	m->x1mth2=1-m->deep_arg.theta2;
-	m->c4=2*m->deep_arg.xnodp*coef1*m->deep_arg.aodp*m->deep_arg.betao2*(eta*(2+0.5*etasq)+eo*(0.5+2*etasq)-2*ck2*tsi/(m->deep_arg.aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*omegao)));
+	m->c4=2*m->deep_arg.xnodp*coef1*m->deep_arg.aodp*m->deep_arg.betao2*(eta*(2+0.5*etasq)+m->eo*(0.5+2*etasq)-2*ck2*tsi/(m->deep_arg.aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*m->omegao)));
 	theta4=m->deep_arg.theta2*m->deep_arg.theta2;
 	temp1=3*ck2*pinvsq*m->deep_arg.xnodp;
 	temp2=temp1*ck2*pinvsq;
@@ -96,13 +100,8 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	sdp4_deep_initialize(tle, m, &(m->deep_arg));
 }
 
-void sdp4_predict(const struct _sdp4 *m, double tsince, const predict_orbital_elements_t *tle, struct model_output *output)
+void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *output)
 {
-	//Calculate old TLE field values as used in the original sdp4
-	double bstar = tle->bstar_drag_term / ae;
-	double xnodeo = tle->right_ascension * M_PI / 180.0;
-	double omegao = tle->argument_of_perigee * M_PI / 180.0;
-	double xmo = tle->mean_anomaly * M_PI / 180.0;
 
 	int i;
 	double a, axn, ayn, aynl, beta, betal, capu, cos2u, cosepw, cosik,
@@ -121,13 +120,13 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, const predict_orbital_el
 	deep_arg_dynamic_init(m, &deep_dyn);
 
 	/* Update for secular gravity and atmospheric drag */
-	xmdf=xmo+m->deep_arg.xmdot*tsince;
-	deep_dyn.omgadf=omegao+m->deep_arg.omgdot*tsince;
-	xnoddf=xnodeo+m->deep_arg.xnodot*tsince;
+	xmdf=m->xmo+m->deep_arg.xmdot*tsince;
+	deep_dyn.omgadf=m->omegao+m->deep_arg.omgdot*tsince;
+	xnoddf=m->xnodeo+m->deep_arg.xnodot*tsince;
 	tsq=tsince*tsince;
 	deep_dyn.xnode=xnoddf+m->xnodcf*tsq;
 	tempa=1-m->c1*tsince;
-	tempe=bstar*m->c4*tsince;
+	tempe=m->bstar*m->c4*tsince;
 	templ=m->t2cof*tsq;
 	deep_dyn.xn=m->deep_arg.xnodp;
 
@@ -135,7 +134,7 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, const predict_orbital_el
 	deep_dyn.xll=xmdf;
 	deep_dyn.t=tsince;
 
-	sdp4_deep(m, DPSecular, tle, &m->deep_arg, &deep_dyn);
+	sdp4_deep(m, DPSecular, &m->deep_arg, &deep_dyn);
 
 	xmdf=deep_dyn.xll;
 	a=pow(xke/deep_dyn.xn,tothrd)*tempa*tempa;
@@ -145,7 +144,7 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, const predict_orbital_el
 	/* Update for deep-space periodic effects */
 	deep_dyn.xll=xmam;
 
-	sdp4_deep(m, DPPeriodic,tle,&m->deep_arg, &deep_dyn);
+	sdp4_deep(m, DPPeriodic,&m->deep_arg, &deep_dyn);
 
 	xmam=deep_dyn.xll;
 	xl=xmam+deep_dyn.omgadf+deep_dyn.xnode;
@@ -290,14 +289,6 @@ double ThetaG(double epoch, deep_arg_fixed_t *deep_arg)
 
 void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m, deep_arg_fixed_t *deep_arg)
 {
-	//Calculate old TLE field values as used in the original sdp4
-	double epoch = 1000.0*tle->epoch_year + tle->epoch_day;
-	double xincl = tle->inclination * M_PI / 180.0;
-	double xnodeo = tle->right_ascension * M_PI / 180.0;
-	double eo = tle->eccentricity;
-	double omegao = tle->argument_of_perigee * M_PI / 180.0;
-	double xmo = tle->mean_anomaly * M_PI / 180.0;
-
 	double a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, ainv2, aqnv,
 	sgh, sini2, sh, si, day, bfact, c,
 	cc, cosq, ctem, f322, zx, zy, eoc, eq,
@@ -311,16 +302,16 @@ void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m
 	zsinh, zsini, zcosg, zcosh, zcosi;
 
 	/* Entrance for deep space initialization */
-	m->thgr=ThetaG(epoch,deep_arg);
-	eq=eo;
+	m->thgr=ThetaG(m->epoch,deep_arg);
+	eq=m->eo;
 	m->xnq=deep_arg->xnodp;
 	aqnv=1/deep_arg->aodp;
-	m->xqncl=xincl;
-	xmao=xmo;
+	m->xqncl=m->xincl;
+	xmao=m->xmo;
 	xpidot=deep_arg->omgdot+deep_arg->xnodot;
-	sinq=sin(xnodeo);
-	cosq=cos(xnodeo);
-	m->omegaq=omegao;
+	sinq=sin(m->xnodeo);
+	cosq=cos(m->xnodeo);
+	m->omegaq=m->omegao;
 
 	/* Initialize lunar solar terms */
 	day=deep_arg->ds50+18261.5;  /* Days since 1900 Jan 0.5 */
@@ -559,7 +550,7 @@ void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m
 		temp=2*temp1*root54;
 		m->d5421=temp*f542*g521;
 		m->d5433=temp*f543*g533;
-		m->xlamo=xmao+xnodeo+xnodeo-m->thgr-m->thgr;
+		m->xlamo=xmao+m->xnodeo+m->xnodeo-m->thgr-m->thgr;
 		bfact=deep_arg->xmdot+deep_arg->xnodot+deep_arg->xnodot-thdt-thdt;
 		bfact=bfact+m->ssl+m->ssh+m->ssh;
 	}
@@ -584,7 +575,7 @@ void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m
 		m->fasx2=0.13130908;
 		m->fasx4=2.8843198;
 		m->fasx6=0.37448087;
-		m->xlamo=xmao+xnodeo+omegao-m->thgr;
+		m->xlamo=xmao+m->xnodeo+m->omegao-m->thgr;
 		bfact=deep_arg->xmdot+xpidot-thdt;
 		bfact=bfact+m->ssl+m->ssg+m->ssh;
 	}
@@ -608,14 +599,10 @@ void deep_arg_dynamic_init(const struct _sdp4 *m, deep_arg_dynamic_t *deep_dyn){
 	deep_dyn->atime=0;
 }
 
-void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, const deep_arg_fixed_t * deep_arg, deep_arg_dynamic_t *deep_dyn)
+void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_arg, deep_arg_dynamic_t *deep_dyn)
 {
 	/* This function is used by SDP4 to add lunar and solar */
 	/* perturbation effects to deep-space orbit objects.    */
-
-	//Calculate old TLE field values as used in the original sdp4
-	double xincl = tle->inclination * M_PI / 180.0;
-	double eo = tle->eccentricity;
 
 	double alfdp,
 	sinis, sinok, sil, betdp, dalf, cosis, cosok, dbet, dls, f2,
@@ -633,8 +620,8 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements
 		deep_dyn->xll=deep_dyn->xll+m->ssl*deep_dyn->t;
 		deep_dyn->omgadf=deep_dyn->omgadf+m->ssg*deep_dyn->t;
 		deep_dyn->xnode=deep_dyn->xnode+m->ssh*deep_dyn->t;
-		deep_dyn->em=eo+m->sse*deep_dyn->t;
-		deep_dyn->xinc=xincl+m->ssi*deep_dyn->t;
+		deep_dyn->em=m->eo+m->sse*deep_dyn->t;
+		deep_dyn->xinc=m->xincl+m->ssi*deep_dyn->t;
 
 		if (deep_dyn->xinc<0)
 		{
