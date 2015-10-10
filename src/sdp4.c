@@ -10,7 +10,7 @@
 #define DPSecular	1
 #define DPPeriodic	2
 
-void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m, deep_arg_t *deep_arg);
+void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m, deep_arg_fixed_t *deep_arg);
 void deep_arg_dynamic_init(const struct _sdp4 *m, deep_arg_dynamic_t *deep_dyn);
 
 void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
@@ -96,7 +96,7 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	sdp4_deep_initialize(tle, m, &(m->deep_arg));
 }
 
-void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements_t * tle, double pos[3], double vel[3])
+void sdp4_predict(const struct _sdp4 *m, double tsince, const predict_orbital_elements_t *tle, struct model_output *output)
 {
 	//Calculate old TLE field values as used in the original sdp4
 	double bstar = tle->bstar_drag_term / ae;
@@ -114,11 +114,11 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
 	r,
 	temp, tempa, temp1,
 	temp2, temp3, temp4, temp5, temp6;
+	double xnodek, xinck;
 
 	/* Initialize dynamic part of deep_arg */
-	deep_arg_dynamic_t deep_dyn = m->deep_dyn;
+	deep_arg_dynamic_t deep_dyn;
 	deep_arg_dynamic_init(m, &deep_dyn);
-
 
 	/* Update for secular gravity and atmospheric drag */
 	xmdf=xmo+m->deep_arg.xmdot*tsince;
@@ -207,18 +207,18 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
 	/* Update for short periodics */
 	rk=r*(1-1.5*temp2*betal*m->x3thm1)+0.5*temp1*m->x1mth2*cos2u;
 	uk=u-0.25*temp2*m->x7thm1*sin2u;
-	m->xnodek=deep_dyn.xnode+1.5*temp2*m->deep_arg.cosio*sin2u;
-	m->xinck=deep_dyn.xinc+1.5*temp2*m->deep_arg.cosio*m->deep_arg.sinio*cos2u;
+	xnodek=deep_dyn.xnode+1.5*temp2*m->deep_arg.cosio*sin2u;
+	xinck=deep_dyn.xinc+1.5*temp2*m->deep_arg.cosio*m->deep_arg.sinio*cos2u;
 	rdotk=rdot-deep_dyn.xn*temp1*m->x1mth2*sin2u;
 	rfdotk=rfdot+deep_dyn.xn*temp1*(m->x1mth2*cos2u+1.5*m->x3thm1);
 
 	/* Orientation vectors */
 	sinuk=sin(uk);
 	cosuk=cos(uk);
-	sinik=sin(m->xinck);
-	cosik=cos(m->xinck);
-	sinnok=sin(m->xnodek);
-	cosnok=cos(m->xnodek);
+	sinik=sin(xinck);
+	cosik=cos(xinck);
+	sinnok=sin(xnodek);
+	cosnok=cos(xnodek);
 	xmx=-sinnok*cosik;
 	xmy=cosnok*cosik;
 	ux=xmx*sinuk+cosnok*cosuk;
@@ -229,22 +229,25 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
 	vz=sinik*cosuk;
 
 	/* Position and velocity */
-	pos[0] = rk*ux;
-	pos[1] = rk*uy;
-	pos[2] = rk*uz;
-	vel[0] = rdotk*ux+rfdotk*vx;
-	vel[1] = rdotk*uy+rfdotk*vy;
-	vel[2] = rdotk*uz+rfdotk*vz;
+	output->pos[0] = rk*ux;
+	output->pos[1] = rk*uy;
+	output->pos[2] = rk*uz;
+	output->vel[0] = rdotk*ux+rfdotk*vx;
+	output->vel[1] = rdotk*uy+rfdotk*vy;
+	output->vel[2] = rdotk*uz+rfdotk*vz;
 
 	/* Phase in radians */
-	m->phase=xlt-deep_dyn.xnode-deep_dyn.omgadf+twopi;
+	double phase=xlt-deep_dyn.xnode-deep_dyn.omgadf+twopi;
 
-	if (m->phase<0.0)
-		m->phase+=twopi;
+	if (phase<0.0)
+		phase+=twopi;
 
-	m->phase=FMod2p(m->phase);
+	phase=FMod2p(phase);
+	output->phase = phase;
 
-	m->deep_dyn = deep_dyn;
+	output->omgadf = deep_dyn.omgadf;
+	output->xnodek = xnodek;
+	output->xinck = xinck;
 }
 
 /**
@@ -259,7 +262,7 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
  * \param deep_arg Deep arg
  * \copyright GPLv2+
  **/
-double ThetaG(double epoch, deep_arg_t *deep_arg)
+double ThetaG(double epoch, deep_arg_fixed_t *deep_arg)
 {
 	double year, day, UT, jd, TU, GMST, ThetaG;
 
@@ -285,7 +288,7 @@ double ThetaG(double epoch, deep_arg_t *deep_arg)
 	return ThetaG;
 }
 
-void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m, deep_arg_t *deep_arg)
+void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m, deep_arg_fixed_t *deep_arg)
 {
 	//Calculate old TLE field values as used in the original sdp4
 	double epoch = 1000.0*tle->epoch_year + tle->epoch_day;
@@ -605,7 +608,7 @@ void deep_arg_dynamic_init(const struct _sdp4 *m, deep_arg_dynamic_t *deep_dyn){
 	deep_dyn->atime=0;
 }
 
-void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, const deep_arg_t * deep_arg, deep_arg_dynamic_t *deep_dyn)
+void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, const deep_arg_fixed_t * deep_arg, deep_arg_dynamic_t *deep_dyn)
 {
 	/* This function is used by SDP4 to add lunar and solar */
 	/* perturbation effects to deep-space orbit objects.    */

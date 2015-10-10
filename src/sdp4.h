@@ -3,27 +3,29 @@
 
 #include <predict/predict.h>
 
+struct model_output {
+	double xinck; //inclination?
+	double omgadf; //argument of perigee?
+	double xnodek; //RAAN?
+
+	double pos[3];
+	double vel[3];
+
+	double phase;
+};
+
+
 /**
- * Parameters for deep space perturbations?
+ * Parameters for deep space perturbations
  **/
 typedef struct	{
-		   	   /* Used by dpinit part of Deep() */
-		   double  eosq, sinio, cosio, betao, aodp, theta2,
-			   sing, cosg, betao2, xmdot, omgdot, xnodot, xnodp;
-
-		 	   /* Used by thetg and Deep() */
-		   double  ds50;
-
-		}  deep_arg_t;
-
-/**
- * Parameters for deep space perturbations.
- **/
-typedef struct {
 	/* Used by dpinit part of Deep() */
 	double  eosq, sinio, cosio, betao, aodp, theta2,
 	sing, cosg, betao2, xmdot, omgdot, xnodot, xnodp;
-} deep_arg_fixed_t;
+
+	/* Used by thetg and Deep() */
+	double  ds50;
+}  deep_arg_fixed_t;
 
 /**
  * Output from deep space perturbations.
@@ -32,9 +34,6 @@ typedef struct {
 	/* Moved from deep_arg_t. */
 	/* Used by dpsec and dpper parts of Deep() */
 	double  xll, omgadf, xnode, em, xinc, xn, t;
-
-	/* Used by thetg and Deep() */
-	double  ds50;
 
 	/* Previously a part of _sdp4, moved here. */
 	double pl, pinc, pe, sh1, sghl, shs, savtsn, atime, xni, xli, sghs;
@@ -50,9 +49,6 @@ typedef struct {
  **/
 struct _sdp4 {
 
-	//Phase?
-	double phase;
-
 	///Lunar terms done?
 	int lunarTermsDone;
 	///Resonance flag:
@@ -64,7 +60,7 @@ struct _sdp4 {
 	///Static variables from SDP4():
 	double x3thm1, c1, x1mth2, c4, xnodcf, t2cof, xlcof,
 	aycof, x7thm1;
-	deep_arg_t deep_arg;
+	deep_arg_fixed_t deep_arg;
 
 	///Static variables from Deep():
 	double thgr, xnq, xqncl, omegaq, zmol, zmos, ee2, e3,
@@ -74,10 +70,6 @@ struct _sdp4 {
 	del2, del3, fasx2, fasx4, fasx6, xlamo, xfact, stepp,
 	stepn, step2, preep, d2201, d2211,
 	zsingl, zcosgl, zsinhl, zcoshl, zsinil, zcosil;
-	//Variables that are used locally in SDP4(), but also are used to calculate squint angle elsewhere
-	double xnodek, xinck;
-
-	deep_arg_dynamic_t deep_dyn;
 };
 
 /**
@@ -98,7 +90,7 @@ void sdp4_init(const predict_orbital_elements_t *orbital_elements, struct _sdp4 
  * \param vel Output velocity in m/s
  * \copyright GPLv2+
  **/
-void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements_t * orbital_elements, double pos[3], double vel[3]);
+void sdp4_predict(const struct _sdp4 *m, double tsince, const predict_orbital_elements_t * orbital_elements, struct model_output *output);
 
 /**
  * Deep space perturbations. Original Deep() function.
@@ -109,7 +101,7 @@ void sdp4_predict(struct _sdp4 *m, double tsince, const predict_orbital_elements
  * \param deep_arg Deep perturbation parameters
  * \copyright GPLv2+
  **/
-void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, const deep_arg_t * deep_arg, deep_arg_dynamic_t *deep_dyn);
+void sdp4_deep(const struct _sdp4 *m, int ientry, const predict_orbital_elements_t * tle, const deep_arg_fixed_t * deep_arg, deep_arg_dynamic_t *deep_dyn);
 
 
 #endif // ifndef _SDP4_H_

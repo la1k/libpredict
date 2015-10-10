@@ -199,10 +199,20 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, predict_or
 	double tsince = (julTime - jul_epoch)*xmnpda;
 
 	/* Call NORAD routines according to deep-space flag. */
+	struct model_output output;
 	switch (m->ephemeris) {
 		case EPHEMERIS_SDP4:
-			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, orbital_elements, m->position, m->velocity);
-			m->phase = ((struct _sdp4*)m->ephemeris_data)->phase;
+			sdp4_predict((struct _sdp4*)m->ephemeris_data, tsince, orbital_elements, &output);
+			m->position[0] = output.pos[0];
+			m->position[1] = output.pos[1];
+			m->position[2] = output.pos[2];
+			m->velocity[0] = output.vel[0];
+			m->velocity[1] = output.vel[1];
+			m->velocity[2] = output.vel[2];
+			m->phase = output.phase;
+			m->argument_of_perigee = output.omgadf;
+			m->inclination = output.xinck;
+			m->right_ascension = output.xnodek;
 			break;
 		case EPHEMERIS_SGP4:
 			sgp4_predict((struct _sgp4*)m->ephemeris_data, tsince, m->position, m->velocity, &(m->phase));
@@ -290,27 +300,20 @@ double predict_eclipse_depth(const predict_orbit_t *orbit)
 
 double predict_squint_angle(const predict_observer_t *observer, const predict_orbit_t *orbit, double alon, double alat)
 {
-	double squint;
-	if (orbit->ephemeris == EPHEMERIS_SDP4) {
-		const struct _sdp4* sdp4 = (struct _sdp4*)orbit->ephemeris_data;
+	double bx = cos(alat)*cos(alon + orbit->argument_of_perigee);
+	double by = cos(alat)*sin(alon + orbit->argument_of_perigee);
+	double bz = sin(alat);
 
-		double bx = cos(alat)*cos(alon + sdp4->deep_dyn.omgadf);
-		double by = cos(alat)*sin(alon + sdp4->deep_dyn.omgadf);
-		double bz = sin(alat);
+	double cx = bx;
+	double cy = by*cos(orbit->inclination) - bz*sin(orbit->inclination);
+	double cz = by*sin(orbit->inclination) + bz*cos(orbit->inclination);
+	double ax = cx*cos(orbit->right_ascension) - cy*sin(orbit->right_ascension);
+	double ay = cx*sin(orbit->right_ascension) + cy*cos(orbit->right_ascension);
+	double az = cz;
 
-		double cx = bx;
-		double cy = by*cos(sdp4->xinck) - bz*sin(sdp4->xinck);
-		double cz = by*sin(sdp4->xinck) + bz*cos(sdp4->xinck);
-		double ax = cx*cos(sdp4->xnodek) - cy*sin(sdp4->xnodek);
-		double ay = cx*sin(sdp4->xnodek) + cy*cos(sdp4->xnodek);
-		double az = cz;
+	struct predict_observation obs;
+	predict_observe_orbit(observer, orbit, &obs);
+	double squint = acos(-(ax*obs.range_x + ay*obs.range_y + az*obs.range_z)/obs.range);
 
-		struct predict_observation obs;
-		predict_observe_orbit(observer, orbit, &obs);
-		squint = acos(-(ax*obs.range_x + ay*obs.range_y + az*obs.range_z)/obs.range);
-
-	} else {
-		squint = nan("");
-	}
 	return squint;
 }
