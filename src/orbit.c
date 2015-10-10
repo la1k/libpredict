@@ -85,7 +85,7 @@ predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_element
 			return NULL;
 		}
 		// Initialize ephemeris data structure
-		sdp4_init((struct _sdp4*)m->ephemeris_data);
+		sdp4_init(&orbital_elements, (struct _sdp4*)m->ephemeris_data);
 
 	} else {
 		m->ephemeris = EPHEMERIS_SGP4;

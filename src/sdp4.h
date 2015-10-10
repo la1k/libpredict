@@ -10,24 +10,42 @@ typedef struct	{
 		   	   /* Used by dpinit part of Deep() */
 		   double  eosq, sinio, cosio, betao, aodp, theta2,
 			   sing, cosg, betao2, xmdot, omgdot, xnodot, xnodp;
-	   
+
 			   /* Used by dpsec and dpper parts of Deep() */
 		   double  xll, omgadf, xnode, em, xinc, xn, t;
-    
+
 		 	   /* Used by thetg and Deep() */
 		   double  ds50;
 		}  deep_arg_t;
 
 /**
+ * Parameters for deep space perturbations.
+ **/
+typedef struct {
+	/* Used by dpinit part of Deep() */
+	double  eosq, sinio, cosio, betao, aodp, theta2,
+	sing, cosg, betao2, xmdot, omgdot, xnodot, xnodp;
+} deep_arg_fixed_t;
+
+/**
+ * Output from deep space perturbations.
+ **/
+typedef struct {
+	/* Used by dpsec and dpper parts of Deep() */
+	double  xll, omgadf, xnode, em, xinc, xn, t;
+
+	/* Used by thetg and Deep() */
+	double  ds50;
+} deep_arg_dynamic_t;
+
+/**
  * Parameters relevant for SDP4 (simplified deep space perturbations) orbital model.
  **/
 struct _sdp4 {
-	
+
 	//Phase?
 	double phase;
 
-	///Have the SDP4 function been initialized?
-	int initialized;
 	///Lunar terms done?
 	int lunarTermsDone;
 	///Resonance flag:
@@ -39,12 +57,12 @@ struct _sdp4 {
 	///Epoch restart flag:
 	int epochRestartFlag;
 
-	
+
 	///Static variables from SDP4():
 	double x3thm1, c1, x1mth2, c4, xnodcf, t2cof, xlcof,
 	aycof, x7thm1;
 	deep_arg_t deep_arg;
-	
+
 	///Static variables from Deep():
 	double thgr, xnq, xqncl, omegaq, zmol, zmos, savtsn, ee2, e3,
 	xi2, xl2, xl3, xl4, xgh2, xgh3, xgh4, xh2, xh3, sse, ssi, ssg, xi3,
@@ -59,14 +77,15 @@ struct _sdp4 {
 };
 
 /**
- * Initialize SDP4 model parameters. 
+ * Initialize SDP4 model parameters.
  *
+ * \param orbital_elements Orbital elements
  * \param m Struct to initialize
  **/
-void sdp4_init(struct _sdp4 *m);
+void sdp4_init(const predict_orbital_elements_t *orbital_elements, struct _sdp4 *m);
 
-/** 
- * Predict ECI position and velocity of deep-space orbit (period > 225 minutes) according to SDP4 model and the given orbital parameters. 
+/**
+ * Predict ECI position and velocity of deep-space orbit (period > 225 minutes) according to SDP4 model and the given orbital parameters.
  *
  * \param m SDP4 model parameters
  * \param tsince Time since epoch of TLE in minutes
