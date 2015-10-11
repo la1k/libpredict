@@ -84,9 +84,6 @@ enum predict_ephemeris {
  * Container for processed TLE data from TLE strings.
  **/
 typedef struct {
-	///Name of satellite
-	char name[128];
-
 	///Satellite number (line 1, field 2)
 	int satellite_number;
 	///Element number (line 1, field 13)
@@ -179,20 +176,6 @@ typedef struct {
 	///Current argument of perigee (from omgadf within sgp4/sdp4)
 	double argument_of_perigee;
 } predict_orbit_t;
-
-
-/**
- * Create orbit structure. Allocate memory and prepare internal data.
- * \return Allocated orbit structure
- * \copyright GPLv2+
- **/
-predict_orbit_t *predict_create_orbit();
-
-/**
- * Free memory allocated in orbit structure. 
- * \param orbit Orbit to free
- **/
-void predict_destroy_orbit(predict_orbit_t *orbit);
 
 /**
  * Main prediction function. Predict satellite orbit at given time. 

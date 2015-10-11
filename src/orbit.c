@@ -80,39 +80,6 @@ predict_orbital_elements_t* predict_parse_tle(char *tle[2])
 	return m;
 }
 
-predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_elements)
-{
-	// Allocate memory for new orbit struct
-	predict_orbit_t *m = (predict_orbit_t*)malloc(sizeof(predict_orbit_t));
-	if (m == NULL) return NULL;
-
-	m->time = nan("");
-	m->position[0] = nan("");
-	m->position[1] = nan("");
-	m->position[2] = nan("");
-	m->velocity[0] = nan("");
-	m->velocity[1] = nan("");
-	m->velocity[2] = nan("");
-	m->latitude = nan("");
-	m->longitude = nan("");
-	m->altitude = nan("");
-	m->eclipsed = false;
-	m->eclipse_depth = nan("");
-	m->footprint = nan("");
-	m->phase = nan("");
-	m->revolutions = 0;
-
-
-	return m;
-}
-
-void predict_destroy_orbit(predict_orbit_t *orbit)
-{
-	if (orbit == NULL) return;
-
-	free(orbit);
-}
-
 void predict_destroy_orbital_elements(predict_orbital_elements_t *m)
 {
 	if (m == NULL) return;
