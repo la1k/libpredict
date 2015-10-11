@@ -350,8 +350,6 @@ double predict_doppler_shift(const predict_observer_t *observer, const struct pr
 /**
  * Calculate squint angle for satellite, i.e. angle between the satellite antenna and the QTH antenna.
  *
- * \note The squint angle is defined only for SDP4 satellites for now.
- *
  * \param observer Point of observation
  * \param orbit Current state of satellite orbit
  * \param alon Attitude longitude in radians (describes orientation of the satellite at apogee)
