@@ -10,7 +10,23 @@
 #define DPSecular	1
 #define DPPeriodic	2
 
+/**
+ * Initialize the fixed part of deep_arg.
+ *
+ * \param tle Orbital elements
+ * \param m Initialized sdp4 model
+ * \param deep_arg Fixed part of deep_arg
+ * \copyright GPLv2+
+ **/
 void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m, deep_arg_fixed_t *deep_arg);
+
+/**
+ * Initialize the dynamic part of deep_arg.
+ *
+ * \param m Initialized sdp4 model
+ * \param deep_dyn Dynamic part of deep_arg
+ * \copyright GPLv2+
+ **/
 void deep_arg_dynamic_init(const struct _sdp4 *m, deep_arg_dynamic_t *deep_dyn);
 
 void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)

@@ -30,7 +30,9 @@ struct _sgp4 {
 /**
  * Initialize SGP4 model parameters.  
  *
+ * \param orbital_elements Orbital elements
  * \param m Struct to initialize
+ * \copyright GPLv2+
  **/
 void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 *m);
 
@@ -39,9 +41,7 @@ void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 
  *
  * \param m SGP4 model parameters
  * \param tsince Time since epoch of TLE in minutes
- * \param pos Output ECI position in meters
- * \param vel Output velocity in m/s
- * \param phase Output phase (mean anomaly)
+ * \param output Output of model
  * \copyright GPLv2+
  **/
 void sgp4_predict(const struct _sgp4 *m, double tsince, struct model_output *output);

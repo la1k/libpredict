@@ -95,9 +95,7 @@ void sdp4_init(const predict_orbital_elements_t *orbital_elements, struct _sdp4 
  *
  * \param m SDP4 model parameters
  * \param tsince Time since epoch of TLE in minutes
- * \param orbital_elements Orbital parameters
- * \param pos Output ECI position in meters
- * \param vel Output velocity in m/s
+ * \param output Modeled output parameters
  * \copyright GPLv2+
  **/
 void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *output);
@@ -106,9 +104,9 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *out
  * Deep space perturbations. Original Deep() function.
  *
  * \param m SDP4 model parameters
- * \param ientry Behavior flag. 0: Deep space initialization. 1: Deep space secular effects. 2: lunar-solar periodics
- * \param orbital_elements Orbital parameters
- * \param deep_arg Deep perturbation parameters
+ * \param ientry Behavior flag. 1: Deep space secular effects. 2: lunar-solar periodics
+ * \param deep_arg Fixed deep perturbation parameters
+ * \param deep_dyn Output of deep space perturbations
  * \copyright GPLv2+
  **/
 void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_arg, deep_arg_dynamic_t *deep_dyn);
