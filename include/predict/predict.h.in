@@ -140,7 +140,7 @@ void predict_destroy_orbital_elements(predict_orbital_elements_t *orbital_elemen
 /**
  * Predicted orbital values for satellite at a given time.
  **/
-typedef struct {
+struct predict_orbit {
 	///Timestamp for last call to orbit_predict
 	predict_julian_date_t time;
 
@@ -175,7 +175,7 @@ typedef struct {
 	double right_ascension;
 	///Current argument of perigee (from omgadf within sgp4/sdp4)
 	double argument_of_perigee;
-} predict_orbit_t;
+};
 
 /**
  * Main prediction function. Predict satellite orbit at given time. 
@@ -185,7 +185,7 @@ typedef struct {
  * \return 0 if everything went fine
  * \copyright GPLv2+
  **/
-int predict_orbit(const predict_orbital_elements_t *orbital_elements, predict_orbit_t *x, predict_julian_date_t time);
+int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct predict_orbit *x, predict_julian_date_t time);
 
 /**
  * Find whether orbit is geostationary. 
@@ -223,22 +223,6 @@ double predict_perigee(const predict_orbital_elements_t *x);
  * \copyright GPLv2+
  **/
 bool predict_aos_happens(const predict_orbital_elements_t *x, double latitude);
-
-/** 
- * Find whether a satellite is currently eclipsed.
- *
- * \param x Current state of orbit
- * \return true if orbit is eclipsed, otherwise false
- **/
-bool predict_is_eclipsed(const predict_orbit_t *x);
-
-/** 
- * Return the eclipse depth
- *
- * \param x Current state of orbit
- * \return Eclipse depth (rad)
- **/
-double predict_eclipse_depth(const predict_orbit_t *x);
 
 /**
  * Observation point/ground station (QTH).
@@ -308,7 +292,7 @@ void predict_destroy_observer(predict_observer_t *obs);
  * \param obs Return of object for position of the satellite relative to the observer.
  * \copyright GPLv2+
  **/
-void predict_observe_orbit(const predict_observer_t *observer, const predict_orbit_t *orbit, struct predict_observation *obs);
+void predict_observe_orbit(const predict_observer_t *observer, const struct predict_orbit *orbit, struct predict_observation *obs);
 
 /**
  * Estimate relative position of the moon.
@@ -361,7 +345,7 @@ predict_julian_date_t predict_next_los(const predict_observer_t *observer, const
  * \return The frequency difference from the original frequency
  * \copyright GPLv2+
  **/
-double predict_doppler_shift(const predict_observer_t *observer, const predict_orbit_t *orbit, double downlink_frequency);
+double predict_doppler_shift(const predict_observer_t *observer, const struct predict_orbit *orbit, double downlink_frequency);
 
 /**
  * Calculate squint angle for satellite, i.e. angle between the satellite antenna and the QTH antenna.
@@ -375,7 +359,7 @@ double predict_doppler_shift(const predict_observer_t *observer, const predict_o
  * \return Squint angle in radians. Will output nan if the satellite is not an SDP4 satellite
  * \copyright GPLv2+
  **/
-double predict_squint_angle(const predict_observer_t *observer, const predict_orbit_t *orbit, double alon, double alat);
+double predict_squint_angle(const predict_observer_t *observer, const struct predict_orbit *orbit, double alon, double alat);
 
 /*!
  * \brief Calculate refraction angle.

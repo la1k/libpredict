@@ -38,7 +38,7 @@ void predict_destroy_observer(predict_observer_t *obs)
  * Calculated range, azimuth, elevation and relative velocity from the
  * given observer position.
  **/
-void predict_observe_orbit(const predict_observer_t *observer, const predict_orbit_t *orbit, struct predict_observation *obs)
+void predict_observe_orbit(const predict_observer_t *observer, const struct predict_orbit *orbit, struct predict_observation *obs)
 {
 	if (obs == NULL) return;
 	
@@ -402,7 +402,7 @@ double predict_next_aos(const predict_observer_t *observer, const predict_orbita
 	struct predict_observation obs;
 	double time_step = 0;
 	
-	predict_orbit_t orbit;
+	struct predict_orbit orbit;
 	predict_orbit(orbital_elements, &orbit, curr_time);
 	predict_observe_orbit(observer, &orbit, &obs);
 
@@ -456,7 +456,7 @@ double predict_next_los(const predict_observer_t *observer, const predict_orbita
 	struct predict_observation obs;
 	double time_step = 0;
 
-	predict_orbit_t orbit;
+	struct predict_orbit orbit;
 	predict_orbit(orbital_elements, &orbit, curr_time);
 	predict_observe_orbit(observer, &orbit, &obs);
 
@@ -497,7 +497,7 @@ double predict_next_los(const predict_observer_t *observer, const predict_orbita
 
 }
 
-double predict_doppler_shift(const predict_observer_t *observer, const predict_orbit_t *orbit, double frequency)
+double predict_doppler_shift(const predict_observer_t *observer, const struct predict_orbit *orbit, double frequency)
 {
 	struct predict_observation obs;
 	predict_observe_orbit(observer, orbit, &obs);

@@ -48,7 +48,7 @@ int runtest(const char *filename)
 
 	// Create orbit object
 	predict_orbital_elements_t *orbital_elements = predict_parse_tle(tle);
-	predict_orbit_t orbit;
+	struct predict_orbit orbit;
 
 	// Create observer object
 	predict_observer_t *obs = predict_create_observer("test", testcase.latitude()*M_PI/180.0, testcase.longitude()*M_PI/180.0, testcase.altitude());
