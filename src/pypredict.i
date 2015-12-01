@@ -26,13 +26,44 @@ int revolutions_at_epoch;
 
 typedef struct {
 char name[128];
+predict_julian_date_t time;
+double position[3];
+double velocity[3];
+double latitude;
+double longitude;
+double altitude;
+double footprint;
+int eclipsed;
+double eclipse_depth;
+double phase;
+long revolutions;
+enum predict_ephemeris ephemeris;
+predict_orbital_elements_t orbital_elements;
+void *ephemeris_data;
+} predict_orbit_t;
+
+typedef struct {
+char name[128];
 double latitude;
 double longitude;
 double altitude;
 } predict_observer_t;
 
+struct predict_observation {
+predict_julian_date_t time;
+double azimuth;
+double azimuth_rate;
+double elevation;
+double elevation_rate;
+double range;
+double range_x, range_y, range_z;
+double range_rate;
+bool visible;
+};
+
 /* functions */
 char *predict_version_string();
+time_t time(time_t *time);
 predict_julian_date_t predict_to_julian(time_t time);
 time_t predict_from_julian(predict_julian_date_t date);
 predict_orbit_t *predict_create_orbit(predict_orbital_elements_t orbital_elements);
