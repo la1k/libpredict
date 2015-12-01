@@ -34,6 +34,19 @@ get_property(predict_link_flags TARGET predict PROPERTY LINK_FLAGS)
 set(predict_link_flags "${predict_link_flags} -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libpredict.symver")
 set_target_properties(predict PROPERTIES LINK_FLAGS ${predict_link_flags})
 
+# built python extension
+
+FIND_PACKAGE(SWIG REQUIRED)
+INCLUDE(${SWIG_USE_FILE})
+FIND_PACKAGE(PythonLibs)
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+SET(CMAKE_SWIG_FLAGS "")
+SET_SOURCE_FILES_PROPERTIES(pypredict.i PROPERTIES CPLUSPLUS ON)
+SET_SOURCE_FILES_PROPERTIES(pypredict.i PROPERTIES SWIG_FLAGS "-includeall")
+SWIG_ADD_MODULE(pypredict python pypredict.i julian_date.c observer.c orbit.c sdp4.c sgp4.c sun.c unsorted.c version.c)
+SWIG_LINK_LIBRARIES(pypredict ${PYTHON_LIBRARIES})
+
 install(TARGETS predict predict_static
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
