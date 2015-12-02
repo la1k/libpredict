@@ -61,6 +61,8 @@ double range_rate;
 bool visible;
 };
 
+typedef long time_t;
+
 /* functions */
 char *predict_version_string();
 time_t time(time_t *time);
