@@ -1,5 +1,6 @@
 #define _XOPEN_SOURCE 600
 #include <math.h>
+#include <string.h>
 #include "defs.h"
 #include "unsorted.h"
 #include "sdp4.h"
@@ -14,6 +15,7 @@ predict_orbital_elements_t predict_parse_tle(char *tle[2])
 	predict_orbital_elements_t ret_orbital_elements;
 	ret_orbital_elements.satellite_number = atol(SubString(tle[0],2,6));
 	ret_orbital_elements.element_number = atol(SubString(tle[0],64,67));
+	strncpy(ret_orbital_elements.designator, SubString(tle[0],9,16),8);
 	ret_orbital_elements.epoch_year = atoi(SubString(tle[0],18,19));
 	ret_orbital_elements.epoch_day = atof(SubString(tle[0],20,31));
 	ret_orbital_elements.inclination = atof(SubString(tle[1],8,15));
