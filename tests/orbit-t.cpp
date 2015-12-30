@@ -210,7 +210,7 @@ int runtest(const char *filename)
 			if (check_squint_angle) {
 				printf(", %.8f/%.8f/%.8f", squint_angle_lower, squint, squint_angle_upper);
 			}
-			printf(", %.8f/%.8f/%.8f, %d/%d/%d", orbit_lower.phase*180.0/M_PI, phase, orbit_upper.phase*180.0/M_PI, orbit_lower.revolutions, revolutions, orbit_upper.revolutions);
+			printf(", %.8f/%.8f/%.8f, %ld/%ld/%ld", orbit_lower.phase*180.0/M_PI, phase, orbit_upper.phase*180.0/M_PI, orbit_lower.revolutions, revolutions, orbit_upper.revolutions);
 			printf("\n");
 
 			retval = -1;
