@@ -10,29 +10,29 @@
 bool is_eclipsed(const double pos[3], const double sol[3], double *depth);
 bool predict_decayed(const predict_orbital_elements_t *orbital_elements, predict_julian_date_t time);
 
-predict_orbital_elements_t* predict_parse_tle(char *tle[2])
+predict_orbital_elements_t* predict_parse_tle(const char *tle_line_1, const char *tle_line_2)
 {
 	double tempnum;
 	predict_orbital_elements_t *m = (predict_orbital_elements_t*)malloc(sizeof(predict_orbital_elements_t));
 	if (m == NULL) return NULL;
 
-	m->satellite_number = atol(SubString(tle[0],2,6));
-	m->element_number = atol(SubString(tle[0],64,67));
-	m->epoch_year = atoi(SubString(tle[0],18,19));
-	strncpy(m->designator, SubString(tle[0],9,16),8);
-	m->epoch_day = atof(SubString(tle[0],20,31));
-	m->inclination = atof(SubString(tle[1],8,15));
-	m->right_ascension = atof(SubString(tle[1],17,24));
-	m->eccentricity = 1.0e-07*atof(SubString(tle[1],26,32));
-	m->argument_of_perigee = atof(SubString(tle[1],34,41));
-	m->mean_anomaly = atof(SubString(tle[1],43,50));
-	m->mean_motion = atof(SubString(tle[1],52,62));
-	m->derivative_mean_motion  = atof(SubString(tle[0],33,42));
-	tempnum=1.0e-5*atof(SubString(tle[0],44,49));
-	m->second_derivative_mean_motion = tempnum/pow(10.0,(tle[0][51]-'0'));
-	tempnum=1.0e-5*atof(SubString(tle[0],53,58));
-	m->bstar_drag_term = tempnum/pow(10.0,(tle[0][60]-'0'));
-	m->revolutions_at_epoch = atof(SubString(tle[1],63,67));
+	m->satellite_number = atol(SubString(tle_line_1,2,6));
+	m->element_number = atol(SubString(tle_line_1,64,67));
+	m->epoch_year = atoi(SubString(tle_line_1,18,19));
+	strncpy(m->designator, SubString(tle_line_1,9,16),8);
+	m->epoch_day = atof(SubString(tle_line_1,20,31));
+	m->inclination = atof(SubString(tle_line_2,8,15));
+	m->right_ascension = atof(SubString(tle_line_2,17,24));
+	m->eccentricity = 1.0e-07*atof(SubString(tle_line_2,26,32));
+	m->argument_of_perigee = atof(SubString(tle_line_2,34,41));
+	m->mean_anomaly = atof(SubString(tle_line_2,43,50));
+	m->mean_motion = atof(SubString(tle_line_2,52,62));
+	m->derivative_mean_motion  = atof(SubString(tle_line_1,33,42));
+	tempnum=1.0e-5*atof(SubString(tle_line_1,44,49));
+	m->second_derivative_mean_motion = tempnum/pow(10.0,(tle_line_1[51]-'0'));
+	tempnum=1.0e-5*atof(SubString(tle_line_1,53,58));
+	m->bstar_drag_term = tempnum/pow(10.0,(tle_line_1[60]-'0'));
+	m->revolutions_at_epoch = atof(SubString(tle_line_2,63,67));
 
 	/* Period > 225 minutes is deep space */
 	double ao, xnodp, dd1, dd2, delo, a1, del1, r1;

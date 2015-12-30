@@ -49,7 +49,7 @@ int runtest(const char *filename)
 	testcase.getTLE(tle);
 
 	// Create orbit objects
-	predict_orbital_elements_t *orbital_elements = predict_parse_tle(tle);
+	predict_orbital_elements_t *orbital_elements = predict_parse_tle(tle[0], tle[1]);
 
 	// Used in lower bound in value check
 	struct predict_orbit orbit_lower;

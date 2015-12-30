@@ -124,18 +124,18 @@ typedef struct {
 /**
  * Create predict_orbital_elements_t from TLE strings.
  *
- * \param tle NORAD two-line element set strings
+ * \param tle_line_1 First line of NORAD two-line element set string
+ * \param tle_line_2 Second line of NORAD two-line element set string
  * \return Processed TLE parameters
  * \copyright GPLv2+
  **/
-predict_orbital_elements_t* predict_parse_tle(char *tle[2]);
+predict_orbital_elements_t* predict_parse_tle(const char *tle_line_1, const char *tle_line_2);
 
 /**
  * Free memory allocated in orbital elements structure.
  * \param orbital_elements Orbit to free
  **/
 void predict_destroy_orbital_elements(predict_orbital_elements_t *orbital_elements);
-
 
 /**
  * Predicted orbital values for satellite at a given time.
