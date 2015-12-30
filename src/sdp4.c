@@ -332,44 +332,41 @@ void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m
 	/* Initialize lunar solar terms */
 	day=deep_arg->ds50+18261.5;  /* Days since 1900 Jan 0.5 */
 
-	if (day!=m->preep)
-	{
-		m->preep=day;
-		xnodce=4.5236020-9.2422029E-4*day;
-		stem=sin(xnodce);
-		ctem=cos(xnodce);
-		m->zcosil=0.91375164-0.03568096*ctem;
-		m->zsinil=sqrt(1-m->zcosil*m->zcosil);
-		m->zsinhl=0.089683511*stem/m->zsinil;
-		m->zcoshl=sqrt(1-m->zsinhl*m->zsinhl);
-		c=4.7199672+0.22997150*day;
-		gam=5.8351514+0.0019443680*day;
-		m->zmol=FMod2p(c-gam);
-		zx=0.39785416*stem/m->zsinil;
-		zy=m->zcoshl*ctem+0.91744867*m->zsinhl*stem;
-		zx=AcTan(zx,zy);
-		zx=gam+zx-xnodce;
-		m->zcosgl=cos(zx);
-		m->zsingl=sin(zx);
-		m->zmos=6.2565837+0.017201977*day;
-		m->zmos=FMod2p(m->zmos);
-	    }
+	m->preep=day;
+	xnodce=4.5236020-9.2422029E-4*day;
+	stem=sin(xnodce);
+	ctem=cos(xnodce);
+	m->zcosil=0.91375164-0.03568096*ctem;
+	m->zsinil=sqrt(1-m->zcosil*m->zcosil);
+	m->zsinhl=0.089683511*stem/m->zsinil;
+	m->zcoshl=sqrt(1-m->zsinhl*m->zsinhl);
+	c=4.7199672+0.22997150*day;
+	gam=5.8351514+0.0019443680*day;
+	m->zmol=FMod2p(c-gam);
+	zx=0.39785416*stem/m->zsinil;
+	zy=m->zcoshl*ctem+0.91744867*m->zsinhl*stem;
+	zx=AcTan(zx,zy);
+	zx=gam+zx-xnodce;
+	m->zcosgl=cos(zx);
+	m->zsingl=sin(zx);
+	m->zmos=6.2565837+0.017201977*day;
+	m->zmos=FMod2p(m->zmos);
 
-	  /* Do solar terms */
-	  zcosg=zcosgs;
-	  zsing=zsings;
-	  zcosi=zcosis;
-	  zsini=zsinis;
-	  zcosh=cosq;
-	  zsinh= sinq;
-	  cc=c1ss;
-	  zn=zns;
-	  ze=zes;
-	  /* zmo=m->zmos; */
-	  xnoi=1/m->xnq;
+	/* Do solar terms */
+	zcosg=zcosgs;
+	zsing=zsings;
+	zcosi=zcosis;
+	zsini=zsinis;
+	zcosh=cosq;
+	zsinh= sinq;
+	cc=c1ss;
+	zn=zns;
+	ze=zes;
+	/* zmo=m->zmos; */
+	xnoi=1/m->xnq;
 
-	  /* Loop breaks when Solar terms are done a second */
-	  /* time, after Lunar terms are initialized        */
+	/* Loop breaks when Solar terms are done a second */
+	/* time, after Lunar terms are initialized        */
 
 	for (;;)
 	{
