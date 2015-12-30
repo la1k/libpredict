@@ -407,7 +407,7 @@ double predict_next_aos(const predict_observer_t *observer, const predict_orbita
 	predict_observe_orbit(observer, &orbit, &obs);
 
 	//check whether AOS can happen after specified start time
-	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geostationary(orbital_elements) && orbit.decayed)
+	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geostationary(orbital_elements) && !orbit.decayed)
 	{
 		//TODO: Time steps have been found in FindAOS/LOS(). 
 		//Might be based on some pre-existing source, root-finding techniques
