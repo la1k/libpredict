@@ -15,11 +15,12 @@ notifications:
     use_notice: true
     skip_join: true
 
-before_install:
-  - openssl aes-256-cbc -K $encrypted_dee54b1f9803_key -iv $encrypted_dee54b1f9803_iv
-    -in travis/travisci_rsa.enc -out travis/travisci_rsa -d
-  - chmod 0600 travis/travisci_rsa
-  - cp travis/travisci_rsa ~/.ssh/id_rsa
+# Commented out because of build failures, see issue#47.
+#before_install:
+#  - openssl aes-256-cbc -K $encrypted_dee54b1f9803_key -iv $encrypted_dee54b1f9803_iv
+#    -in travis/travisci_rsa.enc -out travis/travisci_rsa -d
+#  - chmod 0600 travis/travisci_rsa
+#  - cp travis/travisci_rsa ~/.ssh/id_rsa
 
 # Disable Doxygen generation to avoid sudo and get on the new,
 # container-based infrastructure.
