@@ -12,6 +12,8 @@
 #include <locale>
 #include <string.h>
 
+#include <cmath>
+
 using namespace std;
 
 TestCaseReader::TestCaseReader()
