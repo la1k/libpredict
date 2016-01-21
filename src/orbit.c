@@ -134,7 +134,7 @@ bool predict_aos_happens(const predict_orbital_elements_t *m, double latitude)
 	/* This function returns true if the satellite pointed to by
 	   "x" can ever rise above the horizon of the ground station. */
 
-	double lin, sma, apogee;
+	double lin, apogee;
 
 	if (m->mean_motion==0.0)
 		return false;
@@ -144,10 +144,9 @@ bool predict_aos_happens(const predict_orbital_elements_t *m, double latitude)
 
 		if (lin >= 90.0) lin = 180.0-lin;
 
-		sma = 331.25*exp(log(1440.0/m->mean_motion)*(2.0/3.0));
-		apogee = sma*(1.0+m->eccentricity)-xkmper;
+		apogee = predict_apogee(m);
 
-		if ((acos(xkmper/(apogee+xkmper))+(lin*M_PI/180.0)) > fabs(latitude*M_PI/180.0))
+		if ((acos(xkmper/(apogee+xkmper))+(lin*M_PI/180.0)) > fabs(latitude))
 			return true;
 		else
 			return false;

@@ -218,7 +218,7 @@ double predict_perigee(const predict_orbital_elements_t *x);
  * Find whether an AOS can ever happen on the given latitude. 
  *
  * \param x Orbital elements
- * \param latitude Latitude of ground station
+ * \param latitude Latitude of ground station in radians
  * \return true if AOS can happen, otherwise false
  * \copyright GPLv2+
  **/
