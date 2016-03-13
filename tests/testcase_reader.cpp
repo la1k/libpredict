@@ -211,7 +211,7 @@ bool TestCaseReader::containsValidData()
 
 bool TestCaseReader::containsValidQth()
 {
-	return (!(::isnan(m_qth_latitude)) && !(::isnan(m_qth_longitude)));
+	return (!(std::isnan(m_qth_latitude)) && !(std::isnan(m_qth_longitude)));
 }
 
 bool TestCaseReader::containsValidTLE()
@@ -221,7 +221,7 @@ bool TestCaseReader::containsValidTLE()
 
 bool TestCaseReader::containsValidAlonAlat()
 {
-	return (!(::isnan(m_alon)) && !(::isnan(m_alat)));
+	return (!(std::isnan(m_alon)) && !(std::isnan(m_alat)));
 }
 
 bool fuzzyCompare(const double &x, const double &y, const double &epsilon)
