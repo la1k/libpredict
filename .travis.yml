@@ -6,7 +6,21 @@ compiler:
   - gcc
   - clang
 
-script: mkdir -p build; cd build; cmake --version && cmake .. && make && make test
+before_script:
+        - export LIBPREDICT_INSTALL_PATH="$PWD/libpredict-install"
+        - mkdir -p $LIBPREDICT_INSTALL_PATH/lib
+        - mkdir -p build
+
+script:
+        - cd build; cmake --version
+        - cmake -D CMAKE_INSTALL_PREFIX=$LIBPREDICT_INSTALL_PATH ..
+        - make
+        - make test
+        - make install
+        - mkdir -p examples
+        - cd examples
+        - cmake -D CMAKE_C_FLAGS="-I $LIBPREDICT_INSTALL_PATH/include -L $LIBPREDICT_INSTALL_PATH/lib" ../../examples
+        - make
 
 notifications:
   irc:
