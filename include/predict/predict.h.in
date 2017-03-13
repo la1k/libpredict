@@ -336,6 +336,8 @@ predict_julian_date_t predict_next_aos(const predict_observer_t *observer, const
  **/
 predict_julian_date_t predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time);
 
+predict_julian_date_t predict_max_elevation(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time);
+
 /**
  * Calculate doppler shift of a given downlink frequency with respect to the observer. 
  *

@@ -497,6 +497,72 @@ double predict_next_los(const predict_observer_t *observer, const predict_orbita
 
 }
 
+
+double elevation_derivative(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double time)
+{
+	struct predict_orbit orbit;
+	struct predict_observation observation;
+	predict_orbit(orbital_elements, &orbit, time);
+	predict_observe_orbit(observer, &orbit, &observation);
+	return observation.elevation_rate;
+}
+
+#include <float.h>
+#define TIME_THRESHOLD FLT_EPSILON //FIXME: exchange by machine epsilon
+#define MAX_ITERATIONS 10000
+predict_julian_date_t predict_max_elevation(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time)
+{
+	if (predict_is_geostationary(orbital_elements)) {// || orbital_elements->decayed) {
+		return 0;
+	}
+
+
+	struct predict_orbit orbit;
+	struct predict_observation observation;
+	predict_orbit(orbital_elements, &orbit, start_time);
+	predict_observe_orbit(observer, &orbit, &observation);
+
+	double lower_time;
+	if (observation.elevation < 0) {
+		//bracket the maximum by AOS and LOS if we have elevation < 0
+		lower_time = predict_next_aos(observer, orbital_elements, start_time);
+	} else if ((observation.elevation >= 0) && (observation.elevation_rate > 0)) {
+		//we are on increasing side of the maximum, so can use the start time as lower bound
+		lower_time = start_time;
+	} else {
+		//elevation nonnegative and time is after max elevation, need to backtrack, choosing to backtrack one orbital period
+		start_time -= 1.0/orbital_elements->mean_motion;
+		double next_aos = predict_next_aos(observer, orbital_elements, start_time);
+		lower_time = next_aos;
+	}
+
+	//bracket upper part by LOS of current pass
+	double upper_time = predict_next_los(observer, orbital_elements, lower_time);
+
+	//find maximum by applying Brent's algorithm on the elevation rate
+	double max_ele_time_candidate = 0; //candidate
+	int iteration = 0;
+	while ((fabs(lower_time - upper_time) > TIME_THRESHOLD) && (iteration < MAX_ITERATIONS)) {
+		max_ele_time_candidate = (upper_time + lower_time)/2.0;
+
+		//calculate derivatives for lower, upper and candidate
+		double candidate_deriv = elevation_derivative(observer, orbital_elements, max_ele_time_candidate);
+		double lower_deriv = elevation_derivative(observer, orbital_elements, lower_time);
+		double upper_deriv = elevation_derivative(observer, orbital_elements, upper_time);
+
+		//check whether derivative has changed sign
+		if (candidate_deriv*lower_deriv < 0) {
+			upper_time = max_ele_time_candidate;
+		} else if (candidate_deriv*upper_deriv < 0) {
+			lower_time = max_ele_time_candidate;
+		} else {
+			break;
+		}
+		iteration++;
+	}
+	return max_ele_time_candidate;
+}
+
 double predict_doppler_shift(const predict_observer_t *observer, const struct predict_orbit *orbit, double frequency)
 {
 	struct predict_observation obs;
