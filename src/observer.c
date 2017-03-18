@@ -427,7 +427,7 @@ double predict_next_aos(const predict_observer_t *observer, const predict_orbita
 		}
 
 		//iteration until the orbit is roughly in range again, before the satellite pass
-		while (obs.elevation*180.0/M_PI < -1.0)
+		while ((obs.elevation*180.0/M_PI < -1.0) || (obs.elevation_rate < 0))
 		{
 			time_step = 0.00035*(obs.elevation*180.0/M_PI*((orbit.altitude/8400.0)+0.46)-2.0);
 			curr_time -= time_step;
@@ -463,6 +463,8 @@ double predict_next_los(const predict_observer_t *observer, const predict_orbita
 	//check whether AOS/LOS can happen after specified start time
 	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geostationary(orbital_elements) && !orbit.decayed)
 	{
+		//iteration algorithm from Predict, see comments in predict_next_aos().
+
 		//iterate until next satellite pass
 		if (obs.elevation < 0.0)
 		{
@@ -475,11 +477,15 @@ double predict_next_los(const predict_observer_t *observer, const predict_orbita
 		do 
 		{
 			time_step = cos(obs.elevation - 1.0)*sqrt(orbit.altitude)/25000.0;
+			if (time_step < 0) {
+				time_step = -time_step;
+			}
+
 			curr_time += time_step;
 			predict_orbit(orbital_elements, &orbit, curr_time);
 			predict_observe_orbit(observer, &orbit, &obs);
 		} 
-		while (obs.elevation >= 0.0);
+		while ((obs.elevation >= 0.0) || (obs.elevation_rate > 0.0));
 		
 		//fine tune to elevation threshold
 		do 
@@ -508,14 +514,13 @@ double elevation_derivative(const predict_observer_t *observer, const predict_or
 }
 
 #include <float.h>
-#define TIME_THRESHOLD FLT_EPSILON //FIXME: exchange by machine epsilon
+#define TIME_THRESHOLD FLT_EPSILON
 #define MAX_ITERATIONS 10000
 predict_julian_date_t predict_max_elevation(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time)
 {
 	if (predict_is_geostationary(orbital_elements)) {// || orbital_elements->decayed) {
 		return 0;
 	}
-
 
 	struct predict_orbit orbit;
 	struct predict_observation observation;
@@ -530,8 +535,8 @@ predict_julian_date_t predict_max_elevation(const predict_observer_t *observer, 
 		//we are on increasing side of the maximum, so can use the start time as lower bound
 		lower_time = start_time;
 	} else {
-		//elevation nonnegative and time is after max elevation, need to backtrack, choosing to backtrack one orbital period
-		start_time -= 1.0/orbital_elements->mean_motion;
+		//elevation nonnegative and time is after max elevation, need to backtrack, choosing to backtrack one half orbital period
+		start_time -= 0.5/orbital_elements->mean_motion;
 		double next_aos = predict_next_aos(observer, orbital_elements, start_time);
 		lower_time = next_aos;
 	}
@@ -540,7 +545,7 @@ predict_julian_date_t predict_max_elevation(const predict_observer_t *observer, 
 	double upper_time = predict_next_los(observer, orbital_elements, lower_time);
 
 	//find maximum by applying Brent's algorithm on the elevation rate
-	double max_ele_time_candidate = 0; //candidate
+	double max_ele_time_candidate = 0;
 	int iteration = 0;
 	while ((fabs(lower_time - upper_time) > TIME_THRESHOLD) && (iteration < MAX_ITERATIONS)) {
 		max_ele_time_candidate = (upper_time + lower_time)/2.0;
