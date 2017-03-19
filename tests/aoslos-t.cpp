@@ -47,7 +47,7 @@ int runtest(const char *filename)
 	testcase.getTLE(tle);
 
 	// Create orbit object
-	predict_orbital_elements_t *orbital_elements = predict_parse_tle(tle);
+	predict_orbital_elements_t *orbital_elements = predict_parse_tle(tle[0], tle[1]);
 	struct predict_orbit orbit;
 
 	// Create observer object
