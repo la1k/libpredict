@@ -43,3 +43,37 @@ install(TARGETS predict predict_static
 # pkg-config file
 configure_file(predict.pc.in predict.pc @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/predict.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
+
+# python extension
+option( PYTHON_BINDINGS "Build python bindings via SWIG" ON )
+if( PYTHON_BINDINGS )
+    find_package( SWIG )
+    find_package( PythonLibs )
+    find_package( PythonInterp )
+endif ()
+
+if( SWIG_FOUND AND PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND )
+    include( UseSWIG )
+    include_directories( ${PYTHON_INCLUDE_PATH} )
+    include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
+    swig_add_module( pypredict python pypredict.i julian_date.c observer.c orbit.c sdp4.c sgp4.c sun.c unsorted.c version.c )
+    swig_link_libraries(pypredict ${PYTHON_LIBRARIES} )
+    set_source_files_properties( pypredict.i PROPERTIES CPLUSPLUS ON )
+    set_source_files_properties( pypredict.i PROPERTIES SWIG_FLAGS "-includeall" )
+
+    execute_process( COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print( sysconfig.get_python_lib( plat_specific=True, prefix='${CMAKE_INSTALL_PREFIX}' ) )"
+        OUTPUT_VARIABLE _ABS_PYTHON_MODULE_PATH
+        OUTPUT_STRIP_TRAILING_WHITESPACE )
+    get_filename_component( _ABS_PYTHON_MODULE_PATH ${_ABS_PYTHON_MODULE_PATH} ABSOLUTE )
+    file( RELATIVE_PATH _REL_PYTHON_MODULE_PATH ${CMAKE_INSTALL_PREFIX} ${_ABS_PYTHON_MODULE_PATH} )
+
+    set( PYTHON_MODULE_PATH ${_REL_PYTHON_MODULE_PATH} )
+    install( FILES ${CMAKE_CURRENT_BINARY_DIR}/_pypredict.so DESTINATION ${PYTHON_MODULE_PATH} )
+    install( FILES ${CMAKE_CURRENT_BINARY_DIR}/pypredict.py DESTINATION ${PYTHON_MODULE_PATH} )
+
+    set( LIBPREDICT_PYTHON_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/${PYTHON_MODULE_PATH} )
+    message( STATUS "Building python bindings via swig. Will be installed under ${LIBFTDI_PYTHON_MODULE_PATH}" )
+else ()
+    message( STATUS "Not building python bindings")
+endif ()
