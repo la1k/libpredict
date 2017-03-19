@@ -503,5 +503,5 @@ double predict_doppler_shift(const predict_observer_t *observer, const struct pr
 	predict_observe_orbit(observer, orbit, &obs);
 
 	double sat_range_rate = obs.range_rate*1000.0; //convert to m/s
-	return frequency*sat_range_rate/SPEED_OF_LIGHT; //assumes that sat_range <<<<< speed of light, which is very ok
+	return -frequency*sat_range_rate/SPEED_OF_LIGHT; //assumes that sat_range <<<<< speed of light, which is very ok
 }
