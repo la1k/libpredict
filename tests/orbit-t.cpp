@@ -139,7 +139,8 @@ int runtest(const char *filename)
 		}
 
 		// Doppler shift, footprint, range, velocity
-		double frequency = -100.0e06;  //predict outputs a weird factor instead of the actual doppler shift (since sign depends on whether it is uplink or downlink frequency), so can set this fixed frequency in order to get the same factor from libpredict.
+		double frequency = 100.0e06;  //predict outputs a weird factor instead of the actual doppler shift (since sign depends on whether it is uplink or downlink frequency), so can set this fixed frequency in order to get the same factor from libpredict.
+        // uplink and downlink correction is different as we want to anticipate the doppler observed by the satellite such that the satellite receives the uplink signal at nominal frequency
 		double doppler_lower = predict_doppler_shift(obs, &orbit_lower, frequency);
 		double doppler_upper = predict_doppler_shift(obs, &orbit_upper, frequency);
 		if (!fuzzyCompareWithBoundaries(doppler_lower, doppler_upper, doppler)) {
