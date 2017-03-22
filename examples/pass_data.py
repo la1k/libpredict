@@ -13,20 +13,26 @@ OBSERVER_LONGITUDE = 10.9
 OBSERVER_HEIGHT = 10
 
 if __name__ == "__main__":
-    t = int(datetime.datetime(2017, 1, 28, 11, 30).timestamp())
+    t = datetime.datetime(2017, 1, 28, 11, 30)
+    print('search start:', t)
+    t = int(t.timestamp())
+    print('search start unix timestamp:', t)
     orb_ele = pypredict.predict_parse_tle(TLE[0], TLE[1])
     obs = pypredict.predict_create_observer("LA1K", np.radians(OBSERVER_LATITUDE), np.radians(OBSERVER_LONGITUDE), OBSERVER_HEIGHT)
     start_time = pypredict.predict_to_julian(t)
+    print('search start julian timestamp:', t)
     
     aos_time = pypredict.predict_next_aos(obs, orb_ele, start_time)
     los_time = pypredict.predict_next_los(obs, orb_ele, start_time)
+    print('julian timestamps: ', aos_time, los_time)
 
     aos_time = pypredict.predict_from_julian(aos_time)
     los_time = pypredict.predict_from_julian(los_time)
+    print('unix timestamps: ', aos_time, los_time)
 
     aos_time = datetime.datetime.fromtimestamp(aos_time)
     los_time = datetime.datetime.fromtimestamp(los_time)
 
-    print(aos_time)
-    print(los_time)
+    print('datetime objects: ',aos_time, los_time)
+    print('reference from c implementation: 12:56:07 og 13:18:28')
 
