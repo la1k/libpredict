@@ -20,7 +20,7 @@ if __name__ == "__main__":
     orb_ele = pypredict.predict_parse_tle(TLE[0], TLE[1])
     obs = pypredict.predict_create_observer("LA1K", np.radians(OBSERVER_LATITUDE), np.radians(OBSERVER_LONGITUDE), OBSERVER_HEIGHT)
     start_time = pypredict.predict_to_julian(t)
-    print('search start julian timestamp:', t)
+    print('search start julian timestamp:', start_time)
     
     aos_time = pypredict.predict_next_aos(obs, orb_ele, start_time)
     los_time = pypredict.predict_next_los(obs, orb_ele, start_time)
