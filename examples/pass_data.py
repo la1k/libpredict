@@ -3,6 +3,7 @@
 import datetime
 import numpy as np
 import pypredict
+import pytz
 
 # OSCAR 7 obtained at 2017-02-27
 TLE = ( "1 07530U 74089B   17058.02491442 -.00000048  00000-0 -22049-4 0  9995",
@@ -13,7 +14,7 @@ OBSERVER_LONGITUDE = 10.9
 OBSERVER_HEIGHT = 10
 
 if __name__ == "__main__":
-    t = datetime.datetime(2017, 1, 28, 11, 30)
+    t = datetime.datetime(2017, 2, 28, 11, 30, tzinfo=pytz.utc)
     print('search start:', t)
     t = int(t.timestamp())
     print('search start unix timestamp:', t)
@@ -30,8 +31,8 @@ if __name__ == "__main__":
     los_time = pypredict.predict_from_julian(los_time)
     print('unix timestamps: ', aos_time, los_time)
 
-    aos_time = datetime.datetime.fromtimestamp(aos_time)
-    los_time = datetime.datetime.fromtimestamp(los_time)
+    aos_time = datetime.datetime.utcfromtimestamp(aos_time)
+    los_time = datetime.datetime.utcfromtimestamp(los_time)
 
     print('datetime objects: ',aos_time, los_time)
     print('reference from c implementation: 12:56:07 og 13:18:28')
