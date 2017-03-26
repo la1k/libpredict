@@ -336,6 +336,14 @@ predict_julian_date_t predict_next_aos(const predict_observer_t *observer, const
  **/
 predict_julian_date_t predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time);
 
+/**
+ * Find maximum elevation of next or current pass.
+ *
+ * \param observer Ground station
+ * \param orbital_elements Orbital elements of satellite
+ * \param start_time Search time. If elevation is negative, max elevation is sought from the start_time and on. If elevation is positive, max elevation is searched for within the current pass
+ * \return Time for maximum elevation
+ **/
 predict_julian_date_t predict_max_elevation(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time);
 
 /**
