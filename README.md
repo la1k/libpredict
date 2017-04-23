@@ -30,7 +30,6 @@ defaults to `/usr/local`. To relocate the whole installation (to make
 usr/local etc. inside another directory, e.g., if you want to make a
 tarball or package it afterwards), use `make DESTDIR=/foo/bar install`.
 
-
 Linking
 -------
 
@@ -38,6 +37,30 @@ The library comes with pkg-config information, so the include and
 library paths and flags can be found using the `pkg-config` command or
 by using the `PKG_CHECK_MODULES` autotools macro or CMake command.
 
+Quickstart
+----------
+
+We recommend to investigate the examples under `examples/` and the API documentation in `include/predict/predict.h`.
+
+A condensed version is that
+```
+predict_orbital_elements_t *orbital_elements = orbital_elements = predict_parse_tle(tle_line_1, tle_line_2);
+```
+parses a TLE in the form of two char arrays to orbital elements representing a satellite, and that
+```
+predict_observer_t *observer = predict_create_observer(name, latitude_radians, longitude_radians, altitude_meters);
+```
+defines a QTH for observation. For prediction,
+```
+struct predict_orbit orbit;
+predict_orbit(orbital_elements, &orbit, prediction_time);
+```
+can be used to calculate properties that are independent of an observer (longitude, latitude, ...), while
+```
+struct predict_observation observation;
+predict_observe_orbit(observer, &orbit, &observation);
+```
+will convert to properties that will be relative to our observer (azimuth, elevation, ...).
 
 License
 -------
