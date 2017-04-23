@@ -71,12 +71,17 @@ typedef struct	{
 
 /**
  * This function returns a substring based on the starting
- * and ending positions provided.  It is used heavily in
- * the AutoUpdate function when parsing 2-line element data.
+ * and ending positions provided. Trims whitespaces.
  *
+ * \param input_string Full input string
+ * \param buffer_length Length of output_buffer
+ * \param output_buffer Returned substring
+ * \param start Start position
+ * \param end End position
+ * \return Pointer to output_buffer
  * \copyright GPLv2+
  **/
-char *SubString(const char *string, int start, int end);
+char *SubString(const char *input_string, int buffer_length, char *output_buffer, int start, int end);
 
 /**
  * Returns sign of a double.
