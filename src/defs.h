@@ -15,7 +15,7 @@
 #define TWO_PI          6.28318530717958623     /* 2*Pi  */
 #define THREE_PI_HALF	4.71238898038468967	/* 3*Pi/2 */
 #define TWO_THIRD	6.6666666666666666E-1	/* 2/3 */
-#define J3_HARMONIC_WGS72 -2.53881E-6		/* J3 Harmonic (WGS '72) */   
+#define J3_HARMONIC_WGS72 -2.53881E-6		/* J3 Harmonic (WGS '72) */
 #define EARTH_RADIUS_KM_WGS84	6.378137E3		/* WGS 84 Earth radius km */
 #define MINUTES_PER_DAY		1.44E3			/* Minutes per day */
 #define FLATTENING_FACTOR 3.35281066474748E-3	/* Flattening factor */
@@ -34,17 +34,23 @@
 
 #define SPEED_OF_LIGHT 299792458.0 /* doppler calculation */
 
-/* Weird constants used also outside of SGP4/SDP4 code */
-#define xke		7.43669161E-2
-#define ck2		5.413079E-4
-#define mfactor                7.292115E-5
+#define EARTH_ANGULAR_VELOCITY                7.292115E-5 /* Angular velocity of Earth in radians per seconds */
 
-/* Constants used only by SGP4/SDP4 code */
-#define e6a		1.0E-6
-#define ae		1.0
-#define ck4		6.209887E-7
-#define s		1.012229
-#define qoms2t		1.880279E-09
+/* Spacetrack report #3 constants also used outside of SGP4/SDP4 code.
+ * The constants/symbols are defined on page 76 to page 78 in the report. */
+#define XKE		7.43669161E-2 /* k_e = sqrt(Newton's universal gravitational * mass of the Earth), in units (earth radii per minutes)^3/2 */
+#define CK2		5.413079E-4 /* Corresponds to 1/2 * J_2 * a_E^2. J_2 is the second gravitational zonal harmonic of Earth, a_E is the equatorial radius of Earth. */
+
+/* Spacetrack report #3 constants used only by SGP4/SDP4 code.
+ * The constants/symbols are defined on page 76 to page 78 in the report. */
+#define E6A		1.0E-6 /* Shorthand for 10^-6. */
+#define AE		1.0 /* Distance units / Earth radii. */
+#define CK4		6.209887E-7 /* Corresponds to -3/8 * J_4 * a_E^4, where J_4 is the fourth gravitational zonal harmonic of Earth. */
+#define S_DENSITY_PARAM	1.012229 /* Parameter for SGP4/SGP8 density function. */
+#define QOMS2T		1.880279E-09 /* Corresponds to (q_0 - s)^4 in units (earth radii)^4, where q_0 and s are parameters for the SGP4/SGP8 density function. */
+
+/* Constants in deep space subroutine. Not defined in spacetrack report #3.
+ * The constants might be defined in Hujsak (1979) and Hujsak and Hoots (1977). */
 #define zns		1.19459E-5
 #define c1ss		2.9864797E-6
 #define zes		1.675E-2

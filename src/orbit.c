@@ -42,12 +42,12 @@ predict_orbital_elements_t* predict_parse_tle(const char *tle_line_1, const char
 	double ao, xnodp, dd1, dd2, delo, a1, del1, r1;
 	double temp = TWO_PI/MINUTES_PER_DAY/MINUTES_PER_DAY;
 	double xno = m->mean_motion*temp*MINUTES_PER_DAY; //from old TLE struct
-	dd1=(xke/xno);
+	dd1=(XKE/xno);
 	dd2=TWO_THIRD;
 	a1=pow(dd1,dd2);
 	r1=cos(m->inclination*M_PI/180.0);
 	dd1=(1.0-m->eccentricity*m->eccentricity);
-	temp=ck2*1.5f*(r1*r1*3.0-1.0)/pow(dd1,1.5);
+	temp=CK2*1.5f*(r1*r1*3.0-1.0)/pow(dd1,1.5);
 	del1=temp/(a1*a1);
 	ao=a1*(1.0-del1*(TWO_THIRD*.5+del1*(del1*1.654320987654321+1.0)));
 	delo=temp/(ao*ao);
@@ -112,19 +112,19 @@ double predict_apogee(const predict_orbital_elements_t *m)
 double predict_perigee(const predict_orbital_elements_t *m)
 {
 	double xno = m->mean_motion*TWO_PI/MINUTES_PER_DAY;
-	double a1=pow(xke/xno,TWO_THIRD);
+	double a1=pow(XKE/xno,TWO_THIRD);
 	double cosio=cos(m->inclination*M_PI/180.0);
 	double theta2=cosio*cosio;
 	double x3thm1=3*theta2-1.0;
 	double eosq=m->eccentricity*m->eccentricity;
 	double betao2=1.0-eosq;
 	double betao=sqrt(betao2);
-	double del1=1.5*ck2*x3thm1/(a1*a1*betao*betao2);
+	double del1=1.5*CK2*x3thm1/(a1*a1*betao*betao2);
 	double ao=a1*(1.0-del1*(0.5*TWO_THIRD+del1*(1.0+134.0/81.0*del1)));
-	double delo=1.5*ck2*x3thm1/(ao*ao*betao*betao2);
+	double delo=1.5*CK2*x3thm1/(ao*ao*betao*betao2);
 	double aodp=ao/(1.0-delo);
 
-	return (aodp*(1-m->eccentricity)-ae)*EARTH_RADIUS_KM_WGS84;
+	return (aodp*(1-m->eccentricity)-AE)*EARTH_RADIUS_KM_WGS84;
 }
 
 bool predict_aos_happens(const predict_orbital_elements_t *m, double latitude)

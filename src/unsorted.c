@@ -144,8 +144,8 @@ void Calculate_User_PosVel(double time, geodetic_t *geodetic, double obs_pos[3],
 	obs_pos[0] = (achcp*cos(geodetic->theta)); /* kilometers */
 	obs_pos[1] = (achcp*sin(geodetic->theta));
 	obs_pos[2] = ((EARTH_RADIUS_KM_WGS84*sq+geodetic->alt)*sin(geodetic->lat));
-	obs_vel[0] = (-mfactor*obs_pos[1]); /* kilometers/second */
-	obs_vel[1] = (mfactor*obs_pos[0]);
+	obs_vel[0] = (-EARTH_ANGULAR_VELOCITY*obs_pos[1]); /* kilometers/second */
+	obs_vel[1] = (EARTH_ANGULAR_VELOCITY*obs_pos[0]);
 	obs_vel[2] = (0);
 }
 

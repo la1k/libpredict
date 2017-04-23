@@ -42,32 +42,32 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	m->xincl = tle->inclination * M_PI / 180.0;
 	m->eo = tle->eccentricity;
 	m->xno = tle->mean_motion*temp_tle*MINUTES_PER_DAY;
-	m->bstar = tle->bstar_drag_term / ae;
+	m->bstar = tle->bstar_drag_term / AE;
 	m->epoch = 1000.0*tle->epoch_year + tle->epoch_day;
 
 	/* Recover original mean motion (xnodp) and   */
 	/* semimajor axis (aodp) from input elements. */
 	double temp1, temp2, temp3, theta4, a1, a3ovk2, ao, c2, coef, coef1, x1m5th, xhdot1, del1, delo, eeta, eta, etasq, perigee, psisq, tsi, qoms24, s4, pinvsq;
 
-	a1=pow(xke/m->xno,TWO_THIRD);
+	a1=pow(XKE/m->xno,TWO_THIRD);
 	m->deep_arg.cosio=cos(m->xincl);
 	m->deep_arg.theta2=m->deep_arg.cosio*m->deep_arg.cosio;
 	m->x3thm1=3*m->deep_arg.theta2-1;
 	m->deep_arg.eosq=m->eo*m->eo;
 	m->deep_arg.betao2=1-m->deep_arg.eosq;
 	m->deep_arg.betao=sqrt(m->deep_arg.betao2);
-	del1=1.5*ck2*m->x3thm1/(a1*a1*m->deep_arg.betao*m->deep_arg.betao2);
+	del1=1.5*CK2*m->x3thm1/(a1*a1*m->deep_arg.betao*m->deep_arg.betao2);
 	ao=a1*(1-del1*(0.5*TWO_THIRD+del1*(1+134/81*del1)));
-	delo=1.5*ck2*m->x3thm1/(ao*ao*m->deep_arg.betao*m->deep_arg.betao2);
+	delo=1.5*CK2*m->x3thm1/(ao*ao*m->deep_arg.betao*m->deep_arg.betao2);
 	m->deep_arg.xnodp=m->xno/(1+delo);
 	m->deep_arg.aodp=ao/(1-delo);
 
 	/* For perigee below 156 km, the values */
 	/* of s and qoms2t are altered.         */
 
-	s4=s;
-	qoms24=qoms2t;
-	perigee=(m->deep_arg.aodp*(1-m->eo)-ae)*EARTH_RADIUS_KM_WGS84;
+	s4=S_DENSITY_PARAM;
+	qoms24=QOMS2T;
+	perigee=(m->deep_arg.aodp*(1-m->eo)-AE)*EARTH_RADIUS_KM_WGS84;
 
 	if (perigee<156.0)
 	{
@@ -76,8 +76,8 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 		else
 			s4=perigee-78.0;
 
-		qoms24=pow((120-s4)*ae/EARTH_RADIUS_KM_WGS84,4);
-		s4=s4/EARTH_RADIUS_KM_WGS84+ae;
+		qoms24=pow((120-s4)*AE/EARTH_RADIUS_KM_WGS84,4);
+		s4=s4/EARTH_RADIUS_KM_WGS84+AE;
 	}
 
 	pinvsq=1/(m->deep_arg.aodp*m->deep_arg.aodp*m->deep_arg.betao2*m->deep_arg.betao2);
@@ -90,16 +90,16 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	psisq=fabs(1-etasq);
 	coef=qoms24*pow(tsi,4);
 	coef1=coef/pow(psisq,3.5);
-	c2=coef1*m->deep_arg.xnodp*(m->deep_arg.aodp*(1+1.5*etasq+eeta*(4+etasq))+0.75*ck2*tsi/psisq*m->x3thm1*(8+3*etasq*(8+etasq)));
+	c2=coef1*m->deep_arg.xnodp*(m->deep_arg.aodp*(1+1.5*etasq+eeta*(4+etasq))+0.75*CK2*tsi/psisq*m->x3thm1*(8+3*etasq*(8+etasq)));
 	m->c1=m->bstar*c2;
 	m->deep_arg.sinio=sin(m->xincl);
-	a3ovk2=-J3_HARMONIC_WGS72/ck2*pow(ae,3);
+	a3ovk2=-J3_HARMONIC_WGS72/CK2*pow(AE,3);
 	m->x1mth2=1-m->deep_arg.theta2;
-	m->c4=2*m->deep_arg.xnodp*coef1*m->deep_arg.aodp*m->deep_arg.betao2*(eta*(2+0.5*etasq)+m->eo*(0.5+2*etasq)-2*ck2*tsi/(m->deep_arg.aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*m->omegao)));
+	m->c4=2*m->deep_arg.xnodp*coef1*m->deep_arg.aodp*m->deep_arg.betao2*(eta*(2+0.5*etasq)+m->eo*(0.5+2*etasq)-2*CK2*tsi/(m->deep_arg.aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*m->omegao)));
 	theta4=m->deep_arg.theta2*m->deep_arg.theta2;
-	temp1=3*ck2*pinvsq*m->deep_arg.xnodp;
-	temp2=temp1*ck2*pinvsq;
-	temp3=1.25*ck4*pinvsq*pinvsq*m->deep_arg.xnodp;
+	temp1=3*CK2*pinvsq*m->deep_arg.xnodp;
+	temp2=temp1*CK2*pinvsq;
+	temp3=1.25*CK4*pinvsq*pinvsq*m->deep_arg.xnodp;
 	m->deep_arg.xmdot=m->deep_arg.xnodp+0.5*temp1*m->deep_arg.betao*m->x3thm1+0.0625*temp2*m->deep_arg.betao*(13-78*m->deep_arg.theta2+137*theta4);
 	x1m5th=1-5*m->deep_arg.theta2;
 	m->deep_arg.omgdot=-0.5*temp1*x1m5th+0.0625*temp2*(7-114*m->deep_arg.theta2+395*theta4)+temp3*(3-36*m->deep_arg.theta2+49*theta4);
@@ -152,7 +152,7 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *out
 	sdp4_deep(m, DPSecular, &m->deep_arg, &deep_dyn);
 
 	xmdf=deep_dyn.xll;
-	a=pow(xke/deep_dyn.xn,TWO_THIRD)*tempa*tempa;
+	a=pow(XKE/deep_dyn.xn,TWO_THIRD)*tempa*tempa;
 	deep_dyn.em=deep_dyn.em-tempe;
 	xmam=xmdf+m->deep_arg.xnodp*templ;
 
@@ -164,7 +164,7 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *out
 	xmam=deep_dyn.xll;
 	xl=xmam+deep_dyn.omgadf+deep_dyn.xnode;
 	beta=sqrt(1-deep_dyn.em*deep_dyn.em);
-	deep_dyn.xn=xke/pow(a,1.5);
+	deep_dyn.xn=XKE/pow(a,1.5);
 
 	/* Long period periodics */
 	axn=deep_dyn.em*cos(deep_dyn.omgadf);
@@ -189,7 +189,7 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *out
 		temp6=ayn*sinepw;
 		epw=(capu-temp4+temp3-temp2)/(1-temp5-temp6)+temp2;
 
-		if (fabs(epw-temp2)<=e6a)
+		if (fabs(epw-temp2)<=E6A)
 			break;
 
 		temp2=epw;
@@ -204,8 +204,8 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *out
 	pl=a*temp;
 	r=a*(1-ecose);
 	temp1=1/r;
-	rdot=xke*sqrt(a)*esine*temp1;
-	rfdot=xke*sqrt(pl)*temp1;
+	rdot=XKE*sqrt(a)*esine*temp1;
+	rfdot=XKE*sqrt(pl)*temp1;
 	temp2=a*temp1;
 	betal=sqrt(temp);
 	temp3=1/(1+betal);
@@ -215,7 +215,7 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *out
 	sin2u=2*sinu*cosu;
 	cos2u=2*cosu*cosu-1;
 	temp=1/pl;
-	temp1=ck2*temp;
+	temp1=CK2*temp;
 	temp2=temp1*temp;
 
 	/* Update for short periodics */
