@@ -2,9 +2,6 @@
 #include "unsorted.h"
 #include "defs.h"
 
-/* Flow control flag definitions */
-#define DEEP_SPACE_EPHEM_FLAG  0x000040
-
 void vec3_set(double v[3], double x, double y, double z)
 {
 	v[0] = x;
@@ -59,8 +56,8 @@ void Convert_Sat_State(double pos[3], double vel[3])
 	/* Converts the satellite's position and velocity  */
 	/* vectors from normalized values to km and km/sec */ 
 
-	vec3_mul_scalar(pos, xkmper, pos);
-	vec3_mul_scalar(vel, xkmper*xmnpda/secday, vel);
+	vec3_mul_scalar(pos, EARTH_RADIUS_KM_WGS84, pos);
+	vec3_mul_scalar(vel, EARTH_RADIUS_KM_WGS84*MINUTES_PER_DAY/SECONDS_PER_DAY, vel);
 }
 
 double Julian_Date_of_Year(double year)
@@ -123,9 +120,9 @@ double ThetaG_JD(double jd)
 	jd = jd - UT;
 	TU=(jd-2451545.0)/36525;
 	GMST=24110.54841+TU*(8640184.812866+TU*(0.093104-TU*6.2E-6));
-	GMST=fmod(GMST+secday*omega_E*UT,secday);
+	GMST=fmod(GMST+SECONDS_PER_DAY*EARTH_ROTATIONS_PER_SIDERIAL_DAY*UT,SECONDS_PER_DAY);
 
-	return (2*M_PI*GMST/secday);
+	return (2*M_PI*GMST/SECONDS_PER_DAY);
 }
 
 void Calculate_User_PosVel(double time, geodetic_t *geodetic, double obs_pos[3], double obs_vel[3])
@@ -141,12 +138,12 @@ void Calculate_User_PosVel(double time, geodetic_t *geodetic, double obs_pos[3],
 	double c, sq, achcp;
 
 	geodetic->theta=FMod2p(ThetaG_JD(time)+geodetic->lon); /* LMST */
-	c=1/sqrt(1+f*(f-2)*Sqr(sin(geodetic->lat)));
-	sq=Sqr(1-f)*c;
-	achcp=(xkmper*c+geodetic->alt)*cos(geodetic->lat);
+	c=1/sqrt(1+FLATTENING_FACTOR*(FLATTENING_FACTOR-2)*Sqr(sin(geodetic->lat)));
+	sq=Sqr(1-FLATTENING_FACTOR)*c;
+	achcp=(EARTH_RADIUS_KM_WGS84*c+geodetic->alt)*cos(geodetic->lat);
 	obs_pos[0] = (achcp*cos(geodetic->theta)); /* kilometers */
 	obs_pos[1] = (achcp*sin(geodetic->theta));
-	obs_pos[2] = ((xkmper*sq+geodetic->alt)*sin(geodetic->lat));
+	obs_pos[2] = ((EARTH_RADIUS_KM_WGS84*sq+geodetic->alt)*sin(geodetic->lat));
 	obs_vel[0] = (-mfactor*obs_pos[1]); /* kilometers/second */
 	obs_vel[1] = (mfactor*obs_pos[0]);
 	obs_vel[2] = (0);
@@ -192,20 +189,20 @@ void Calculate_LatLonAlt(double time, const double pos[3],  geodetic_t *geodetic
 	geodetic->theta = atan2(pos[1], pos[0]); /* radians */
 	geodetic->lon = FMod2p(geodetic->theta-ThetaG_JD(time)); /* radians */
 	r = sqrt(Sqr(pos[0])+Sqr(pos[1]));
-	e2 = f*(2-f);
+	e2 = FLATTENING_FACTOR*(2-FLATTENING_FACTOR);
 	geodetic->lat=atan2(pos[2],r); /* radians */
 
 	do
 	{
 		phi=geodetic->lat;
 		c=1/sqrt(1-e2*Sqr(sin(phi)));
-		geodetic->lat=atan2(pos[2]+xkmper*c*e2*sin(phi),r);
+		geodetic->lat=atan2(pos[2]+EARTH_RADIUS_KM_WGS84*c*e2*sin(phi),r);
 
 	} while (fabs(geodetic->lat-phi)>=1E-10);
 
-	geodetic->alt=r/cos(geodetic->lat)-xkmper*c; /* kilometers */
+	geodetic->alt=r/cos(geodetic->lat)-EARTH_RADIUS_KM_WGS84*c; /* kilometers */
 
-	if (geodetic->lat>pio2)
+	if (geodetic->lat>PI_HALF)
 		geodetic->lat-= 2*M_PI;
 }
 
@@ -251,7 +248,7 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 	azim=atan(-top_e/top_s); /* Azimuth */
 
 	if (top_s>0.0) 
-		azim=azim+pi;
+		azim=azim+PI;
 
 	if (azim<0.0)
 		azim = azim + 2*M_PI;

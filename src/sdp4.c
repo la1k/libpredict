@@ -6,7 +6,6 @@
 #include "unsorted.h"
 
 /// Entry points of deep()
-#define DPInit		0
 #define DPSecular	1
 #define DPPeriodic	2
 
@@ -36,13 +35,13 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	m->synchronousFlag = 0;
 
 	//Calculate old TLE field values as used in the original sdp4
-	double temp_tle = twopi/xmnpda/xmnpda;
+	double temp_tle = TWO_PI/MINUTES_PER_DAY/MINUTES_PER_DAY;
 	m->xnodeo = tle->right_ascension * M_PI / 180.0;
 	m->omegao = tle->argument_of_perigee * M_PI / 180.0;
 	m->xmo = tle->mean_anomaly * M_PI / 180.0;
 	m->xincl = tle->inclination * M_PI / 180.0;
 	m->eo = tle->eccentricity;
-	m->xno = tle->mean_motion*temp_tle*xmnpda;
+	m->xno = tle->mean_motion*temp_tle*MINUTES_PER_DAY;
 	m->bstar = tle->bstar_drag_term / ae;
 	m->epoch = 1000.0*tle->epoch_year + tle->epoch_day;
 
@@ -50,7 +49,7 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	/* semimajor axis (aodp) from input elements. */
 	double temp1, temp2, temp3, theta4, a1, a3ovk2, ao, c2, coef, coef1, x1m5th, xhdot1, del1, delo, eeta, eta, etasq, perigee, psisq, tsi, qoms24, s4, pinvsq;
 
-	a1=pow(xke/m->xno,tothrd);
+	a1=pow(xke/m->xno,TWO_THIRD);
 	m->deep_arg.cosio=cos(m->xincl);
 	m->deep_arg.theta2=m->deep_arg.cosio*m->deep_arg.cosio;
 	m->x3thm1=3*m->deep_arg.theta2-1;
@@ -58,7 +57,7 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	m->deep_arg.betao2=1-m->deep_arg.eosq;
 	m->deep_arg.betao=sqrt(m->deep_arg.betao2);
 	del1=1.5*ck2*m->x3thm1/(a1*a1*m->deep_arg.betao*m->deep_arg.betao2);
-	ao=a1*(1-del1*(0.5*tothrd+del1*(1+134/81*del1)));
+	ao=a1*(1-del1*(0.5*TWO_THIRD+del1*(1+134/81*del1)));
 	delo=1.5*ck2*m->x3thm1/(ao*ao*m->deep_arg.betao*m->deep_arg.betao2);
 	m->deep_arg.xnodp=m->xno/(1+delo);
 	m->deep_arg.aodp=ao/(1-delo);
@@ -68,7 +67,7 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 
 	s4=s;
 	qoms24=qoms2t;
-	perigee=(m->deep_arg.aodp*(1-m->eo)-ae)*xkmper;
+	perigee=(m->deep_arg.aodp*(1-m->eo)-ae)*EARTH_RADIUS_KM_WGS84;
 
 	if (perigee<156.0)
 	{
@@ -77,8 +76,8 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 		else
 			s4=perigee-78.0;
 
-		qoms24=pow((120-s4)*ae/xkmper,4);
-		s4=s4/xkmper+ae;
+		qoms24=pow((120-s4)*ae/EARTH_RADIUS_KM_WGS84,4);
+		s4=s4/EARTH_RADIUS_KM_WGS84+ae;
 	}
 
 	pinvsq=1/(m->deep_arg.aodp*m->deep_arg.aodp*m->deep_arg.betao2*m->deep_arg.betao2);
@@ -94,7 +93,7 @@ void sdp4_init(const predict_orbital_elements_t *tle, struct _sdp4 *m)
 	c2=coef1*m->deep_arg.xnodp*(m->deep_arg.aodp*(1+1.5*etasq+eeta*(4+etasq))+0.75*ck2*tsi/psisq*m->x3thm1*(8+3*etasq*(8+etasq)));
 	m->c1=m->bstar*c2;
 	m->deep_arg.sinio=sin(m->xincl);
-	a3ovk2=-xj3/ck2*pow(ae,3);
+	a3ovk2=-J3_HARMONIC_WGS72/ck2*pow(ae,3);
 	m->x1mth2=1-m->deep_arg.theta2;
 	m->c4=2*m->deep_arg.xnodp*coef1*m->deep_arg.aodp*m->deep_arg.betao2*(eta*(2+0.5*etasq)+m->eo*(0.5+2*etasq)-2*ck2*tsi/(m->deep_arg.aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*m->omegao)));
 	theta4=m->deep_arg.theta2*m->deep_arg.theta2;
@@ -153,7 +152,7 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *out
 	sdp4_deep(m, DPSecular, &m->deep_arg, &deep_dyn);
 
 	xmdf=deep_dyn.xll;
-	a=pow(xke/deep_dyn.xn,tothrd)*tempa*tempa;
+	a=pow(xke/deep_dyn.xn,TWO_THIRD)*tempa*tempa;
 	deep_dyn.em=deep_dyn.em-tempe;
 	xmam=xmdf+m->deep_arg.xnodp*templ;
 
@@ -252,10 +251,10 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *out
 	output->vel[2] = rdotk*uz+rfdotk*vz;
 
 	/* Phase in radians */
-	double phase=xlt-deep_dyn.xnode-deep_dyn.omgadf+twopi;
+	double phase=xlt-deep_dyn.xnode-deep_dyn.omgadf+TWO_PI;
 
 	if (phase<0.0)
-		phase+=twopi;
+		phase+=TWO_PI;
 
 	phase=FMod2p(phase);
 	output->phase = phase;
@@ -295,8 +294,8 @@ double ThetaG(double epoch, deep_arg_fixed_t *deep_arg)
 	jd=Julian_Date_of_Year(year)+day;
 	TU=(jd-2451545.0)/36525;
 	GMST=24110.54841+TU*(8640184.812866+TU*(0.093104-TU*6.2E-6));
-	GMST=fmod(GMST+secday*omega_E*UT,secday);
-	ThetaG = 2*M_PI*GMST/secday;
+	GMST=fmod(GMST+SECONDS_PER_DAY*EARTH_ROTATIONS_PER_SIDERIAL_DAY*UT,SECONDS_PER_DAY);
+	ThetaG = 2*M_PI*GMST/SECONDS_PER_DAY;
 	deep_arg->ds50=jd-2433281.5+UT;
 	ThetaG=FMod2p(6.3003880987*deep_arg->ds50+1.72944494);
 
@@ -639,8 +638,8 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_
 		if (deep_dyn->xinc<0)
 		{
 			deep_dyn->xinc=-deep_dyn->xinc;
-			deep_dyn->xnode=deep_dyn->xnode+pi;
-			deep_dyn->omgadf=deep_dyn->omgadf-pi;
+			deep_dyn->xnode=deep_dyn->xnode+PI;
+			deep_dyn->omgadf=deep_dyn->omgadf-PI;
 		}
 
 		if (!m->resonanceFlag) {
@@ -805,12 +804,12 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_
 			/* This is a patch to Lyddane modification */
 			/* suggested by Rob Matson. */
 
-			if (fabs(xnoh-deep_dyn->xnode)>pi)
+			if (fabs(xnoh-deep_dyn->xnode)>PI)
 			{
 			      if (deep_dyn->xnode<xnoh)
-				  deep_dyn->xnode+=twopi;
+				  deep_dyn->xnode+=TWO_PI;
 			      else
-				  deep_dyn->xnode-=twopi;
+				  deep_dyn->xnode-=TWO_PI;
 			}
 
 			deep_dyn->xll=deep_dyn->xll+deep_dyn->pl;
