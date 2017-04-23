@@ -8,12 +8,11 @@
 int main(int argc, char **argv)
 {
 
-	const char *tle[2] = {
-		"1 25544U 98067A   15129.86961041  .00015753  00000-0  23097-3 0  9998",
-		"2 25544  51.6464 275.3867 0006524 289.1638 208.5861 15.55704207942078"};
+	const char *tle_line_1 = "1 25544U 98067A   15129.86961041  .00015753  00000-0  23097-3 0  9998";
+	const char *tle_line_2 = "2 25544  51.6464 275.3867 0006524 289.1638 208.5861 15.55704207942078";
 
 	// Create orbit object
-	predict_orbit_t *iss = predict_create_orbit(tle);
+	predict_orbital_elements_t *iss = predict_parse_tle(tle_line_1, tle_line_2);
 	if (!iss) {
 		fprintf(stderr, "Failed to initialize orbit from tle!");
 		exit(1);
@@ -26,25 +25,26 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
+	printf("\e[1;1H\e[2J"); //clear screen
 
-	// Predict orbit
-	int i;
-	for (i=0;i<100;++i) {
+	while (true) {
+		printf("\033[0;0H"); //print from start of the terminal
+
 		predict_julian_date_t curr_time = predict_to_julian(time(NULL));
-	
+
 		// Predict ISS
-		predict_orbit(iss, curr_time);
-		printf("ISS: lat=%f, lon=%f, alt=%f, eclipsed=%i (%.2f)\n", iss->latitude*180.0/M_PI, iss->longitude*180.0/M_PI, 
-				iss->altitude, predict_is_eclipsed(iss), predict_eclipse_depth(iss)*180.0/M_PI);
-	
+		struct predict_orbit iss_orbit;
+		predict_orbit(iss, &iss_orbit, curr_time);
+		printf("ISS: lat=%f, lon=%f, alt=%f\n", iss_orbit.latitude*180.0/M_PI, iss_orbit.longitude*180.0/M_PI, iss_orbit.altitude);
+
 		// Observe ISS
 		struct predict_observation iss_obs;
-		predict_observe_orbit(obs, iss, &iss_obs);
-		printf("ISS: %f (rate: %f), %f (rate: %f)\n", iss_obs.azimuth*180.0/M_PI, iss_obs.azimuth_rate*180.0/M_PI, iss_obs.elevation*180.0/M_PI, iss_obs.elevation_rate*180.0/M_PI);
+		predict_observe_orbit(obs, &iss_orbit, &iss_obs);
+		printf("ISS: azi=%f (rate: %f), ele=%f (rate: %f)\n", iss_obs.azimuth*180.0/M_PI, iss_obs.azimuth_rate*180.0/M_PI, iss_obs.elevation*180.0/M_PI, iss_obs.elevation_rate*180.0/M_PI);
 
 		// Apparent elevation
 		double apparent_elevation = predict_apparent_elevation(iss_obs.elevation);
-		printf("Apparent ISS elevation: %.2f\n", apparent_elevation*180.0/M_PI);
+		printf("Apparent ISS elevation: %.2f\n\n", apparent_elevation*180.0/M_PI);
 
 		// Predict and observe MOON
 		struct predict_observation moon_obs;
@@ -57,11 +57,12 @@ int main(int argc, char **argv)
 		printf("SUN: %f, %f\n", sun_obs.azimuth*180.0/M_PI, sun_obs.elevation*180.0/M_PI);
 
 		//Sleep
+		fflush(stdout);
 		usleep(1000000);
 	}
 
 	// Free memory
-	predict_destroy_orbit(iss);
+	predict_destroy_orbital_elements(iss);
 	predict_destroy_observer(obs);
 
 	return 0;

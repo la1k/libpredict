@@ -9,7 +9,7 @@
 double observer_next_sunset(const predict_observer_t *observer, double time, struct predict_observation *obs)
 {
 	struct predict_observation sun;
-	
+
 	// Scan for first elevation > 0 (t0)
 	double t0 = time;
 	predict_observe_sun(observer, t0, &sun);
@@ -25,8 +25,7 @@ double observer_next_sunset(const predict_observer_t *observer, double time, str
 		t1 += 1.0/24.0/3600.0;
 		predict_observe_sun(observer, t1, &sun);
 	}
-	
-//	int i = 0;
+
 	while ( fabs(t0-t1) > 0.01/24/3600 ) {
 
 		time = (t0 + t1) / 2.0;
@@ -35,7 +34,6 @@ double observer_next_sunset(const predict_observer_t *observer, double time, str
 		if (sun.elevation > 0) t0 = time;
 		else t1 = time;
 
-//		printf("iteration %i: elev=%f\n", i++, sun.elevation*180.0/M_PI);
 	}
 
 	if (obs != NULL) {
@@ -48,7 +46,7 @@ double observer_next_sunset(const predict_observer_t *observer, double time, str
 double observer_next_sunrise(const predict_observer_t *observer, double time, struct predict_observation *obs)
 {
 	struct predict_observation sun;
-	
+
 	// Scan for first elevation < 0 (t0)
 	double t0 = time;
 	predict_observe_sun(observer, t0, &sun);
@@ -64,8 +62,7 @@ double observer_next_sunrise(const predict_observer_t *observer, double time, st
 		t1 += 1.0/24.0/3600.0;
 		predict_observe_sun(observer, t1, &sun);
 	}
-	
-//	int i = 0;
+
 	while ( fabs(t0-t1) > 0.01/24/3600 ) {
 
 		time = (t0 + t1) / 2.0;
@@ -74,9 +71,8 @@ double observer_next_sunrise(const predict_observer_t *observer, double time, st
 		if (sun.elevation < 0) t0 = time;
 		else t1 = time;
 
-	//	printf("iteration %i: elev=%f\n", i++, sun.elevation*180.0/M_PI);
 	}
-	
+
 	if (obs != NULL) {
 		memcpy(obs, &sun, sizeof(struct predict_observation));
 	}
@@ -93,7 +89,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Failed to initialize observer!");
 		exit(1);
 	}
-		
+
 	predict_julian_date_t curr_time = predict_to_julian(time(NULL));
 
 	struct predict_observation sun;
@@ -104,10 +100,10 @@ int main(int argc, char **argv)
 	int h = timeto / 3600;
 	int m = (timeto-h*3600) / 60;
 	int s = ((int)timeto)%60;
-	
+
 	time_t t = (time_t)(86400.0 * (sunset + 3651.0));
 	printf("Next sunset in %02i:%02i:%02i, azimuth=%.1f, at UTC %s", h, m, s, sun.azimuth*180.0/M_PI, asctime(gmtime(&t)));
-	
+
 	double sunrise = observer_next_sunrise(obs, curr_time, &sun);
 
 	// Convert to hour, minute, seconds
@@ -115,10 +111,10 @@ int main(int argc, char **argv)
 	h = timeto / 3600;
 	m = (timeto-h*3600) / 60;
 	s = ((int)timeto)%60;
-	
+
 	t = (time_t)(86400.0 * (sunrise + 3651.0));
 	printf("Next sunrise in %02i:%02i:%02i, azimuth=%.1f, at UTC %s", h, m, s, sun.azimuth*180.0/M_PI, asctime(gmtime(&t)));
-	
+
 	// Free memory
 	predict_destroy_observer(obs);
 
