@@ -42,3 +42,12 @@ foreach(file ${files})
 	get_filename_component(testname ${file} NAME_WE)
 	add_test(NAME ${testname} COMMAND moon-t ${file})
 endforeach()
+
+#test max elevation function
+add_executable(maxelevation-t maxelevation-t.cpp testcase_reader.cpp)
+target_link_libraries(maxelevation-t predict)
+file(GLOB files "${LIBPREDICT_TEST_DATA_DIR}/sat_*.test")
+foreach(file ${files})
+	get_filename_component(testname ${file} NAME_WE)
+	add_test(NAME maxelevation-${testname} COMMAND maxelevation-t ${file})
+endforeach()
