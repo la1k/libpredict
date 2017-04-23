@@ -352,15 +352,15 @@ void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m
 	m->zmos=FMod2p(m->zmos);
 
 	/* Do solar terms */
-	zcosg=zcosgs;
-	zsing=zsings;
-	zcosi=zcosis;
-	zsini=zsinis;
+	zcosg=ZCOSGS;
+	zsing=ZSINGS;
+	zcosi=ZCOSIS;
+	zsini=ZSINIS;
 	zcosh=cosq;
 	zsinh= sinq;
-	cc=c1ss;
-	zn=zns;
-	ze=zes;
+	cc=C1SS;
+	zn=ZNS;
+	ze=ZES;
 	/* zmo=m->zmos; */
 	xnoi=1/m->xnq;
 
@@ -461,9 +461,9 @@ void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m
 		zsini=m->zsinil;
 		zcosh=m->zcoshl*cosq+m->zsinhl*sinq;
 		zsinh=sinq*m->zcoshl-cosq*m->zsinhl;
-		zn=znl;
-		cc=c1l;
-		ze=zel;
+		zn=ZNL;
+		cc=C1L;
+		ze=ZEL;
 		/* zmo=m->zmol; */
 		//Set lunarTermsDone flag:
 		m->lunarTermsDone = true;
@@ -544,26 +544,26 @@ void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m
 		xno2=m->xnq*m->xnq;
 		ainv2=aqnv*aqnv;
 		temp1=3*xno2*ainv2;
-		temp=temp1*root22;
+		temp=temp1*ROOT22;
 		m->d2201=temp*f220*g201;
 		m->d2211=temp*f221*g211;
 		temp1=temp1*aqnv;
-		temp=temp1*root32;
+		temp=temp1*ROOT32;
 		m->d3210=temp*f321*g310;
 		m->d3222=temp*f322*g322;
 		temp1=temp1*aqnv;
-		temp=2*temp1*root44;
+		temp=2*temp1*ROOT44;
 		m->d4410=temp*f441*g410;
 		m->d4422=temp*f442*g422;
 		temp1=temp1*aqnv;
-		temp=temp1*root52;
+		temp=temp1*ROOT52;
 		m->d5220=temp*f522*g520;
 		m->d5232=temp*f523*g532;
-		temp=2*temp1*root54;
+		temp=2*temp1*ROOT54;
 		m->d5421=temp*f542*g521;
 		m->d5433=temp*f543*g533;
 		m->xlamo=xmao+m->xnodeo+m->xnodeo-m->thgr-m->thgr;
-		bfact=deep_arg->xmdot+deep_arg->xnodot+deep_arg->xnodot-thdt-thdt;
+		bfact=deep_arg->xmdot+deep_arg->xnodot+deep_arg->xnodot-THDT-THDT;
 		bfact=bfact+m->ssl+m->ssh+m->ssh;
 	}
 
@@ -581,14 +581,14 @@ void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m
 		f330=1+deep_arg->cosio;
 		f330=1.875*f330*f330*f330;
 		m->del1=3*m->xnq*m->xnq*aqnv*aqnv;
-		m->del2=2*m->del1*f220*g200*q22;
-		m->del3=3*m->del1*f330*g300*q33*aqnv;
-		m->del1=m->del1*f311*g310*q31*aqnv;
+		m->del2=2*m->del1*f220*g200*Q22;
+		m->del3=3*m->del1*f330*g300*Q33*aqnv;
+		m->del1=m->del1*f311*g310*Q31*aqnv;
 		m->fasx2=0.13130908;
 		m->fasx4=2.8843198;
 		m->fasx6=0.37448087;
 		m->xlamo=xmao+m->xnodeo+m->omegao-m->thgr;
-		bfact=deep_arg->xmdot+xpidot-thdt;
+		bfact=deep_arg->xmdot+xpidot-THDT;
 		bfact=bfact+m->ssl+m->ssg+m->ssh;
 	}
 
@@ -709,8 +709,8 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_
 					xomi=m->omegaq+deep_arg->omgdot*deep_dyn->atime;
 					x2omi=xomi+xomi;
 					x2li=deep_dyn->xli+deep_dyn->xli;
-					xndot=m->d2201*sin(x2omi+deep_dyn->xli-g22)+m->d2211*sin(deep_dyn->xli-g22)+m->d3210*sin(xomi+deep_dyn->xli-g32)+m->d3222*sin(-xomi+deep_dyn->xli-g32)+m->d4410*sin(x2omi+x2li-g44)+m->d4422*sin(x2li-g44)+m->d5220*sin(xomi+deep_dyn->xli-g52)+m->d5232*sin(-xomi+deep_dyn->xli-g52)+m->d5421*sin(xomi+x2li-g54)+m->d5433*sin(-xomi+x2li-g54);
-					xnddt=m->d2201*cos(x2omi+deep_dyn->xli-g22)+m->d2211*cos(deep_dyn->xli-g22)+m->d3210*cos(xomi+deep_dyn->xli-g32)+m->d3222*cos(-xomi+deep_dyn->xli-g32)+m->d5220*cos(xomi+deep_dyn->xli-g52)+m->d5232*cos(-xomi+deep_dyn->xli-g52)+2*(m->d4410*cos(x2omi+x2li-g44)+m->d4422*cos(x2li-g44)+m->d5421*cos(xomi+x2li-g54)+m->d5433*cos(-xomi+x2li-g54));
+					xndot=m->d2201*sin(x2omi+deep_dyn->xli-G22)+m->d2211*sin(deep_dyn->xli-G22)+m->d3210*sin(xomi+deep_dyn->xli-G32)+m->d3222*sin(-xomi+deep_dyn->xli-G32)+m->d4410*sin(x2omi+x2li-G44)+m->d4422*sin(x2li-G44)+m->d5220*sin(xomi+deep_dyn->xli-G52)+m->d5232*sin(-xomi+deep_dyn->xli-G52)+m->d5421*sin(xomi+x2li-G54)+m->d5433*sin(-xomi+x2li-G54);
+					xnddt=m->d2201*cos(x2omi+deep_dyn->xli-G22)+m->d2211*cos(deep_dyn->xli-G22)+m->d3210*cos(xomi+deep_dyn->xli-G32)+m->d3222*cos(-xomi+deep_dyn->xli-G32)+m->d5220*cos(xomi+deep_dyn->xli-G52)+m->d5232*cos(-xomi+deep_dyn->xli-G52)+2*(m->d4410*cos(x2omi+x2li-G44)+m->d4422*cos(x2li-G44)+m->d5421*cos(xomi+x2li-G54)+m->d5433*cos(-xomi+x2li-G54));
 				}
 
 				xldot=deep_dyn->xni+m->xfact;
@@ -726,7 +726,7 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_
 
 		deep_dyn->xn=deep_dyn->xni+xndot*ft+xnddt*ft*ft*0.5;
 		xl=deep_dyn->xli+xldot*ft+xndot*ft*ft*0.5;
-		temp=-deep_dyn->xnode+m->thgr+deep_dyn->t*thdt;
+		temp=-deep_dyn->xnode+m->thgr+deep_dyn->t*THDT;
 
 		if (!m->synchronousFlag) {
 			deep_dyn->xll=xl+temp+temp;
@@ -743,8 +743,8 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_
 		if (fabs(deep_dyn->savtsn-deep_dyn->t)>=30)
 		{
 			deep_dyn->savtsn=deep_dyn->t;
-			zm=m->zmos+zns*deep_dyn->t;
-			zf=zm+2*zes*sin(zm);
+			zm=m->zmos+ZNS*deep_dyn->t;
+			zf=zm+2*ZES*sin(zm);
 			sinzf=sin(zf);
 			f2=0.5*sinzf*sinzf-0.25;
 			f3=-0.5*sinzf*cos(zf);
@@ -753,8 +753,8 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_
 			sls=m->sl2*f2+m->sl3*f3+m->sl4*sinzf;
 			deep_dyn->sghs=m->sgh2*f2+m->sgh3*f3+m->sgh4*sinzf;
 			deep_dyn->shs=m->sh2*f2+m->sh3*f3;
-			zm=m->zmol+znl*deep_dyn->t;
-			zf=zm+2*zel*sin(zm);
+			zm=m->zmol+ZNL*deep_dyn->t;
+			zf=zm+2*ZEL*sin(zm);
 			sinzf=sin(zf);
 			f2=0.5*sinzf*sinzf-0.25;
 			f3=-0.5*sinzf*cos(zf);
