@@ -23,7 +23,7 @@ VER_0.1 {
 		predict_observe_sun;
 		predict_next_aos;
 		predict_next_los;
-		predict_max_elevation;
+		predict_at_max_elevation;
 		predict_doppler_shift;
 		predict_refraction;
 		predict_refraction_ext;

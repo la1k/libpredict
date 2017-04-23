@@ -583,17 +583,19 @@ struct predict_observation find_max_elevation(const predict_observer_t *observer
 	return observation;
 }
 
-predict_julian_date_t predict_max_elevation(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time)
+struct predict_observation predict_at_max_elevation(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time)
 {
+	struct predict_observation ret_observation = {0};
+
 	if (predict_is_geostationary(orbital_elements)) {
-		return 0;
+		return ret_observation;
 	}
 
 	struct predict_orbit orbit;
 	struct predict_observation observation;
 	predict_orbit(orbital_elements, &orbit, start_time);
 	if (orbit.decayed) {
-		return 0;
+		return ret_observation;
 	}
 
 	predict_observe_orbit(observer, &orbit, &observation);
@@ -619,11 +621,11 @@ predict_julian_date_t predict_max_elevation(const predict_observer_t *observer, 
 
 	//return the best candidate
 	if ((candidate_center.elevation > candidate_lower.elevation) && (candidate_center.elevation > candidate_upper.elevation)) {
-		return candidate_center.time;
+		return candidate_center;
 	} else if (candidate_lower.elevation > candidate_upper.elevation) {
-		return candidate_lower.time;
+		return candidate_lower;
 	} else {
-		return candidate_upper.time;
+		return candidate_upper;
 	}
 }
 
