@@ -602,23 +602,22 @@ void Calculate_RADec(double time, const double pos[3], const double vel[3], geod
 
 /* .... SGP4/SDP4 functions end .... */
 
-char temp[512];
-char *SubString(const char *string, int start, int end)
+char *SubString(const char *string, int buffer_length, char *output_buffer, int start, int end)
 {
 
 	unsigned x, y;
 
-	if (end>=start)
+	if ((end >= start) && (buffer_length > end - start + 2))
 	{
 		for (x=start, y=0; x<=end && string[x]!=0; x++)
 			if (string[x]!=' ')
 			{
-				temp[y]=string[x];
+				output_buffer[y] = string[x];
 				y++;
 			}
 
-		temp[y]=0;
-		return temp;
+		output_buffer[y]=0;
+		return output_buffer;
 	}
 	else
 		return NULL;
