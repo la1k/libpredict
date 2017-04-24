@@ -203,32 +203,11 @@ void Cross(vector_t *v1, vector_t *v2 ,vector_t *v3);
 void Normalize(vector_t *v);
 
 /**
- * Four-quadrant arctan function.
- *
- * \copyright GPLv2+
- **/
-double AcTan(double sinx, double cosx);
-
-/**
  * Returns mod 2PI of argument.
  *
  * \copyright GPLv2+
  **/
 double FMod2p(double x);
-
-/**
- * Returns arg1 mod arg2.
- *
- * \copyright GPLv2+
- **/
-double Modulus(double arg1, double arg2);
-
-/**
- * Returns fractional part of double argument.
- *
- * \copyright GPLv2+
- **/
-double Frac(double arg);
 
 /* predict's old date/time management functions. */
 
@@ -281,7 +260,6 @@ long DayNum(int month, int day, int year);
  **/
 void Calculate_LatLonAlt(double time, const double pos[3], geodetic_t *geodetic);
 
-	
 /**
  * The procedures Calculate_Obs and Calculate_RADec calculate
  * the *topocentric* coordinates of the object with ECI position,

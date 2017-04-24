@@ -36,9 +36,6 @@ void vec3_sub(const double v1[3], const double v2[3], double *r)
 	r[2] = v1[2] - v2[2];
 }
 
-///Phase
-//double phase;
-
 int Sign(double arg)
 {
 	/* Returns sign of a double */
@@ -178,43 +175,11 @@ void Normalize(vector_t *v)
 	v->z/=v->w;
 }
 
-double AcTan(double sinx, double cosx)
-{
-	/* Four-quadrant arctan function */
-
-	if (cosx==0.0)
-	{
-		if (sinx>0.0)
-			return (pio2);
-		else
-			return (x3pio2);
-	}
-
-	else
-	{
-		if (cosx>0.0)
-		{
-			if (sinx>0.0)
-				return (atan(sinx/cosx));
-			else
-				return (2*M_PI+atan(sinx/cosx));
-		}
-
-		else
-			return (pi+atan(sinx/cosx));
-	}
-}
-
 double FMod2p(double x)
 {
 	/* Returns mod 2PI of argument */
 
-	int i;
-	double ret_val;
-
-	ret_val = x;
-	i = ret_val / (2*M_PI);
-	ret_val -= i*(2*M_PI);
+	double ret_val = fmod(x, 2*M_PI);
 
 	if (ret_val < 0.0)
 		ret_val += (2*M_PI);
@@ -222,35 +187,10 @@ double FMod2p(double x)
 	return ret_val;
 }
 
-double Modulus(double arg1, double arg2)
-{
-	/* Returns arg1 mod arg2 */
-
-	int i;
-	double ret_val;
-
-	ret_val=arg1;
-	i=ret_val/arg2;
-	ret_val-=i*arg2;
-
-	if (ret_val<0.0)
-		ret_val+=arg2;
-
-	return ret_val;
-}
-
-double Frac(double arg)
-{
-	/* Returns fractional part of double argument */
-	return(arg-floor(arg));
-}
-
 void Convert_Sat_State(double pos[3], double vel[3])
 {
 	/* Converts the satellite's position and velocity  */
 	/* vectors from normalized values to km and km/sec */ 
-//	Scale_Vector(xkmper, pos);
-//	Scale_Vector(xkmper*xmnpda/secday, vel);
 
 	vec3_mul_scalar(pos, xkmper, pos);
 	vec3_mul_scalar(vel, xkmper*xmnpda/secday, vel);
@@ -329,11 +269,12 @@ double ThetaG_JD(double jd)
 
 	double UT, TU, GMST;
 
-	UT=Frac(jd+0.5);
-	jd=jd-UT;
+	double dummy;
+	UT=modf(jd+0.5, &dummy);
+	jd = jd - UT;
 	TU=(jd-2451545.0)/36525;
 	GMST=24110.54841+TU*(8640184.812866+TU*(0.093104-TU*6.2E-6));
-	GMST=Modulus(GMST+secday*omega_E*UT,secday);
+	GMST=fmod(GMST+secday*omega_E*UT,secday);
 
 	return (2*M_PI*GMST/secday);
 }
@@ -402,17 +343,17 @@ void Calculate_LatLonAlt(double time, const double pos[3],  geodetic_t *geodetic
 	//Convert to julian time:
 	time += 2444238.5;
 
-	geodetic->theta = AcTan(pos[1], pos[0]); /* radians */
+	geodetic->theta = atan2(pos[1], pos[0]); /* radians */
 	geodetic->lon = FMod2p(geodetic->theta-ThetaG_JD(time)); /* radians */
 	r = sqrt(Sqr(pos[0])+Sqr(pos[1]));
 	e2 = f*(2-f);
-	geodetic->lat=AcTan(pos[2],r); /* radians */
+	geodetic->lat=atan2(pos[2],r); /* radians */
 
 	do
 	{
 		phi=geodetic->lat;
 		c=1/sqrt(1-e2*Sqr(sin(phi)));
-		geodetic->lat=AcTan(pos[2]+xkmper*c*e2*sin(phi),r);
+		geodetic->lat=atan2(pos[2]+xkmper*c*e2*sin(phi),r);
 
 	} while (fabs(geodetic->lat-phi)>=1E-10);
 
