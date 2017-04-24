@@ -230,20 +230,6 @@ double Modulus(double arg1, double arg2);
  **/
 double Frac(double arg);
 
-/**
- * Returns argument rounded up to nearest integer.
- *
- * \copyright GPLv2+
- **/
-int Round(double arg);
-
-/**
- * Returns the floor integer of a double arguement, as double.
- *
- * \copyright GPLv2+
- **/
-double Int(double arg);
-
 /* predict's old date/time management functions. */
 
 /**
@@ -266,34 +252,6 @@ double Julian_Date_of_Year(double year);
  * \copyright GPLv2+
  **/
 double Julian_Date_of_Epoch(double epoch);
-
-/**
- * The function DOY calculates the day of the year for the specified date. The calculation uses the rules for the Gregorian calendar and is valid from the inception of that calendar system.
- *
- * \copyright GPLv2+
- **/
-int DOY (int yr, int mo, int dy);
-
-/**
- * Fraction_of_Day calculates the fraction of a day passed at the specified input time.
- *
- * \copyright GPLv2+
- **/
-double Fraction_of_Day(int hr, int mi, double se);
-
-/**
- * The function Julian_Date converts a standard calendar date and time to a Julian Date. The procedure Date_Time performs the inverse of this function.
- *
- * \copyright GPLv2+
- **/
-double Julian_Date(struct tm *cdate);
-
-/**
- * The function Date_Time() converts a Julian Date to standard calendar date and time. The function Julian_Date() performs the inverse of this function.
- *
- * \copyright GPLv2+
- **/
-void Date_Time(double julian_date, struct tm *cdate);
 
 /**
  * The function Delta_ET has been added to allow calculations on the position of the sun.  It provides the difference between UT (approximately the same as UTC) and ET (now referred to as TDT). This function is based on a least squares fit of data from 1950 to 1991 and will need to be updated periodically. Values determined using data from 1950-1991 in the 1990 Astronomical Almanac.  See DELTA_ET.WQ1 for details.
@@ -343,13 +301,6 @@ void Calculate_LatLonAlt(double time, const double pos[3], geodetic_t *geodetic)
  * \copyright GPLv2+
  **/
 void Calculate_Obs(double time,  const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set);
-
-/**
- * Reference:  Methods of Orbit Determination by Pedro Ramon Escobal, pp. 401-402
- *
- * \copyright GPLv2+
- **/
-void Calculate_RADec(double time, const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set);
 
 /**
  * This function is used in the FindMoon() function.

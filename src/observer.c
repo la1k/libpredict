@@ -159,9 +159,6 @@ void predict_observe_sun(const predict_observer_t *observer, double time, struct
 	/* Solar observed azimuth and elevation vector  */
 	vector_t solar_set;
 
-	/* Solar right ascension and declination vector */
-	vector_t solar_rad;
-
 	/* Solar lat, long, alt vector */
 	geodetic_t solar_latlonalt;
 
@@ -181,18 +178,6 @@ void predict_observe_sun(const predict_observer_t *observer, double time, struct
 	double sun_range_rate = 1000.0*solar_set.w;
 
 	Calculate_LatLonAlt(jul_utc, solar_vector, &solar_latlonalt);
-
-	/*
-	double sun_lat = Degrees(solar_latlonalt.lat);
-	double sun_lon = 360.0-Degrees(solar_latlonalt.lon);
-	*/
-
-	Calculate_RADec(jul_utc, solar_vector, zero_vector, &geodetic, &solar_rad);
-
-	/*
-	double sun_ra = solar_rad.x ;
-	double sun_dec = solar_rad.y;
-	*/
 	
 	obs->time = time;
 	obs->azimuth = sun_azi;

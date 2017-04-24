@@ -245,18 +245,6 @@ double Frac(double arg)
 	return(arg-floor(arg));
 }
 
-int Round(double arg)
-{
-	/* Returns argument rounded up to nearest integer */
-	return((int)floor(arg+0.5));
-}
-
-double Int(double arg)
-{
-	/* Returns the floor integer of a double arguement, as double */
-	return(floor(arg));
-}
-
 void Convert_Sat_State(double pos[3], double vel[3])
 {
 	/* Converts the satellite's position and velocity  */
@@ -315,68 +303,6 @@ double Julian_Date_of_Epoch(double epoch)
 		year=year+1900;
 
 	return (Julian_Date_of_Year(year)+day);
-}
-
-int DOY (int yr, int mo, int dy)
-{
-	/* The function DOY calculates the day of the year for the specified */
-	/* date. The calculation uses the rules for the Gregorian calendar   */
-	/* and is valid from the inception of that calendar system.          */
-
-	const int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-	int i, day;
-
-	day=0;
-	
-	for (i=0; i<mo-1; i++ )
-	    day+=days[i];
-
-	day=day+dy;
-
-	/* Leap year correction */
-
-	if ((yr%4==0) && ((yr%100!=0) || (yr%400==0)) && (mo>2))
-		day++;
-
-	return day;
-}
-
-double Fraction_of_Day(int hr, int mi, double se)
-{
-	/* Fraction_of_Day calculates the fraction of */
-	/* a day passed at the specified input time.  */
-
-	double dhr, dmi;
-
-	dhr=(double)hr;
-	dmi=(double)mi;
-
-	return ((dhr+(dmi+se/60.0)/60.0)/24.0);
-}
-
-double Julian_Date(struct tm *cdate)
-{
-	/* The function Julian_Date converts a standard calendar   */
-	/* date and time to a Julian Date. The procedure Date_Time */
-	/* performs the inverse of this function. */
-
-	double julian_date;
-
-	julian_date=Julian_Date_of_Year(cdate->tm_year)+DOY(cdate->tm_year,cdate->tm_mon,cdate->tm_mday)+Fraction_of_Day(cdate->tm_hour,cdate->tm_min,cdate->tm_sec)+5.787037e-06; /* Round up to nearest 1 sec */
-
-	return julian_date;
-}
-
-void Date_Time(double julian_date, struct tm *cdate)
-{
-	/* The function Date_Time() converts a Julian Date to
-	standard calendar date and time. The function
-	Julian_Date() performs the inverse of this function. */
-
-	time_t jtime;
-
-	jtime=(julian_date-2440587.5)*86400.0;
-	*cdate=*gmtime(&jtime);
 }
 
 double Delta_ET(double year)
@@ -556,48 +482,6 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 
 	if (obs_set->y<0.0)
 		obs_set->y=el;  /* Reset to true elevation */
-}
-
-void Calculate_RADec(double time, const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set)
-{
-	/* Reference:  Methods of Orbit Determination by  */
-	/*             Pedro Ramon Escobal, pp. 401-402   */
-
-	double	phi, theta, sin_theta, cos_theta, sin_phi, cos_phi, az, el,
-		Lxh, Lyh, Lzh, Sx, Ex, Zx, Sy, Ey, Zy, Sz, Ez, Zz, Lx, Ly,
-		Lz, cos_delta, sin_alpha, cos_alpha;
-
-	Calculate_Obs(time,pos,vel,geodetic,obs_set);
-
-	az=obs_set->x;
-	el=obs_set->y;
-	phi=geodetic->lat;
-	theta=FMod2p(ThetaG_JD(time)+geodetic->lon);
-	sin_theta=sin(theta);
-	cos_theta=cos(theta);
-	sin_phi=sin(phi);
-	cos_phi=cos(phi);
-	Lxh=-cos(az)*cos(el);
-	Lyh=sin(az)*cos(el);
-	Lzh=sin(el);
-	Sx=sin_phi*cos_theta;
-	Ex=-sin_theta;
-	Zx=cos_theta*cos_phi;
-	Sy=sin_phi*sin_theta;
-	Ey=cos_theta;
-	Zy=sin_theta*cos_phi;
-	Sz=-cos_phi;
-	Ez=0.0;
-	Zz=sin_phi;
-	Lx=Sx*Lxh+Ex*Lyh+Zx*Lzh;
-	Ly=Sy*Lxh+Ey*Lyh+Zy*Lzh;
-	Lz=Sz*Lxh+Ez*Lyh+Zz*Lzh;
-	obs_set->y=ArcSin(Lz);  /* Declination (radians) */
-	cos_delta=sqrt(1.0-Sqr(Lz));
-	sin_alpha=Ly/cos_delta;
-	cos_alpha=Lx/cos_delta;
-	obs_set->x=AcTan(sin_alpha,cos_alpha); /* Right Ascension (radians) */
-	obs_set->x=FMod2p(obs_set->x);
 }
 
 /* .... SGP4/SDP4 functions end .... */
