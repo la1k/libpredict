@@ -126,20 +126,6 @@ double Radians(double arg);
 double Degrees(double arg);
 
 /**
- * Returns the arcsine of the argument.
- *
- * \copyright GPLv2+
- **/
-double ArcSin(double arg);
-
-/**
- * Returns arccosine of argument.
- *
- * \copyright GPLv2+
- **/
-double ArcCos(double arg);
-
-/**
  * Calculates scalar magnitude of a vector_t argument.
  *
  * \copyright GPLv2+

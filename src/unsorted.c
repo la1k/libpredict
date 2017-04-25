@@ -85,23 +85,6 @@ double FixAngle(double x)
 	return x;
 }
 
-double ArcSin(double arg)
-{
-	/* Returns the arcsine of the argument */
-
-	if (fabs(arg)>=1.0)
-		return(Sign(arg)*pio2);
-	else
-
-	return(atan(arg/sqrt(1.0-arg*arg)));
-}
-
-double ArcCos(double arg)
-{
-	/* Returns arccosine of argument */
-	return(pio2-ArcSin(arg));
-}
-
 void Magnitude(vector_t *v)
 {
 	/* Calculates scalar magnitude of a vector_t argument */
