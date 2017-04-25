@@ -188,12 +188,25 @@ struct predict_orbit {
 int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct predict_orbit *x, predict_julian_date_t time);
 
 /**
- * Find whether orbit is geostationary. 
+ * Find whether an orbit is geosynchronous.
  *
- * \param x Orbital elements
- * \return true if orbit is geostationary, otherwise false
+ * This function uses the definition of geosynchronous orbits found in
+ * "Classification of geosynchronous objects", Issue 17, 28 March 2015, from the
+ * European Space Agency:
+ *
+ * - Eccentricity smaller than 0.2
+ * - Mean motion between 0.9 and 1.1
+ * - Inclination lower than 70 degrees
+ *
+ * The function is mainly used internally for avoiding long iteration loops in
+ * functions like predict_at_max_elevation() and predict_next_aos(). The wider
+ * definition of a geosynchronous orbits is appropriate here. The definition of
+ * a geostationary satellite would be stricter, but is not considered here.
+ *
+ * \param orbital_elements Orbital elements
+ * \return true if orbit is geosynchronous, false otherwise
  **/
-bool predict_is_geostationary(const predict_orbital_elements_t *x);
+bool predict_is_geostationary(const predict_orbital_elements_t *orbital_elements);
 
 /** 
  * Get apogee of satellite orbit. 

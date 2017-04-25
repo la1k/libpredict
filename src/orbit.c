@@ -98,7 +98,10 @@ void predict_destroy_orbital_elements(predict_orbital_elements_t *m)
  **/
 bool predict_is_geostationary(const predict_orbital_elements_t *m)
 {
-	return true;
+	return (m->mean_motion >= GEOSYNCHRONOUS_LOWER_MEAN_MOTION)
+		&& (m->mean_motion <= GEOSYNCHRONOUS_UPPER_MEAN_MOTION)
+		&& (fabs(m->eccentricity) <= GEOSYNCHRONOUS_ECCENTRICITY_THRESHOLD)
+		&& (fabs(m->inclination) <= GEOSYNCHRONOUS_INCLINATION_THRESHOLD_DEGREES);
 }
 
 double predict_apogee(const predict_orbital_elements_t *m)
