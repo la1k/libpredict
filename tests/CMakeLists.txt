@@ -51,3 +51,13 @@ foreach(file ${files})
 	get_filename_component(testname ${file} NAME_WE)
 	add_test(NAME maxelevation-${testname} COMMAND maxelevation-t ${file})
 endforeach()
+
+#test predict_is_geostationary
+add_executable(geostationary-t geostationary-t.cpp testcase_reader.cpp)
+target_link_libraries(geostationary-t predict)
+file(GLOB files "${LIBPREDICT_TEST_DATA_DIR}/sat_*.test")
+add_test(NAME geostationary-celestrak-geostationary COMMAND geostationary-t ${LIBPREDICT_TEST_DATA_DIR}/geostationary.tle)
+add_test(NAME geostationary-all-tles COMMAND geostationary-t ${LIBPREDICT_TEST_DATA_DIR}/large-tle-collection.tle ${LIBPREDICT_TEST_DATA_DIR}/geosynchronous_satellite_numbers.dat)
+foreach(file ${files})
+	get_filename_component(testname ${file} NAME_WE)
+endforeach()
