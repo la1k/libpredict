@@ -192,7 +192,6 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct pre
  *
  * \param x Orbital elements
  * \return true if orbit is geostationary, otherwise false
- * \copyright GPLv2+
  **/
 bool predict_is_geostationary(const predict_orbital_elements_t *x);
 

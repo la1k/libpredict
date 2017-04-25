@@ -98,11 +98,7 @@ void predict_destroy_orbital_elements(predict_orbital_elements_t *m)
  **/
 bool predict_is_geostationary(const predict_orbital_elements_t *m)
 {
-	if (fabs(m->mean_motion-1.0027)<0.0002) {
-		return true;
-	}else {
-		return false;
-	}
+	return true;
 }
 
 double predict_apogee(const predict_orbital_elements_t *m)
