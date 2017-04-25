@@ -36,20 +36,6 @@ void vec3_sub(const double v1[3], const double v2[3], double *r)
 	r[2] = v1[2] - v2[2];
 }
 
-int Sign(double arg)
-{
-	/* Returns sign of a double */
-
-	if (arg>0)
-		return 1;
-		
-	else if (arg<0)
-		return -1;
-		
-	else
-		return 0;
-}
-
 double Sqr(double arg)
 {
 	/* Returns square of a double */
@@ -60,29 +46,6 @@ double Cube(double arg)
 {
 	/* Returns cube of a double */
 	return (arg*arg*arg);
-}
-
-double Radians(double arg)
-{
-	/* Returns angle in radians from argument in degrees */
-	return (arg*M_PI/180.0);
-}
-
-double Degrees(double arg)
-{
-	/* Returns angle in degrees from argument in radians */
-	return (arg*180.0/M_PI);
-}
-
-double FixAngle(double x)
-{
-	/* This function reduces angles greater than
-	   two pi by subtracting two pi from the angle */
-
-	while ( x > 2*M_PI )
-		x-=2*M_PI;
-
-	return x;
 }
 
 void Magnitude(vector_t *v)
@@ -228,24 +191,6 @@ double Julian_Date_of_Epoch(double epoch)
 	return (Julian_Date_of_Year(year)+day);
 }
 
-double Delta_ET(double year)
-{
-	/* The function Delta_ET has been added to allow calculations on   */
-	/* the position of the sun.  It provides the difference between UT */
-	/* (approximately the same as UTC) and ET (now referred to as TDT).*/
-	/* This function is based on a least squares fit of data from 1950 */
-	/* to 1991 and will need to be updated periodically. */
-
-	/* Values determined using data from 1950-1991 in the 1990 
-	Astronomical Almanac.  See DELTA_ET.WQ1 for details. */
-
-	double delta_et;
-
-	delta_et=26.465+0.747622*(year-1950)+1.886913*sin(2*M_PI*(year-1975)/33);
-
-	return delta_et;
-}
-
 double ThetaG_JD(double jd)
 {
 	/* Reference:  The 1992 Astronomical Almanac, page B6. */
@@ -261,9 +206,6 @@ double ThetaG_JD(double jd)
 
 	return (2*M_PI*GMST/secday);
 }
-
-
-
 
 void Calculate_User_PosVel(double time, geodetic_t *geodetic, double obs_pos[3], double obs_vel[3])
 {
@@ -429,15 +371,6 @@ char *SubString(const char *string, int buffer_length, char *output_buffer, int 
 	}
 	else
 		return NULL;
-}
-
-
-double PrimeAngle(double x)
-{
-	/* This function is used in the FindMoon() function. */
-
-	x=x-360.0*floor(x/360.0);
-	return x;
 }
 
 double acos_(double arg)

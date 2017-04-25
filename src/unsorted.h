@@ -84,13 +84,6 @@ typedef struct	{
 char *SubString(const char *input_string, int buffer_length, char *output_buffer, int start, int end);
 
 /**
- * Returns sign of a double.
- *
- * \copyright GPLv2+
- **/
-int Sign(double arg);
-
-/**
  * Returns square of a double.
  *
  * \copyright GPLv2+
@@ -103,27 +96,6 @@ double Sqr(double arg);
  * \copyright GPLv2+
  **/
 double Cube(double arg);
-
-/**
- * This function reduces angles greater than.
- *
- * \copyright GPLv2+
- **/
-double FixAngle(double x);
-
-/**
- * Returns angle in radians from argument in degrees.
- *
- * \copyright GPLv2+
- **/
-double Radians(double arg);
-
-/**
- * Returns angle in degrees from argument in radians.
- *
- * \copyright GPLv2+
- **/
-double Degrees(double arg);
 
 /**
  * Calculates scalar magnitude of a vector_t argument.
@@ -219,13 +191,6 @@ double Julian_Date_of_Year(double year);
 double Julian_Date_of_Epoch(double epoch);
 
 /**
- * The function Delta_ET has been added to allow calculations on the position of the sun.  It provides the difference between UT (approximately the same as UTC) and ET (now referred to as TDT). This function is based on a least squares fit of data from 1950 to 1991 and will need to be updated periodically. Values determined using data from 1950-1991 in the 1990 Astronomical Almanac.  See DELTA_ET.WQ1 for details.
- *
- * \copyright GPLv2+
- **/
-double Delta_ET(double year);
-
-/**
  * Reference:  The 1992 Astronomical Almanac, page B6.
  *
  * \copyright GPLv2+
@@ -265,13 +230,6 @@ void Calculate_LatLonAlt(double time, const double pos[3], geodetic_t *geodetic)
  * \copyright GPLv2+
  **/
 void Calculate_Obs(double time,  const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set);
-
-/**
- * This function is used in the FindMoon() function.
- *
- * \copyright GPLv2+
- **/
-double PrimeAngle(double x);
 
 /**
  *

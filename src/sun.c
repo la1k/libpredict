@@ -2,6 +2,42 @@
 #include "unsorted.h"
 #include "defs.h"
 
+/**
+ * The function Delta_ET has been added to allow calculations on the position of the sun.  It provides the difference between UT (approximately the same as UTC) and ET (now referred to as TDT). This function is based on a least squares fit of data from 1950 to 1991 and will need to be updated periodically. Values determined using data from 1950-1991 in the 1990 Astronomical Almanac.  See DELTA_ET.WQ1 for details.
+ *
+ * \copyright GPLv2+
+ **/
+double Delta_ET(double year)
+{
+	double delta_et;
+
+	delta_et=26.465+0.747622*(year-1950)+1.886913*sin(2*M_PI*(year-1975)/33);
+
+	return delta_et;
+}
+
+/**
+ * Returns angle in radians from argument in degrees.
+ *
+ * \copyright GPLv2+
+ **/
+double Radians(double arg)
+{
+	/* Returns angle in radians from argument in degrees */
+	return (arg*M_PI/180.0);
+}
+
+/**
+ * Returns angle in degrees from argument in radians.
+ *
+ * \copyright GPLv2+
+ **/
+double Degrees(double arg)
+{
+	/* Returns angle in degrees from argument in radians */
+	return (arg*180.0/M_PI);
+}
+
 void sun_predict(double time, double position[3])
 {
 	double jul_utc = time + 2444238.5;
