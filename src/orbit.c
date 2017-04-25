@@ -254,12 +254,12 @@ bool is_eclipsed(const double pos[3], const double sol[3], double *depth)
 	double Rho[3], earth[3];
 
 	/* Determine partial eclipse */
-	double sd_earth = ArcSin(xkmper / vec3_length(pos));
+	double sd_earth = asin_(xkmper / vec3_length(pos));
 	vec3_sub(sol, pos, Rho);
-	double sd_sun = ArcSin(sr / vec3_length(Rho));
+	double sd_sun = asin_(sr / vec3_length(Rho));
 	vec3_mul_scalar(pos, -1, earth);
 	
-	double delta = ArcCos( vec3_dot(sol, earth) / vec3_length(sol) / vec3_length(earth) );
+	double delta = acos_( vec3_dot(sol, earth) / vec3_length(sol) / vec3_length(earth) );
 	*depth = sd_earth - sd_sun - delta;
 
 	if (sd_earth < sd_sun) return false;

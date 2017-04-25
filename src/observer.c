@@ -128,7 +128,7 @@ void observer_calculate(const predict_observer_t *observer, double time, const d
 
 	// Elevation
 	double x = top_z / range_length;
-	double el = ArcSin(x);
+	double el = asin_(x);
 
 	// Elevation rate
 	double x_dot = (top_z_dot*range_length - range_rate_length*top_z) / (range_length * range_length);

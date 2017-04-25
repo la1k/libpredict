@@ -138,7 +138,7 @@ double Angle(vector_t *v1, vector_t *v2)
 	/* Calculates the angle between vectors v1 and v2 */
 	Magnitude(v1);
 	Magnitude(v2);
-	return(ArcCos(Dot(v1,v2)/(v1->w*v2->w)));
+	return(acos_(Dot(v1,v2)/(v1->w*v2->w)));
 }
 
 void Cross(vector_t *v1, vector_t *v2 ,vector_t *v3)
@@ -393,7 +393,7 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 	if (azim<0.0)
 		azim = azim + 2*M_PI;
 
-	el=ArcSin(top_z/range_length);
+	el=asin_(top_z/range_length);
 	obs_set->x=azim;	/* Azimuth (radians)   */
 	obs_set->y=el;		/* Elevation (radians) */
 	obs_set->z=range_length;	/* Range (kilometers)  */
@@ -440,3 +440,12 @@ double PrimeAngle(double x)
 	return x;
 }
 
+double acos_(double arg)
+{
+	return acos(arg < -1.0 ? -1.0 : (arg > 1.0 ? 1.0 : arg));
+}
+
+double asin_(double arg)
+{
+	return asin(arg < -1.0 ? -1.0 : (arg > 1.0 ? 1.0 : arg));
+}

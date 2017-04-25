@@ -279,5 +279,23 @@ double PrimeAngle(double x);
  **/
 void Calculate_User_PosVel(double time, geodetic_t *geodetic, double obs_pos[3], double obs_vel[3]);
 
+/**
+ * Modified version of acos, where arguments above 1 or below -1 yield acos(-1 or +1).
+ * Used for guarding against floating point inaccuracies.
+ *
+ * \param arg Argument
+ * \return Arc cosine of the argument
+ **/
+double acos_(double arg);
+
+/**
+ * Modified version of asin, where arguments above 1 or below -1 yield acos(-1 or +1).
+ * Used for guarding against floating point inaccuracies.
+ *
+ * \param arg Argument
+ * \return Arc sine of the argument
+ **/
+double asin_(double arg);
+
 
 #endif
