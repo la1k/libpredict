@@ -10,7 +10,7 @@ VER_0.1 {
 		predict_parse_tle;
 		predict_destroy_orbital_elements;
 		predict_orbit;
-		predict_is_geostationary;
+		predict_is_geosynchronous;
 		predict_apogee;
 		predict_perigee;
 		predict_aos_happens;

@@ -206,7 +206,7 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct pre
  * \param orbital_elements Orbital elements
  * \return true if orbit is geosynchronous, false otherwise
  **/
-bool predict_is_geostationary(const predict_orbital_elements_t *orbital_elements);
+bool predict_is_geosynchronous(const predict_orbital_elements_t *orbital_elements);
 
 /** 
  * Get apogee of satellite orbit. 

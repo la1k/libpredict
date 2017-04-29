@@ -91,12 +91,7 @@ void predict_destroy_orbital_elements(predict_orbital_elements_t *m)
 	free(m);
 }
 
-/**
- * \brief Is this satellite considered geostationary?
- *
- * This function returns true if the satellite is geostationary.
- **/
-bool predict_is_geostationary(const predict_orbital_elements_t *m)
+bool predict_is_geosynchronous(const predict_orbital_elements_t *m)
 {
 	return (m->mean_motion >= GEOSYNCHRONOUS_LOWER_MEAN_MOTION)
 		&& (m->mean_motion <= GEOSYNCHRONOUS_UPPER_MEAN_MOTION)

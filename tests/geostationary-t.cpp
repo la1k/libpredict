@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 	for (int i=0; i < orbital_elements.size(); i++) {
 		predict_orbital_elements_t *elements = orbital_elements[i].elements;
 		std::string name = orbital_elements[i].name;
-		bool predict_geostationary = predict_is_geostationary(elements);
+		bool predict_geostationary = predict_is_geosynchronous(elements);
 		bool is_geostationary = true;
 		if (!all_geostationary) {
 			//check against list over satellites that should be geostationary
