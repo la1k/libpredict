@@ -267,16 +267,6 @@ bool is_eclipsed(const double pos[3], const double sol[3], double *depth)
 	else return false;
 }
 
-bool predict_is_eclipsed(const struct predict_orbit *orbit)
-{
-	return orbit->eclipsed;
-}
-
-double predict_eclipse_depth(const struct predict_orbit *orbit)
-{
-	return orbit->eclipse_depth;
-}
-
 double predict_squint_angle(const predict_observer_t *observer, const struct predict_orbit *orbit, double alon, double alat)
 {
 	double bx = cos(alat)*cos(alon + orbit->argument_of_perigee);
