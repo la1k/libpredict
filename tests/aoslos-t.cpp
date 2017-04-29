@@ -91,8 +91,11 @@ int aoslos_timepoint_consistency_test(predict_orbital_elements_t *orbital_elemen
 		return 0;
 	}
 
-	double aos_time = predict_next_aos(observer, orbital_elements, start_time);
-	double los_time = predict_next_los(observer, orbital_elements, aos_time);
+	struct predict_observation aos, los;
+	aos = predict_next_aos(observer, orbital_elements, start_time);
+	double aos_time = aos.time;
+	los = predict_next_los(observer, orbital_elements, aos_time);
+	double los_time = los.time;
 
 	struct predict_orbit orbit;
 	struct predict_observation observation;
@@ -128,8 +131,11 @@ int aoslos_timepoint_consistency_test(predict_orbital_elements_t *orbital_elemen
 
 		double prev_los_time = los_time;
 		double prev_aos_time = aos_time;
-		aos_time = predict_next_aos(observer, orbital_elements, los_time);
-		los_time = predict_next_los(observer, orbital_elements, aos_time);
+		struct predict_observation aos, los;
+		aos = predict_next_aos(observer, orbital_elements, los_time);
+		aos_time = aos.time;
+		los = predict_next_los(observer, orbital_elements, aos_time);
+		los_time = los.time;
 
 		if (!((los_time > aos_time) && (los_time > prev_los_time) && (los_time > prev_aos_time) && (aos_time > prev_los_time))) {
 			fprintf(stderr, "New AOS/LOS not strictly larger than previous AOS/LOS\n");

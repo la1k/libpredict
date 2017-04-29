@@ -396,9 +396,8 @@ void predict_observe_moon(const predict_observer_t *observer, double time, struc
 
 #define ELEVATION_ZERO_TOLERANCE 0.3 //threshold for fine-tuning of AOS/LOS
 #define DAYNUM_MINUTE 1.0/(24*60) //number of days corresponding to a minute
-double predict_next_aos(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double start_utc)
+struct predict_observation predict_next_aos(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double start_utc)
 {
-	double ret_aos_time = 0;
 	double curr_time = start_utc;
 	struct predict_observation obs;
 	double time_step = 0;
@@ -419,7 +418,8 @@ double predict_next_aos(const predict_observer_t *observer, const predict_orbita
 
 		//skip the rest of the pass if the satellite is currently in range, since we want the _next_ AOS.
 		if (obs.elevation > 0.0) {
-			curr_time = predict_next_los(observer, orbital_elements, curr_time);
+			struct predict_observation los = predict_next_los(observer, orbital_elements, curr_time);
+			curr_time = los.time;
 			curr_time += DAYNUM_MINUTE*20; //skip 20 minutes. LOS might still be within the elevation threshold. (rough quickfix from predict)
 			predict_orbit(orbital_elements, &orbit, curr_time);
 			predict_observe_orbit(observer, &orbit, &obs);
@@ -440,10 +440,8 @@ double predict_next_aos(const predict_observer_t *observer, const predict_orbita
 			predict_orbit(orbital_elements, &orbit, curr_time);
 			predict_observe_orbit(observer, &orbit, &obs);
 		}
-
-		ret_aos_time = curr_time;
 	}
-	return ret_aos_time;
+	return obs;
 }
 
 /**
@@ -479,9 +477,8 @@ double step_pass(const predict_observer_t *observer, const predict_orbital_eleme
 	return curr_time;
 }
 
-double predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double start_utc)
+struct predict_observation predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double start_utc)
 {
-	double ret_los_time = 0;
 	double curr_time = start_utc;
 	struct predict_observation obs;
 	double time_step = 0;
@@ -496,7 +493,8 @@ double predict_next_los(const predict_observer_t *observer, const predict_orbita
 
 		//iterate until next satellite pass
 		if (obs.elevation < 0.0) {
-			curr_time = predict_next_aos(observer, orbital_elements, curr_time);
+			struct predict_observation aos = predict_next_aos(observer, orbital_elements, curr_time);
+			curr_time = aos.time;
 			predict_orbit(orbital_elements, &orbit, curr_time);
 			predict_observe_orbit(observer, &orbit, &obs);
 		}
@@ -511,11 +509,8 @@ double predict_next_los(const predict_observer_t *observer, const predict_orbita
 			predict_orbit(orbital_elements, &orbit, curr_time);
 			predict_observe_orbit(observer, &orbit, &obs);
 		} while (fabs(obs.elevation*180.0/M_PI) > ELEVATION_ZERO_TOLERANCE);
-
-		ret_los_time = curr_time;
 	}
-	return ret_los_time;
-
+	return obs;
 }
 
 /**
@@ -604,11 +599,13 @@ struct predict_observation predict_at_max_elevation(const predict_observer_t *ob
 	double lower_time = start_time;
 	double upper_time = start_time;
 	if (observation.elevation < 0) {
-		lower_time = predict_next_aos(observer, orbital_elements, start_time);
+		struct predict_observation aos = predict_next_aos(observer, orbital_elements, start_time);
+		lower_time = aos.time;
 	} else {
 		lower_time = step_pass(observer, orbital_elements, lower_time, NEGATIVE_DIRECTION);
 	}
-	upper_time = predict_next_los(observer, orbital_elements, lower_time);
+	struct predict_observation los = predict_next_los(observer, orbital_elements, lower_time);
+	upper_time = los.time;
 
 	//assume that we can only have two potential local maxima along the elevation curve, and be content with that. For most cases, we will only have one, unless it is a satellite in deep space with long passes and weird effects.
 
