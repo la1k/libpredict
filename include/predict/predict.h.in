@@ -347,15 +347,14 @@ predict_julian_date_t predict_next_los(const predict_observer_t *observer, const
 struct predict_observation predict_at_max_elevation(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time);
 
 /**
- * Calculate doppler shift of a given downlink frequency with respect to the observer. 
+ * Calculate doppler shift of a given downlink frequency with respect to an observer.
  *
- * \param observer Point of observation
- * \param orbit Current state of satellite orbit
+ * \param observation Observation of a satellite orbit
  * \param downlink_frequency Downlink frequency of the satellite
  * \return The frequency difference from the original frequency
  * \copyright GPLv2+
  **/
-double predict_doppler_shift(const predict_observer_t *observer, const struct predict_orbit *orbit, double downlink_frequency);
+double predict_doppler_shift(const struct predict_observation *observation, double downlink_frequency);
 
 /**
  * Calculate squint angle for satellite, i.e. angle between the satellite antenna and the QTH antenna.

@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 	while (curr_time < end_time) {
 		predict_orbit(orbital_elements, &orbit, curr_time);
 		predict_observe_orbit(observer, &orbit, &observation);
-		double shift = predict_doppler_shift(observer, &orbit, freq);
+		double shift = predict_doppler_shift(&observation, freq);
 
 		//print independent properties
 		printf("%f %f ", rad_to_deg(orbit.latitude), rad_to_deg(orbit.longitude));

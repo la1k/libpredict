@@ -629,11 +629,8 @@ struct predict_observation predict_at_max_elevation(const predict_observer_t *ob
 	}
 }
 
-double predict_doppler_shift(const predict_observer_t *observer, const struct predict_orbit *orbit, double frequency)
+double predict_doppler_shift(const struct predict_observation *obs, double frequency)
 {
-	struct predict_observation obs;
-	predict_observe_orbit(observer, orbit, &obs);
-
-	double sat_range_rate = obs.range_rate*1000.0; //convert to m/s
+	double sat_range_rate = obs->range_rate*1000.0; //convert to m/s
 	return -frequency*sat_range_rate/SPEED_OF_LIGHT; //assumes that sat_range <<<<< speed of light, which is very ok
 }
