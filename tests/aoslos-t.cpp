@@ -59,7 +59,7 @@ int runtest(const char *filename)
 
 	// Create orbit object
 	predict_orbital_elements_t *orbital_elements = predict_parse_tle(tle[0], tle[1]);
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 
 	// Create observer object
 	predict_observer_t *obs = predict_create_observer("test", testcase.latitude()*M_PI/180.0, testcase.longitude()*M_PI/180.0, testcase.altitude());
@@ -97,7 +97,7 @@ int aoslos_timepoint_consistency_test(predict_orbital_elements_t *orbital_elemen
 	los = predict_next_los(observer, orbital_elements, aos_time);
 	double los_time = los.time;
 
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	struct predict_observation observation;
 
 	const int NUM_PASSES = 10;

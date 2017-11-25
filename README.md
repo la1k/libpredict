@@ -52,7 +52,7 @@ predict_observer_t *observer = predict_create_observer(name, latitude_radians, l
 ```
 defines a QTH for observation. For prediction,
 ```
-struct predict_orbit orbit;
+struct predict_position orbit;
 predict_orbit(orbital_elements, &orbit, prediction_time);
 ```
 can be used to calculate properties that are independent of an observer (longitude, latitude, ...), while

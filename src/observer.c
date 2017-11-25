@@ -36,7 +36,7 @@ void predict_destroy_observer(predict_observer_t *obs)
  * Calculated range, azimuth, elevation and relative velocity from the
  * given observer position.
  **/
-void predict_observe_orbit(const predict_observer_t *observer, const struct predict_orbit *orbit, struct predict_observation *obs)
+void predict_observe_orbit(const predict_observer_t *observer, const struct predict_position *orbit, struct predict_observation *obs)
 {
 	if (obs == NULL) return;
 	
@@ -150,7 +150,7 @@ struct predict_observation predict_next_aos(const predict_observer_t *observer, 
 	struct predict_observation obs;
 	double time_step = 0;
 
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	predict_orbit(orbital_elements, &orbit, curr_time);
 	predict_observe_orbit(observer, &orbit, &obs);
 
@@ -208,7 +208,7 @@ enum step_pass_direction{POSITIVE_DIRECTION, NEGATIVE_DIRECTION};
  * \copyright GPLv2+
  **/
 double step_pass(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double curr_time, enum step_pass_direction direction) {
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	struct predict_observation obs;
 	do {
 		predict_orbit(orbital_elements, &orbit, curr_time);
@@ -231,7 +231,7 @@ struct predict_observation predict_next_los(const predict_observer_t *observer, 
 	struct predict_observation obs;
 	double time_step = 0;
 
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	predict_orbit(orbital_elements, &orbit, curr_time);
 	predict_observe_orbit(observer, &orbit, &obs);
 
@@ -271,7 +271,7 @@ struct predict_observation predict_next_los(const predict_observer_t *observer, 
  **/
 double elevation_derivative(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double time)
 {
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	struct predict_observation observation;
 	predict_orbit(orbital_elements, &orbit, time);
 	predict_observe_orbit(observer, &orbit, &observation);
@@ -311,7 +311,7 @@ struct predict_observation find_max_elevation(const predict_observer_t *observer
 	}
 
 	//prepare output
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	struct predict_observation observation;
 	predict_orbit(orbital_elements, &orbit, max_ele_time_candidate);
 	predict_observe_orbit(observer, &orbit, &observation);
@@ -326,7 +326,7 @@ struct predict_observation predict_at_max_elevation(const predict_observer_t *ob
 		return ret_observation;
 	}
 
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	struct predict_observation observation;
 	predict_orbit(orbital_elements, &orbit, start_time);
 	if (orbit.decayed) {
