@@ -14,7 +14,7 @@ fi
 set -x
 
 # Settings
-REPO_PATH=git@github.com:la1k/libpredict.git
+REPO_PATH="https://$gh_pages_username:$gh_pages_oauth_token@github.com/la1k/libpredict.git"
 DOXYGEN_OUTPUT_PATH=@CMAKE_CURRENT_BINARY_DIR@/../doc/html
 GH_PAGES_PATH=@CMAKE_CURRENT_BINARY_DIR@/../gh-pages
 API_DOC_RELATIVE_PATH=api/@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@

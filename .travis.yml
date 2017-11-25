@@ -1,5 +1,11 @@
 sudo: false
 
+addons:
+  apt:
+    packages:
+      - doxygen
+      - graphviz
+
 language: c
 
 compiler:
@@ -30,21 +36,5 @@ notifications:
     use_notice: true
     skip_join: true
 
-# Commented out because of build failures, see issue#47.
-#before_install:
-#  - openssl aes-256-cbc -K $encrypted_dee54b1f9803_key -iv $encrypted_dee54b1f9803_iv
-#    -in travis/travisci_rsa.enc -out travis/travisci_rsa -d
-#  - chmod 0600 travis/travisci_rsa
-#  - cp travis/travisci_rsa ~/.ssh/id_rsa
-
-# Disable Doxygen generation to avoid sudo and get on the new,
-# container-based infrastructure.
-# See http://docs.travis-ci.com/user/migrating-from-legacy/
-# In any case, publish-doxygen should be changed to generate
-# the URL from the branch so that master doesn't overwrite a
-# stable version doc.
-#install:
-#  - sudo apt-get install --yes doxygen graphviz
-#
-#after_success:
-#  - ./travis/publish-doxygen
+after_success:
+  - $TRAVIS_BUILD_DIR/build/travis/publish-doxygen
