@@ -248,27 +248,17 @@ bool is_eclipsed(const double pos[3], const double sol[3], double *depth)
 	double Rho[3], earth[3];
 
 	/* Determine partial eclipse */
-	double sd_earth = ArcSin(xkmper / vec3_length(pos));
+	double sd_earth = asin_(xkmper / vec3_length(pos));
 	vec3_sub(sol, pos, Rho);
-	double sd_sun = ArcSin(sr / vec3_length(Rho));
+	double sd_sun = asin_(sr / vec3_length(Rho));
 	vec3_mul_scalar(pos, -1, earth);
 	
-	double delta = ArcCos( vec3_dot(sol, earth) / vec3_length(sol) / vec3_length(earth) );
+	double delta = acos_( vec3_dot(sol, earth) / vec3_length(sol) / vec3_length(earth) );
 	*depth = sd_earth - sd_sun - delta;
 
 	if (sd_earth < sd_sun) return false;
 	else if (*depth >= 0) return true;
 	else return false;
-}
-
-bool predict_is_eclipsed(const struct predict_orbit *orbit)
-{
-	return orbit->eclipsed;
-}
-
-double predict_eclipse_depth(const struct predict_orbit *orbit)
-{
-	return orbit->eclipse_depth;
 }
 
 double predict_squint_angle(const predict_observer_t *observer, const struct predict_orbit *orbit, double alon, double alat)

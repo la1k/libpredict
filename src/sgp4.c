@@ -206,7 +206,7 @@ void sgp4_predict(const struct _sgp4 *m, double tsince, struct model_output *out
 	temp3=1/(1+betal);
 	cosu=temp2*(cosepw-axn+ayn*esine*temp3);
 	sinu=temp2*(sinepw-ayn-axn*esine*temp3);
-	u=AcTan(sinu,cosu);
+	u=atan2(sinu,cosu);
 	sin2u=2*sinu*cosu;
 	cos2u=2*cosu*cosu-1;
 	temp=1/pl;

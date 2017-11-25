@@ -212,7 +212,7 @@ void sdp4_predict(const struct _sdp4 *m, double tsince, struct model_output *out
 	temp3=1/(1+betal);
 	cosu=temp2*(cosepw-axn+ayn*esine*temp3);
 	sinu=temp2*(sinepw-ayn-axn*esine*temp3);
-	u=AcTan(sinu,cosu);
+	u=atan2(sinu,cosu);
 	sin2u=2*sinu*cosu;
 	cos2u=2*cosu*cosu-1;
 	temp=1/pl;
@@ -295,7 +295,7 @@ double ThetaG(double epoch, deep_arg_fixed_t *deep_arg)
 	jd=Julian_Date_of_Year(year)+day;
 	TU=(jd-2451545.0)/36525;
 	GMST=24110.54841+TU*(8640184.812866+TU*(0.093104-TU*6.2E-6));
-	GMST=Modulus(GMST+secday*omega_E*UT,secday);
+	GMST=fmod(GMST+secday*omega_E*UT,secday);
 	ThetaG = 2*M_PI*GMST/secday;
 	deep_arg->ds50=jd-2433281.5+UT;
 	ThetaG=FMod2p(6.3003880987*deep_arg->ds50+1.72944494);
@@ -345,7 +345,7 @@ void sdp4_deep_initialize(const predict_orbital_elements_t *tle, struct _sdp4 *m
 	m->zmol=FMod2p(c-gam);
 	zx=0.39785416*stem/m->zsinil;
 	zy=m->zcoshl*ctem+0.91744867*m->zsinhl*stem;
-	zx=AcTan(zx,zy);
+	zx=atan2(zx,zy);
 	zx=gam+zx-xnodce;
 	m->zcosgl=cos(zx);
 	m->zsingl=sin(zx);
@@ -800,7 +800,7 @@ void sdp4_deep(const struct _sdp4 *m, int ientry, const deep_arg_fixed_t * deep_
 			dls=deep_dyn->pl+pgh-deep_dyn->pinc*deep_dyn->xnode*sinis;
 			xls=xls+dls;
 			xnoh=deep_dyn->xnode;
-			deep_dyn->xnode=AcTan(alfdp,betdp);
+			deep_dyn->xnode=atan2(alfdp,betdp);
 
 			/* This is a patch to Lyddane modification */
 			/* suggested by Rob Matson. */

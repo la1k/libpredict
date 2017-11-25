@@ -84,13 +84,6 @@ typedef struct	{
 char *SubString(const char *input_string, int buffer_length, char *output_buffer, int start, int end);
 
 /**
- * Returns sign of a double.
- *
- * \copyright GPLv2+
- **/
-int Sign(double arg);
-
-/**
  * Returns square of a double.
  *
  * \copyright GPLv2+
@@ -98,151 +91,11 @@ int Sign(double arg);
 double Sqr(double arg);
 
 /**
- * Returns cube of a double.
- *
- * \copyright GPLv2+
- **/
-double Cube(double arg);
-
-/**
- * This function reduces angles greater than.
- *
- * \copyright GPLv2+
- **/
-double FixAngle(double x);
-
-/**
- * Returns angle in radians from argument in degrees.
- *
- * \copyright GPLv2+
- **/
-double Radians(double arg);
-
-/**
- * Returns angle in degrees from argument in radians.
- *
- * \copyright GPLv2+
- **/
-double Degrees(double arg);
-
-/**
- * Returns the arcsine of the argument.
- *
- * \copyright GPLv2+
- **/
-double ArcSin(double arg);
-
-/**
- * Returns arccosine of argument.
- *
- * \copyright GPLv2+
- **/
-double ArcCos(double arg);
-
-/**
- * Calculates scalar magnitude of a vector_t argument.
- *
- * \copyright GPLv2+
- **/
-void Magnitude(vector_t *v);
-
-/**
- * Adds vectors v1 and v2 together to produce v3.
- *
- * \copyright GPLv2+
- **/
-void Vec_Add(vector_t *v1, vector_t *v2, vector_t *v3);
-
-/**
- * Subtracts vector v2 from v1 to produce v3.
- *
- * \copyright GPLv2+
- **/
-void Vec_Sub(vector_t *v1, vector_t *v2, vector_t *v3);
-
-/**
- * Multiplies the vector v1 by the scalar k to produce the vector v2.
- *
- * \copyright GPLv2+
- **/
-void Scalar_Multiply(double k, vector_t *v1, vector_t *v2);
-
-/**
- * Multiplies the vector v1 by the scalar k.
- *
- * \copyright GPLv2+
- **/
-void Scale_Vector(double k, vector_t *v);
-
-/**
- * Returns the dot product of two vectors.
- *
- * \copyright GPLv2+
- **/
-double Dot(vector_t *v1, vector_t *v2);
-
-/**
- * Calculates the angle between vectors v1 and v2.
- *
- * \copyright GPLv2+
- **/
-double Angle(vector_t *v1, vector_t *v2);
-
-/**
- * Produces cross product of v1 and v2, and returns in v3.
- *
- * \copyright GPLv2+
- **/
-void Cross(vector_t *v1, vector_t *v2 ,vector_t *v3);
-
-/**
- * Normalizes a vector.
- *
- * \copyright GPLv2+
- **/
-void Normalize(vector_t *v);
-
-/**
- * Four-quadrant arctan function.
- *
- * \copyright GPLv2+
- **/
-double AcTan(double sinx, double cosx);
-
-/**
  * Returns mod 2PI of argument.
  *
  * \copyright GPLv2+
  **/
 double FMod2p(double x);
-
-/**
- * Returns arg1 mod arg2.
- *
- * \copyright GPLv2+
- **/
-double Modulus(double arg1, double arg2);
-
-/**
- * Returns fractional part of double argument.
- *
- * \copyright GPLv2+
- **/
-double Frac(double arg);
-
-/**
- * Returns argument rounded up to nearest integer.
- *
- * \copyright GPLv2+
- **/
-int Round(double arg);
-
-/**
- * Returns the floor integer of a double arguement, as double.
- *
- * \copyright GPLv2+
- **/
-double Int(double arg);
 
 /* predict's old date/time management functions. */
 
@@ -268,41 +121,6 @@ double Julian_Date_of_Year(double year);
 double Julian_Date_of_Epoch(double epoch);
 
 /**
- * The function DOY calculates the day of the year for the specified date. The calculation uses the rules for the Gregorian calendar and is valid from the inception of that calendar system.
- *
- * \copyright GPLv2+
- **/
-int DOY (int yr, int mo, int dy);
-
-/**
- * Fraction_of_Day calculates the fraction of a day passed at the specified input time.
- *
- * \copyright GPLv2+
- **/
-double Fraction_of_Day(int hr, int mi, double se);
-
-/**
- * The function Julian_Date converts a standard calendar date and time to a Julian Date. The procedure Date_Time performs the inverse of this function.
- *
- * \copyright GPLv2+
- **/
-double Julian_Date(struct tm *cdate);
-
-/**
- * The function Date_Time() converts a Julian Date to standard calendar date and time. The function Julian_Date() performs the inverse of this function.
- *
- * \copyright GPLv2+
- **/
-void Date_Time(double julian_date, struct tm *cdate);
-
-/**
- * The function Delta_ET has been added to allow calculations on the position of the sun.  It provides the difference between UT (approximately the same as UTC) and ET (now referred to as TDT). This function is based on a least squares fit of data from 1950 to 1991 and will need to be updated periodically. Values determined using data from 1950-1991 in the 1990 Astronomical Almanac.  See DELTA_ET.WQ1 for details.
- *
- * \copyright GPLv2+
- **/
-double Delta_ET(double year);
-
-/**
  * Reference:  The 1992 Astronomical Almanac, page B6.
  *
  * \copyright GPLv2+
@@ -323,7 +141,6 @@ long DayNum(int month, int day, int year);
  **/
 void Calculate_LatLonAlt(double time, const double pos[3], geodetic_t *geodetic);
 
-	
 /**
  * The procedures Calculate_Obs and Calculate_RADec calculate
  * the *topocentric* coordinates of the object with ECI position,
@@ -345,24 +162,28 @@ void Calculate_LatLonAlt(double time, const double pos[3], geodetic_t *geodetic)
 void Calculate_Obs(double time,  const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set);
 
 /**
- * Reference:  Methods of Orbit Determination by Pedro Ramon Escobal, pp. 401-402
- *
- * \copyright GPLv2+
- **/
-void Calculate_RADec(double time, const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set);
-
-/**
- * This function is used in the FindMoon() function.
- *
- * \copyright GPLv2+
- **/
-double PrimeAngle(double x);
-
-/**
  *
  * \copyright GPLv2+
  **/
 void Calculate_User_PosVel(double time, geodetic_t *geodetic, double obs_pos[3], double obs_vel[3]);
+
+/**
+ * Modified version of acos, where arguments above 1 or below -1 yield acos(-1 or +1).
+ * Used for guarding against floating point inaccuracies.
+ *
+ * \param arg Argument
+ * \return Arc cosine of the argument
+ **/
+double acos_(double arg);
+
+/**
+ * Modified version of asin, where arguments above 1 or below -1 yield acos(-1 or +1).
+ * Used for guarding against floating point inaccuracies.
+ *
+ * \param arg Argument
+ * \return Arc sine of the argument
+ **/
+double asin_(double arg);
 
 
 #endif
