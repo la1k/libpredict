@@ -8,14 +8,14 @@ void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 
 	m->simpleFlag = 0;
 
 	//Calculate old TLE field values as used in the original sgp4
-	double temp_tle = twopi/xmnpda/xmnpda;
-	m->bstar = orbital_elements->bstar_drag_term / ae;
+	double temp_tle = TWO_PI/MINUTES_PER_DAY/MINUTES_PER_DAY;
+	m->bstar = orbital_elements->bstar_drag_term / AE;
 	m->xincl = orbital_elements->inclination * M_PI / 180.0;
 	m->xnodeo = orbital_elements->right_ascension * M_PI / 180.0;
 	m->eo = orbital_elements->eccentricity;
 	m->omegao = orbital_elements->argument_of_perigee * M_PI / 180.0;
 	m->xmo = orbital_elements->mean_anomaly * M_PI / 180.0;
-	m->xno = orbital_elements->mean_motion*temp_tle*xmnpda;
+	m->xno = orbital_elements->mean_motion*temp_tle*MINUTES_PER_DAY;
 
 	double 	x1m5th, xhdot1,
 	a1, a3ovk2, ao,
@@ -26,16 +26,16 @@ void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 
 	/* Recover original mean motion (m->xnodp) and   */
 	/* semimajor axis (m->aodp) from input elements. */
 
-	a1=pow(xke/m->xno,tothrd);
+	a1=pow(XKE/m->xno,TWO_THIRD);
 	m->cosio=cos(m->xincl);
 	theta2=m->cosio*m->cosio;
 	m->x3thm1=3*theta2-1.0;
 	eosq=m->eo*m->eo;
 	betao2=1.0-eosq;
 	betao=sqrt(betao2);
-	del1=1.5*ck2*m->x3thm1/(a1*a1*betao*betao2);
-	ao=a1*(1.0-del1*(0.5*tothrd+del1*(1.0+134.0/81.0*del1)));
-	delo=1.5*ck2*m->x3thm1/(ao*ao*betao*betao2);
+	del1=1.5*CK2*m->x3thm1/(a1*a1*betao*betao2);
+	ao=a1*(1.0-del1*(0.5*TWO_THIRD+del1*(1.0+134.0/81.0*del1)));
+	delo=1.5*CK2*m->x3thm1/(ao*ao*betao*betao2);
 	m->xnodp=m->xno/(1.0+delo);
 	m->aodp=ao/(1.0-delo);
 
@@ -45,7 +45,7 @@ void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 
 	/* anomaly.  Also, the c3 term, the delta omega term, and */
 	/* the delta m term are dropped.                          */
 
-	if ((m->aodp*(1-m->eo)/ae)<(220/xkmper+ae))
+	if ((m->aodp*(1-m->eo)/AE)<(220/EARTH_RADIUS_KM_WGS84+AE))
 		m->simpleFlag = true;
 	else
 		m->simpleFlag = false;
@@ -53,9 +53,9 @@ void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 
 	/* For perigees below 156 km, the      */
 	/* values of s and qoms2t are altered. */
 
-	s4=s;
-	qoms24=qoms2t;
-	perigee=(m->aodp*(1-m->eo)-ae)*xkmper;
+	s4=S_DENSITY_PARAM;
+	qoms24=QOMS2T;
+	perigee=(m->aodp*(1-m->eo)-AE)*EARTH_RADIUS_KM_WGS84;
 
 	if (perigee<156.0)
 	{
@@ -64,8 +64,8 @@ void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 
 		else
 		 s4=perigee-78.0;
 
-		qoms24=pow((120-s4)*ae/xkmper,4);
-		s4=s4/xkmper+ae;
+		qoms24=pow((120-s4)*AE/EARTH_RADIUS_KM_WGS84,4);
+		s4=s4/EARTH_RADIUS_KM_WGS84+AE;
 	}
 
 	pinvsq=1/(m->aodp*m->aodp*betao2*betao2);
@@ -76,27 +76,27 @@ void sgp4_init(const predict_orbital_elements_t *orbital_elements, struct _sgp4 
 	psisq=fabs(1-etasq);
 	coef=qoms24*pow(tsi,4);
 	coef1=coef/pow(psisq,3.5);
-	c2=coef1*m->xnodp*(m->aodp*(1+1.5*etasq+eeta*(4+etasq))+0.75*ck2*tsi/psisq*m->x3thm1*(8+3*etasq*(8+etasq)));
+	c2=coef1*m->xnodp*(m->aodp*(1+1.5*etasq+eeta*(4+etasq))+0.75*CK2*tsi/psisq*m->x3thm1*(8+3*etasq*(8+etasq)));
 	m->c1=m->bstar*c2;
 	m->sinio=sin(m->xincl);
-	a3ovk2=-xj3/ck2*pow(ae,3);
-	c3=coef*tsi*a3ovk2*m->xnodp*ae*m->sinio/m->eo;
+	a3ovk2=-J3_HARMONIC_WGS72/CK2*pow(AE,3);
+	c3=coef*tsi*a3ovk2*m->xnodp*AE*m->sinio/m->eo;
 	m->x1mth2=1-theta2;
 
-	m->c4=2*m->xnodp*coef1*m->aodp*betao2*(m->eta*(2+0.5*etasq)+m->eo*(0.5+2*etasq)-2*ck2*tsi/(m->aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*m->omegao)));
+	m->c4=2*m->xnodp*coef1*m->aodp*betao2*(m->eta*(2+0.5*etasq)+m->eo*(0.5+2*etasq)-2*CK2*tsi/(m->aodp*psisq)*(-3*m->x3thm1*(1-2*eeta+etasq*(1.5-0.5*eeta))+0.75*m->x1mth2*(2*etasq-eeta*(1+etasq))*cos(2*m->omegao)));
 	m->c5=2*coef1*m->aodp*betao2*(1+2.75*(etasq+eeta)+eeta*etasq);
 
 	theta4=theta2*theta2;
-	temp1=3*ck2*pinvsq*m->xnodp;
-	temp2=temp1*ck2*pinvsq;
-	temp3=1.25*ck4*pinvsq*pinvsq*m->xnodp;
+	temp1=3*CK2*pinvsq*m->xnodp;
+	temp2=temp1*CK2*pinvsq;
+	temp3=1.25*CK4*pinvsq*pinvsq*m->xnodp;
 	m->xmdot=m->xnodp+0.5*temp1*betao*m->x3thm1+0.0625*temp2*betao*(13-78*theta2+137*theta4);
 	x1m5th=1-5*theta2;
 	m->omgdot=-0.5*temp1*x1m5th+0.0625*temp2*(7-114*theta2+395*theta4)+temp3*(3-36*theta2+49*theta4);
 	xhdot1=-temp1*m->cosio;
 	m->xnodot=xhdot1+(0.5*temp2*(4-19*theta2)+2*temp3*(3-7*theta2))*m->cosio;
 	m->omgcof=m->bstar*c3*cos(m->omegao);
-	m->xmcof=-tothrd*coef*m->bstar*ae/eeta;
+	m->xmcof=-TWO_THIRD*coef*m->bstar*AE/eeta;
 	m->xnodcf=3.5*betao2*xhdot1*m->c1;
 	m->t2cof=1.5*m->c1;
 	m->xlcof=0.125*a3ovk2*m->sinio*(3+5*m->cosio)/(1+m->cosio);
@@ -159,7 +159,7 @@ void sgp4_predict(const struct _sgp4 *m, double tsince, struct model_output *out
 	e=m->eo-tempe;
 	xl=xmp+omega+xnode+m->xnodp*templ;
 	beta=sqrt(1-e*e);
-	xn=xke/pow(a,1.5);
+	xn=XKE/pow(a,1.5);
 
 	/* Long period periodics */
 	axn=e*cos(omega);
@@ -184,7 +184,7 @@ void sgp4_predict(const struct _sgp4 *m, double tsince, struct model_output *out
 		temp6=ayn*sinepw;
 		epw=(capu-temp4+temp3-temp2)/(1-temp5-temp6)+temp2;
 
-		if (fabs(epw-temp2)<= e6a)
+		if (fabs(epw-temp2)<= E6A)
 			break;
 
 		temp2=epw;
@@ -199,8 +199,8 @@ void sgp4_predict(const struct _sgp4 *m, double tsince, struct model_output *out
 	pl=a*temp;
 	r=a*(1-ecose);
 	temp1=1/r;
-	rdot=xke*sqrt(a)*esine*temp1;
-	rfdot=xke*sqrt(pl)*temp1;
+	rdot=XKE*sqrt(a)*esine*temp1;
+	rfdot=XKE*sqrt(pl)*temp1;
 	temp2=a*temp1;
 	betal=sqrt(temp);
 	temp3=1/(1+betal);
@@ -210,7 +210,7 @@ void sgp4_predict(const struct _sgp4 *m, double tsince, struct model_output *out
 	sin2u=2*sinu*cosu;
 	cos2u=2*cosu*cosu-1;
 	temp=1/pl;
-	temp1=ck2*temp;
+	temp1=CK2*temp;
 	temp2=temp1*temp;
 
 	/* Update for short periodics */
@@ -246,10 +246,10 @@ void sgp4_predict(const struct _sgp4 *m, double tsince, struct model_output *out
 	output->vel[2] = rdotk*uz+rfdotk*vz;
 
 	/* Phase in radians */
-	output->phase=xlt-xnode-omgadf+twopi;
+	output->phase=xlt-xnode-omgadf+TWO_PI;
 
 	if (output->phase<0.0)
-		output->phase+=twopi;
+		output->phase+=TWO_PI;
 
 	output->phase=FMod2p(output->phase);
 

@@ -40,21 +40,21 @@ predict_orbital_elements_t* predict_parse_tle(const char *tle_line_1, const char
 
 	/* Period > 225 minutes is deep space */
 	double ao, xnodp, dd1, dd2, delo, a1, del1, r1;
-	double temp = twopi/xmnpda/xmnpda;
-	double xno = m->mean_motion*temp*xmnpda; //from old TLE struct
-	dd1=(xke/xno);
-	dd2=tothrd;
+	double temp = TWO_PI/MINUTES_PER_DAY/MINUTES_PER_DAY;
+	double xno = m->mean_motion*temp*MINUTES_PER_DAY; //from old TLE struct
+	dd1=(XKE/xno);
+	dd2=TWO_THIRD;
 	a1=pow(dd1,dd2);
 	r1=cos(m->inclination*M_PI/180.0);
 	dd1=(1.0-m->eccentricity*m->eccentricity);
-	temp=ck2*1.5f*(r1*r1*3.0-1.0)/pow(dd1,1.5);
+	temp=CK2*1.5f*(r1*r1*3.0-1.0)/pow(dd1,1.5);
 	del1=temp/(a1*a1);
-	ao=a1*(1.0-del1*(tothrd*.5+del1*(del1*1.654320987654321+1.0)));
+	ao=a1*(1.0-del1*(TWO_THIRD*.5+del1*(del1*1.654320987654321+1.0)));
 	delo=temp/(ao*ao);
 	xnodp=xno/(delo+1.0);
 
 	/* Select a deep-space/near-earth ephemeris */
-	if (twopi/xnodp/xmnpda >= 0.15625) {
+	if (TWO_PI/xnodp/MINUTES_PER_DAY >= 0.15625) {
 		m->ephemeris = EPHEMERIS_SDP4;
 		
 		// Allocate memory for ephemeris data
@@ -106,25 +106,25 @@ bool predict_is_geosynchronous(const predict_orbital_elements_t *m)
 double predict_apogee(const predict_orbital_elements_t *m)
 {
 	double sma = 331.25*exp(log(1440.0/m->mean_motion)*(2.0/3.0));
-	return sma*(1.0+m->eccentricity)-xkmper;
+	return sma*(1.0+m->eccentricity)-EARTH_RADIUS_KM_WGS84;
 }
 		
 double predict_perigee(const predict_orbital_elements_t *m)
 {
-	double xno = m->mean_motion*twopi/xmnpda;
-	double a1=pow(xke/xno,tothrd);
+	double xno = m->mean_motion*TWO_PI/MINUTES_PER_DAY;
+	double a1=pow(XKE/xno,TWO_THIRD);
 	double cosio=cos(m->inclination*M_PI/180.0);
 	double theta2=cosio*cosio;
 	double x3thm1=3*theta2-1.0;
 	double eosq=m->eccentricity*m->eccentricity;
 	double betao2=1.0-eosq;
 	double betao=sqrt(betao2);
-	double del1=1.5*ck2*x3thm1/(a1*a1*betao*betao2);
-	double ao=a1*(1.0-del1*(0.5*tothrd+del1*(1.0+134.0/81.0*del1)));
-	double delo=1.5*ck2*x3thm1/(ao*ao*betao*betao2);
+	double del1=1.5*CK2*x3thm1/(a1*a1*betao*betao2);
+	double ao=a1*(1.0-del1*(0.5*TWO_THIRD+del1*(1.0+134.0/81.0*del1)));
+	double delo=1.5*CK2*x3thm1/(ao*ao*betao*betao2);
 	double aodp=ao/(1.0-delo);
 
-	return (aodp*(1-m->eccentricity)-ae)*xkmper;
+	return (aodp*(1-m->eccentricity)-AE)*EARTH_RADIUS_KM_WGS84;
 }
 
 bool predict_aos_happens(const predict_orbital_elements_t *m, double latitude)
@@ -144,7 +144,7 @@ bool predict_aos_happens(const predict_orbital_elements_t *m, double latitude)
 
 		apogee = predict_apogee(m);
 
-		if ((acos(xkmper/(apogee+xkmper))+(lin*M_PI/180.0)) > fabs(latitude))
+		if ((acos(EARTH_RADIUS_KM_WGS84/(apogee+EARTH_RADIUS_KM_WGS84))+(lin*M_PI/180.0)) > fabs(latitude))
 			return true;
 		else
 			return false;
@@ -169,7 +169,7 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct pre
 	/* and calculate time since epoch in minutes */
 	double epoch = 1000.0*orbital_elements->epoch_year + orbital_elements->epoch_day;
 	double jul_epoch = Julian_Date_of_Epoch(epoch);
-	double tsince = (julTime - jul_epoch)*xmnpda;
+	double tsince = (julTime - jul_epoch)*MINUTES_PER_DAY;
 
 	/* Call NORAD routines according to deep-space flag. */
 	struct model_output output;
@@ -214,14 +214,14 @@ int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct pre
 	m->eclipsed = is_eclipsed(m->position, solar_vector, &m->eclipse_depth);
 
 	// Calculate footprint
-	m->footprint = 2.0*xkmper*acos(xkmper/(xkmper + m->altitude));
+	m->footprint = 2.0*EARTH_RADIUS_KM_WGS84*acos(EARTH_RADIUS_KM_WGS84/(EARTH_RADIUS_KM_WGS84 + m->altitude));
 	
 	// Calculate current number of revolutions around Earth
-	double temp = twopi/xmnpda/xmnpda;
+	double temp = TWO_PI/MINUTES_PER_DAY/MINUTES_PER_DAY;
 	double age = julTime - jul_epoch;
-	double xno = orbital_elements->mean_motion*temp*xmnpda;
+	double xno = orbital_elements->mean_motion*temp*MINUTES_PER_DAY;
 	double xmo = orbital_elements->mean_anomaly * M_PI / 180.0;
-	m->revolutions = (long)floor((xno*xmnpda/(M_PI*2.0) + age*orbital_elements->bstar_drag_term)*age + xmo/(2.0*M_PI)) + orbital_elements->revolutions_at_epoch;
+	m->revolutions = (long)floor((xno*MINUTES_PER_DAY/(M_PI*2.0) + age*orbital_elements->bstar_drag_term)*age + xmo/(2.0*M_PI)) + orbital_elements->revolutions_at_epoch;
 
 	//calculate whether orbit is decayed
 	m->decayed = predict_decayed(orbital_elements, utc);
@@ -248,9 +248,9 @@ bool is_eclipsed(const double pos[3], const double sol[3], double *depth)
 	double Rho[3], earth[3];
 
 	/* Determine partial eclipse */
-	double sd_earth = asin_(xkmper / vec3_length(pos));
+	double sd_earth = asin_(EARTH_RADIUS_KM_WGS84 / vec3_length(pos));
 	vec3_sub(sol, pos, Rho);
-	double sd_sun = asin_(sr / vec3_length(Rho));
+	double sd_sun = asin_(SOLAR_RADIUS_KM / vec3_length(Rho));
 	vec3_mul_scalar(pos, -1, earth);
 	
 	double delta = acos_( vec3_dot(sol, earth) / vec3_length(sol) / vec3_length(earth) );
