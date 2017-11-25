@@ -36,6 +36,7 @@ set(LIBPREDICT_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/src)
 set(LIBPREDICT_TEST_DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests/data)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
 
 add_subdirectory(include)
 add_subdirectory(src)

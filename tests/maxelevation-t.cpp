@@ -153,7 +153,6 @@ int runtest(const char *filename)
 
 int test_max_elevation(double start_time, predict_observer_t *observer, predict_orbital_elements_t *orbital_elements)
 {
-	double orig_start_time = start_time;
 	struct predict_position orbit;
 	struct predict_observation obs;
 
