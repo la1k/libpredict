@@ -8,6 +8,8 @@ reports, feature requests and submit pull requests!
 Contributor Agreement
 ---------------------
 
+![Number of signed CLAs](https://cla-assistant.io/readme/badge/la1k/libpredict "This is how many people have signed this CLA")
+
 Currently, libpredict is licensed as GPLv2+. That's not optimal for a
 library, so we want to change it to something more library friendly,
 e.g., LGPL. It's going to be a while before we can do so, but it is a
