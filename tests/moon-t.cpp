@@ -46,7 +46,7 @@ int runtest(const char *filename)
 		fprintf(stderr, "Failed to load testfile: %s\n", filename);
 		return -1;
 	}
-	
+
 	// Create observer object
 	predict_observer_t *obs = predict_create_observer("test", testcase.latitude()*M_PI/180.0, testcase.longitude()*M_PI/180.0, testcase.altitude());
 	if (!obs) {
@@ -62,6 +62,9 @@ int runtest(const char *filename)
 		double time = d[0];
 		double az = d[1];
 		double el = d[2];
+		double dec = d[3];
+		double gha = d[4];
+		double ra = d[5];
 
 		// Compare values within (time - 1, time + 1) (i.e. up time + 1, but not including time + 1)
 		// (since we don't know the exact time predict generated its data, only within an error of 1 second)
@@ -84,13 +87,41 @@ int runtest(const char *filename)
 			failed += "(elevation)";
 		}
 
+		//calculate RA, dec and GHA
+		double dec_lower = predict_moon_declination(predict_to_julian(time))*180.0/M_PI;
+		double dec_upper = predict_moon_declination(predict_to_julian(time + DIFF))*180.0/M_PI;
+		if (!fuzzyCompareWithBoundaries(dec_lower, dec_upper, dec)) {
+			failed += "(declination)";
+		}
+
+		double ra_lower = predict_moon_ra(predict_to_julian(time))*180.0/M_PI;
+		double ra_upper = predict_moon_ra(predict_to_julian(time + DIFF))*180.0/M_PI;
+		if (!fuzzyCompareWithBoundaries(ra_lower, ra_upper, ra)) {
+			failed += "(right ascension)";
+		}
+
+		double gha_lower = predict_moon_gha(predict_to_julian(time))*180.0/M_PI;
+		double gha_upper = predict_moon_gha(predict_to_julian(time + DIFF))*180.0/M_PI;
+		if (!fuzzyCompareWithBoundaries(gha_lower, gha_upper, gha)) {
+			failed += "(GHA)";
+		}
+
 		// Failed?
 		if (failed != "") {
 			cout << filename << ": failed at data line " << line << ": " << failed << endl;
 
-			printf("%.8f, %.8f/%.8f/%.8f, %.8f/%.8f/%.8f\n", time,
+			printf("%.8f, %.8f/%.8f/%.8f, %.8f/%.8f/%.8f, "
+					"%.8f/%.8f/%.8f, "
+					"%.8f/%.8f/%.8f, "
+					"%.8f/%.8f/%.8f,"
+					"\n", time,
 					moon_obs_lower.azimuth*180.0/M_PI, az, moon_obs_upper.azimuth*180.0/M_PI,
-					moon_obs_lower.elevation*180.0/M_PI, el, moon_obs_upper.elevation*180.0/M_PI);
+					moon_obs_lower.elevation*180.0/M_PI, el, moon_obs_upper.elevation*180.0/M_PI,
+					dec_lower, dec, dec_upper,
+					ra_lower, ra, ra_upper,
+					gha_lower, gha, gha_upper
+			      );
+
 
 			retval = -1;
 		}

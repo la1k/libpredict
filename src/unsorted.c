@@ -187,7 +187,7 @@ void Calculate_LatLonAlt(double time, const double pos[3],  geodetic_t *geodetic
 	double r, e2, phi, c;
 	
 	//Convert to julian time:
-	time += 2444238.5;
+	time += JULIAN_TIME_DIFF;
 
 	geodetic->theta = atan2(pos[1], pos[0]); /* radians */
 	geodetic->lon = FMod2p(geodetic->theta-ThetaG_JD(time)); /* radians */
@@ -269,6 +269,48 @@ void Calculate_Obs(double time, const double pos[3], const double vel[3], geodet
 
 	if (obs_set->y<0.0)
 		obs_set->y=el;  /* Reset to true elevation */
+}
+
+void Calculate_RADec(double time, const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set)
+{
+	/* Reference:  Methods of Orbit Determination by  */
+	/*             Pedro Ramon Escobal, pp. 401-402   */
+
+	double	phi, theta, sin_theta, cos_theta, sin_phi, cos_phi, az, el,
+	Lxh, Lyh, Lzh, Sx, Ex, Zx, Sy, Ey, Zy, Sz, Ez, Zz, Lx, Ly,
+	Lz, cos_delta, sin_alpha, cos_alpha;
+
+	Calculate_Obs(time,pos,vel,geodetic,obs_set);
+
+	az=obs_set->x;
+	el=obs_set->y;
+	phi=geodetic->lat;
+	theta=FMod2p(ThetaG_JD(time)+geodetic->lon);
+	sin_theta=sin(theta);
+	cos_theta=cos(theta);
+	sin_phi=sin(phi);
+	cos_phi=cos(phi);
+	Lxh=-cos(az)*cos(el);
+	Lyh=sin(az)*cos(el);
+	Lzh=sin(el);
+	Sx=sin_phi*cos_theta;
+	Ex=-sin_theta;
+	Zx=cos_theta*cos_phi;
+	Sy=sin_phi*sin_theta;
+	Ey=cos_theta;
+	Zy=sin_theta*cos_phi;
+	Sz=-cos_phi;
+	Ez=0.0;
+	Zz=sin_phi;
+	Lx=Sx*Lxh+Ex*Lyh+Zx*Lzh;
+	Ly=Sy*Lxh+Ey*Lyh+Zy*Lzh;
+	Lz=Sz*Lxh+Ez*Lyh+Zz*Lzh;
+	obs_set->y=asin_(Lz);  /* Declination (radians) */
+	cos_delta=sqrt(1.0-Sqr(Lz));
+	sin_alpha=Ly/cos_delta;
+	cos_alpha=Lx/cos_delta;
+	obs_set->x=atan2(sin_alpha,cos_alpha); /* Right Ascension (radians) */
+	obs_set->x=FMod2p(obs_set->x);
 }
 
 /* .... SGP4/SDP4 functions end .... */

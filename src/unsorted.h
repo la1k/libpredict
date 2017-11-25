@@ -162,6 +162,13 @@ void Calculate_LatLonAlt(double time, const double pos[3], geodetic_t *geodetic)
 void Calculate_Obs(double time,  const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set);
 
 /**
+ * Reference:  Methods of Orbit Determination by Pedro Ramon Escobal, pp. 401-402
+ *
+ * \copyright GPLv2+
+ **/
+void Calculate_RADec(double time, const double pos[3], const double vel[3], geodetic_t *geodetic, vector_t *obs_set);
+
+/**
  *
  * \copyright GPLv2+
  **/

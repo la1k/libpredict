@@ -139,7 +139,10 @@ function generate_sun_testcase(){
 		time=$(./predict_client "GET_TIME")
 		az=${predict_response[0]}
 		el=${predict_response[1]}
-		echo $time,$az,$el >> $testcase_filename
+		dec=${predict_response[2]}
+		gha=${predict_response[3]}
+		ra=${predict_response[4]}
+		echo $time,$az,$el,$dec,$gha,$ra >> $testcase_filename
 	done
 	killall predict
 	sleep 1
@@ -170,7 +173,10 @@ function generate_moon_testcase(){
 		time=$(./predict_client "GET_TIME")
 		az=${predict_response[0]}
 		el=${predict_response[1]}
-		echo $time,$az,$el >> $testcase_filename
+		dec=${predict_response[2]}
+		gha=${predict_response[3]}
+		ra=${predict_response[4]}
+		echo $time,$az,$el,$dec,$gha,$ra >> $testcase_filename
 	done
 	killall predict
 	sleep 1

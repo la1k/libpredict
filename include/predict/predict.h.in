@@ -316,7 +316,32 @@ void predict_observe_orbit(const predict_observer_t *observer, const struct pred
  **/
 void predict_observe_moon(const predict_observer_t *observer, predict_julian_date_t time, struct predict_observation *obs);
 
-/** 
+/**
+ * Calculate right ascension of the moon.
+ *
+ * \param time Time
+ * \return RA in radians
+ **/
+double predict_moon_ra(predict_julian_date_t time);
+
+/**
+ * Calculate declination of the moon.
+ *
+ * \param time Time
+ * \return Declination in radians
+ **/
+double predict_moon_declination(predict_julian_date_t time);
+
+/**
+ * Calculate the greenwich hour angle (longitude) of the moon.
+ *
+ * \param time Time
+ * \return GHA in radians
+ * \copyright GPLv2+
+ **/
+double predict_moon_gha(predict_julian_date_t time);
+
+/**
  * Estimate relative position of the sun.
  *
  * \param observer Point of observation
@@ -325,6 +350,33 @@ void predict_observe_moon(const predict_observer_t *observer, predict_julian_dat
  * \copyright GPLv2+
  **/
 void predict_observe_sun(const predict_observer_t *observer, predict_julian_date_t time, struct predict_observation *obs);
+
+/**
+ * Calculate right ascension of the sun.
+ *
+ * \param observer Point of observation
+ * \param time Time of observation
+ * \return RA in radians
+ **/
+double predict_sun_ra(predict_julian_date_t time);
+
+/**
+ * Calculate declination of the sun.
+ *
+ * \param observer Point of observation
+ * \param time Time of observation
+ * \return Declination in radians
+ **/
+double predict_sun_declination(predict_julian_date_t time);
+
+/**
+ * Calculate the greenwich hour angle (longitude) of the sun.
+ *
+ * \param time Time
+ * \return GHA in radians
+ * \copyright GPLv2+
+ **/
+double predict_sun_gha(predict_julian_date_t time);
 
 /** 
  * Find next acquisition of signal (AOS) of satellite (when the satellite rises above the horizon). Ignores previous AOS of current pass if the satellite is in range at the start time. 

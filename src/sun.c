@@ -40,7 +40,7 @@ double Degrees(double arg)
 
 void sun_predict(double time, double position[3])
 {
-	double jul_utc = time + 2444238.5;
+	double jul_utc = time + JULIAN_TIME_DIFF;
 	double mjd = jul_utc - 2415020.0;
 	double year = 1900 + mjd / 365.25;
 	double T = (mjd + Delta_ET(year) / secday) / 36525.0;
@@ -58,4 +58,102 @@ void sun_predict(double time, double position[3])
 	position[0] = R*cos(Lsa);
 	position[1] = R*sin(Lsa)*cos(eps);
 	position[2] = R*sin(Lsa)*sin(eps);
+}
+
+void predict_observe_sun(const predict_observer_t *observer, double time, struct predict_observation *obs)
+{
+
+	// Find sun position
+	double solar_vector[3];
+	sun_predict(time, solar_vector);
+
+	/* Zero vector for initializations */
+	double zero_vector[3] = {0,0,0};
+
+	/* Solar observed azimuth and elevation vector  */
+	vector_t solar_set;
+
+	geodetic_t geodetic;
+	geodetic.lat = observer->latitude;
+	geodetic.lon = observer->longitude;
+	geodetic.alt = observer->altitude / 1000.0;
+	geodetic.theta = 0.0;
+
+	double jul_utc = time + JULIAN_TIME_DIFF;
+	Calculate_Obs(jul_utc, solar_vector, zero_vector, &geodetic, &solar_set);
+
+	double sun_azi = solar_set.x;
+	double sun_ele = solar_set.y;
+
+	double sun_range = 1.0+((solar_set.z-AU)/AU);
+	double sun_range_rate = 1000.0*solar_set.w;
+
+	obs->time = time;
+	obs->azimuth = sun_azi;
+	obs->elevation = sun_ele;
+	obs->range = sun_range;
+	obs->range_rate = sun_range_rate;
+}
+
+/**
+ * Calculate RA and dec for the sun.
+ *
+ * \param time Time
+ * \param ra Right ascension
+ * \param dec Declination
+ * \copyright GPLv2+
+ **/
+void predict_sun_ra_dec(predict_julian_date_t time, double *ra, double *dec)
+{
+	//predict absolute position of the sun
+	double solar_vector[3];
+	sun_predict(time, solar_vector);
+
+	//prepare for radec calculation
+	double jul_utc = time + JULIAN_TIME_DIFF;
+	double zero_vector[3] = {0,0,0};
+	vector_t solar_rad;
+
+	//for some reason, RADec requires QTH coordinates, though
+	//the properties to be calculated are observer-independent.
+	//Pick some coordinates, will be correct anyway.
+	geodetic_t geodetic;
+	geodetic.lat = 10;
+	geodetic.lon = 10;
+	geodetic.alt = 10 / 1000.0;
+	geodetic.theta = 0.0;
+
+	//calculate right ascension/declination
+	Calculate_RADec(jul_utc, solar_vector, zero_vector, &geodetic, &solar_rad);
+	*ra = solar_rad.x;
+	*dec = solar_rad.y;
+}
+
+double predict_sun_ra(predict_julian_date_t time)
+{
+	double ra, dec;
+	predict_sun_ra_dec(time, &ra, &dec);
+	return ra;
+}
+
+double predict_sun_declination(predict_julian_date_t time)
+{
+	double ra, dec;
+	predict_sun_ra_dec(time, &ra, &dec);
+	return dec;
+}
+
+double predict_sun_gha(predict_julian_date_t time)
+{
+	//predict absolute position of sun
+	double solar_vector[3];
+	sun_predict(time, solar_vector);
+
+	//convert to lat/lon/alt
+	geodetic_t solar_latlonalt;
+	Calculate_LatLonAlt(time, solar_vector, &solar_latlonalt);
+
+	//return longitude as the GHA
+	double sun_lon = 360.0-Degrees(solar_latlonalt.lon);
+	return sun_lon*M_PI/180.0;
 }
