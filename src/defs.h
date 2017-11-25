@@ -20,7 +20,7 @@
 #define e6a		1.0E-6
 #define tothrd		6.6666666666666666E-1	/* 2/3 */
 #define xj2		1.0826158E-3		/* J2 Harmonic (WGS '72) */
-#define xj3		-2.53881E-6		/* J3 Harmonic (WGS '72) */   
+#define xj3		-2.53881E-6		/* J3 Harmonic (WGS '72) */
 #define xj4		-1.65597E-6		/* J4 Harmonic (WGS '72) */
 #define xke		7.43669161E-2
 #define xkmper		6.378137E3		/* WGS 84 Earth radius km */
@@ -68,6 +68,9 @@
 
 /* doppler calculation */
 #define SPEED_OF_LIGHT 299792458.0
+
+/* Date/Time constants */
+#define JULIAN_START_DAY 315446400
 
 
 #endif

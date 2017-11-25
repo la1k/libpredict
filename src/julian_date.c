@@ -1,5 +1,6 @@
 #define _POSIX_C_SOURCE 1
 #include <predict/predict.h>
+#include "defs.h"
 #include <stdio.h>
 
 
@@ -48,15 +49,7 @@ time_t mktime_utc(const struct tm* timeinfo_utc)
  **/
 time_t get_julian_start_day()
 {
-	struct tm start_time;
-	start_time.tm_sec = 0;
-	start_time.tm_min = 0;
-	start_time.tm_hour = 0;
-	start_time.tm_mday = 31;
-	start_time.tm_mon = 11;
-	start_time.tm_year = 1979-1900;
-	start_time.tm_isdst = 0;
-	return mktime_utc(&start_time);
+	return JULIAN_START_DAY;
 }
 
 #define NUM_SECONDS_IN_DAY (24.0*60.0*60.0)
@@ -71,10 +64,10 @@ time_t predict_from_julian(predict_julian_date_t date)
 {
 	double seconds_since = date*NUM_SECONDS_IN_DAY;
 	time_t ret_time = get_julian_start_day();
-	
+
 	//add number of seconds since julian start day to the julian start day, get current time_t
 	struct tm timeinfo;
-	gmtime_r(&ret_time, &timeinfo); 
+	gmtime_r(&ret_time, &timeinfo);
 	timeinfo.tm_sec += seconds_since;
 	ret_time = mktime_utc(&timeinfo);
 	return ret_time;
