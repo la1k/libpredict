@@ -1,14 +1,19 @@
 #!/bin/bash -e
 
 if [ -z "$TRAVIS" ]; then
-    echo "Do not run outside travis."
+    (>&2 echo "Do not run outside travis.")
     exit
 fi
 
-if [ "XX$TRAVIS_BRANCH" != "XXv@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@" -o "XX$CC" != "XXgcc" ]; then
-    echo "Skipping documentation build for all except gcc builds on the branch"
-    echo "named v<major>.<minor>."
+API_DOC_RELATIVE_PATH="api/this_should_never_happen"
+if [ "XX$TRAVIS_BRANCH" == "XXmaster" -a "XX$CC" == "XXgcc" ]; then
+    API_DOC_RELATIVE_PATH=api/master
+elif [ "XX$TRAVIS_BRANCH" != "XXv@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@" -o "XX$CC" != "XXgcc" ]; then
+    (>&2 echo "Skipping documentation build for all except gcc builds on master and")
+    (>&2 echo "branches named v<major>.<minor>.")
     exit
+else
+    API_DOC_RELATIVE_PATH=api/master
 fi
 
 set -x
@@ -17,7 +22,6 @@ set -x
 REPO_PATH="https://$gh_pages_username:$gh_pages_oauth_token@github.com/la1k/libpredict.git"
 DOXYGEN_OUTPUT_PATH=@CMAKE_CURRENT_BINARY_DIR@/../doc/html
 GH_PAGES_PATH=@CMAKE_CURRENT_BINARY_DIR@/../gh-pages
-API_DOC_RELATIVE_PATH=api/@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@
 API_DOC_PATH=${GH_PAGES_PATH}/${API_DOC_RELATIVE_PATH}
 COMMIT_USER="Documentation builder"
 COMMIT_EMAIL="libpredict-admin@la1k.no"
