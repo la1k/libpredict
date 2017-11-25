@@ -1,8 +1,8 @@
 # The minimum required version hasn't been tested. Feel free to adjust
 # downwards if necessary.
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
-project(libpredict C CXX)
+project(libpredict VERSION 2.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x") #for tests written in C++
 
 include(GNUInstallDirs)
@@ -12,13 +12,6 @@ include(GNUInstallDirs)
 # minor = bump on compatible change
 # patch = bump on any change
 
-# These variables will be set automatically by newer CMake (at least
-# 3.0) if the project command is given a VERSION argument. Set them
-# manually for now.
-set(PROJECT_VERSION_MAJOR 1)
-set(PROJECT_VERSION_MINOR 0)
-set(PROJECT_VERSION_PATCH 0)
-#PROJECT_VERSION_TWEAK isn't used
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 set(LIBPREDICT_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(LIBPREDICT_VERSION_MINOR ${PROJECT_VERSION_MINOR})
