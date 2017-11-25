@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 	}
 	bool failed = false;
 
-	for (int i=0; i < orbital_elements.size(); i++) {
+	for (size_t i=0; i < orbital_elements.size(); i++) {
 		predict_orbital_elements_t *elements = orbital_elements[i].elements;
 		std::string name = orbital_elements[i].name;
 		bool predict_geostationary = predict_is_geosynchronous(elements);
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 
 		if (predict_geostationary != is_geostationary) {
 			fprintf(stderr, "Predicted %s, but should be %s ", geos_string(predict_geostationary), geos_string(is_geostationary));
-			fprintf(stderr, "for %s (%ld): meanmo=%f, ecc=%f, inclin=%f\n", name.c_str(), elements->satellite_number, elements->mean_motion, elements->eccentricity, elements->inclination);
+			fprintf(stderr, "for %s (%i): meanmo=%f, ecc=%f, inclin=%f\n", name.c_str(), elements->satellite_number, elements->mean_motion, elements->eccentricity, elements->inclination);
 			failed = true;
 
 		}

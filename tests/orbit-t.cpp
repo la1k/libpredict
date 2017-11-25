@@ -69,7 +69,7 @@ int runtest(const char *filename)
 	// Test
 	int retval = 0;
 	int line = 1;
-	for (int i=0; i < testcase.data().size(); i++) {
+	for (size_t i=0; i < testcase.data().size(); i++) {
 		std::vector<double> d = testcase.data()[i];
 		double time = d[0];
 		double lat = d[1];
