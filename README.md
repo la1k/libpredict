@@ -67,11 +67,11 @@ License
 
  Copyright 1991-2006 John A. Magliacane (KD2BD)
  
+ Copyright 2013- Akademisk radioklubb (LA1K)
+ 
  Copyright 2013-2015 Knut Magnus Kvamtrø (LA3DPA)
  
  Copyright 2013-2015 Thomas Ingebretsen (LA9ERA)
- 
- Copyright 2013-2015 Norvald H. Ryeng (LA6YKA)
  
  Copyright 2015 Asgeir Bjørgan (LA9SSA)
 
