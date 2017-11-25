@@ -70,4 +70,9 @@
 #define SPEED_OF_LIGHT 299792458.0
 
 
+/* Difference between libpredict's predict_julian_date_t and the julian time
+ * format used in some of the internal functions */
+#define JULIAN_TIME_DIFF 2444238.5
+
+
 #endif

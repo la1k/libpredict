@@ -42,7 +42,7 @@ void predict_observe_orbit(const predict_observer_t *observer, const struct pred
 {
 	if (obs == NULL) return;
 	
-	double julTime = orbit->time + 2444238.5;
+	double julTime = orbit->time + JULIAN_TIME_DIFF;
 
 	observer_calculate(observer, julTime, orbit->position, orbit->velocity, obs);
 
@@ -145,47 +145,6 @@ void observer_calculate(const predict_observer_t *observer, double time, const d
 	result->range_z = range[2];
 
 }
-
-void predict_observe_sun(const predict_observer_t *observer, double time, struct predict_observation *obs)
-{
-	
-	// Find sun position
-	double solar_vector[3];
-	sun_predict(time, solar_vector);
-
-	/* Zero vector for initializations */
-	double zero_vector[3] = {0,0,0};
-
-	/* Solar observed azimuth and elevation vector  */
-	vector_t solar_set;
-
-	/* Solar lat, long, alt vector */
-	geodetic_t solar_latlonalt;
-
-	geodetic_t geodetic;
-	geodetic.lat = observer->latitude;
-	geodetic.lon = observer->longitude;
-	geodetic.alt = observer->altitude / 1000.0;
-	geodetic.theta = 0.0;
-	
-	double jul_utc = time + 2444238.5;
-	Calculate_Obs(jul_utc, solar_vector, zero_vector, &geodetic, &solar_set);
-	
-	double sun_azi = solar_set.x; 
-	double sun_ele = solar_set.y;
-
-	double sun_range = 1.0+((solar_set.z-AU)/AU);
-	double sun_range_rate = 1000.0*solar_set.w;
-
-	Calculate_LatLonAlt(jul_utc, solar_vector, &solar_latlonalt);
-	
-	obs->time = time;
-	obs->azimuth = sun_azi;
-	obs->elevation = sun_ele;
-	obs->range = sun_range;
-	obs->range_rate = sun_range_rate;
-}
-
 
 #define ELEVATION_ZERO_TOLERANCE 0.3 //threshold for fine-tuning of AOS/LOS
 #define DAYNUM_MINUTE 1.0/(24*60) //number of days corresponding to a minute

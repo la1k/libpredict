@@ -31,19 +31,38 @@ double PrimeAngle(double x)
 	return x;
 }
 
-/* This function determines the position of the moon, including the azimuth and elevation headings, relative to the latitude
-	   and longitude of the tracking station.  This code was derived
-	   from a Javascript implementation of the Meeus method for
-	   determining the exact position of the Moon found at:
-	   http://www.geocities.com/s_perona/ingles/poslun.htm. */
-void predict_observe_moon(const predict_observer_t *observer, double time, struct predict_observation *obs)
-{
-	
-	double	jd, ss, t, t1, t2, t3, d, ff, l1, m, m1, ex, om, l,
-		b, w1, w2, bt, p, lm, h, ra, dec, z, ob, n, e, el,
-		az, teg, th, mm, dv;
+/**
+ * Output struct for predict_moon().
+ **/
+struct moon {
+	///Julian day
+	double jd;
+	///Related to ecliptic longitude
+	double lm;
+	///Related to ecliptic latitude
+	double b;
+	///Parallax-related
+	double p;
+	///Related to siderial time
+	double teg;
+	///Range approximation?
+	double dx;
+};
 
-	jd = time + 2444238.5;
+/**
+ * Predict absolute, observer-independent properties of the moon.
+ *
+ * \param time Time
+ * \param moon Output struct
+ * \copyright GPLv2+
+ **/
+void predict_moon(double time, struct moon *moon)
+{
+	double jd, t, t2, t3, l1, m, teg, l, b, w1, w2, bt, p, lm, m1, d, ff, om, ss, ex;
+
+
+	jd = time + JULIAN_TIME_DIFF;
+	moon->jd = jd;
 
 	t=(jd-2415020.0)/36525.0;
 	t2=t*t;
@@ -55,7 +74,7 @@ void predict_observe_moon(const predict_observer_t *observer, double time, struc
 	ff=11.250889+483202.0251*t-0.003211*t2-0.0000003*t3;
 	om=259.183275-1934.142*t+0.002078*t2+0.0000022*t3;
 	om = om * M_PI/180.0;
-	
+
 	/* Additive terms */
 
 	l1=l1+0.000233*sin((51.2+20.2*t)*M_PI/180.0);
@@ -90,10 +109,10 @@ void predict_observe_moon(const predict_observer_t *observer, double time, struc
 	l=l+0.058793*sin(2.0*d-2.0*m1)+ex*0.057212*sin(2.0*d-m-m1)+0.05332*sin(2.0*d+m1);
 	l=l+ex*0.045874*sin(2.0*d-m)+ex*0.041024*sin(m1-m)-0.034718*sin(d);
 	l=l-ex*0.030465*sin(m+m1)+0.015326*sin(2.0*d-2.0*ff)-0.012528*sin(2.0*ff+m1);
-	
+
 	l=l-0.01098*sin(2.0*ff-m1)+0.010674*sin(4.0*d-m1)+0.010034*sin(3.0*m1);
 	l=l+0.008548*sin(4.0*d-2.0*m1)-ex*0.00791*sin(m-m1+2.0*d)-ex*0.006783*sin(2.0*d+m);
-	
+
 	l=l+0.005162*sin(m1-d)+ex*0.005*sin(m+d)+ex*0.004049*sin(m1-m+2.0*d);
 	l=l+0.003996*sin(2.0*m1+2.0*d)+0.003862*sin(4.0*d)+0.003665*sin(2.0*d-3.0*m1);
 
@@ -159,26 +178,6 @@ void predict_observe_moon(const predict_observer_t *observer, double time, struc
 
 	b=bt*M_PI/180.0;
 	lm=l*M_PI/180.0;
-	double moon_dx=3.0/(M_PI*p);
-
-	/* Semi-diameter calculation */
-	/* sem=10800.0*asin(0.272488*p*M_PI/180.0)/pi; */
-	/* Convert ecliptic coordinates to equatorial coordinates */
-
-	z=(jd-2415020.5)/365.2422;
-	ob=23.452294-(0.46845*z+5.9e-07*z*z)/3600.0;
-	ob=ob*M_PI/180.0;
-	dec=asin(sin(b)*cos(ob)+cos(b)*sin(ob)*sin(lm));
-	ra=acos(cos(b)*cos(lm)/cos(dec));
-	
-	if (lm > M_PI)
-		ra = 2*M_PI - ra;
-
-	/* ra = right ascension */
-	/* dec = declination */
-
-	n = observer->latitude;    /* North latitude of tracking station */
-	e = observer->longitude;  /* East longitude of tracking station */
 
 	/* Find siderial time in radians */
 
@@ -188,38 +187,102 @@ void predict_observe_moon(const predict_observer_t *observer, double time, struc
 	while (teg>360.0)
 		teg-=360.0;
 
-	th = FixAngle(teg*M_PI/180.0 + e);
-	h=th-ra;
+	//output
+	moon->b = b;
+	moon->lm = lm;
+	moon->p = p;
+	moon->dx = 3.0/(M_PI*p);
+	moon->teg = teg;
+}
 
-	az=atan2(sin(h),cos(h)*sin(n)-tan(dec)*cos(n))+M_PI;
-	el=asin(sin(n)*sin(dec)+cos(n)*cos(dec)*cos(h));
+/**
+ * Calculate RA and dec for the moon.
+ *
+ * \param time Time
+ * \param ra Right ascension
+ * \param dec Declination
+ * \copyright GPLv2+
+ **/
+void predict_moon_ra_dec(predict_julian_date_t time, double *ra, double *dec)
+{
+	struct moon moon;
+	predict_moon(time, &moon);
 
-	double moon_az=az;
-	double moon_el=el;
+	/* Semi-diameter calculation */
+	/* sem=10800.0*asin(0.272488*p*M_PI/180.0)/pi; */
+	/* Convert ecliptic coordinates to equatorial coordinates */
+
+	double z=(moon.jd-2415020.5)/365.2422;
+	double ob=23.452294-(0.46845*z+5.9e-07*z*z)/3600.0;
+	ob=ob*M_PI/180.0;
+	*dec=asin(sin(moon.b)*cos(ob)+cos(moon.b)*sin(ob)*sin(moon.lm));
+	*ra=acos(cos(moon.b)*cos(moon.lm)/cos(*dec));
+
+	if (moon.lm > M_PI)
+		*ra = 2*M_PI - *ra;
+}
+
+void predict_observe_moon(const predict_observer_t *observer, double time, struct predict_observation *obs)
+{
+	struct moon moon;
+	predict_moon(time, &moon);
+
+	double ra, dec;
+	predict_moon_ra_dec(time, &ra, &dec);
+
+	double n = observer->latitude;    /* North latitude of tracking station */
+	double e = observer->longitude;  /* East longitude of tracking station */
+
+
+	double th = FixAngle(moon.teg*M_PI/180.0 + e);
+	double h=th-ra;
+
+	double az=atan2(sin(h),cos(h)*sin(n)-tan(dec)*cos(n))+M_PI;
+	double el=asin(sin(n)*sin(dec)+cos(n)*cos(dec)*cos(h));
 
 	/* Radial velocity approximation.  This code was derived
 	   from "Amateur Radio Software", by John Morris, GM4ANB,
 	   published by the RSGB in 1985. */
 
-	mm=FixAngle(1.319238+time*0.228027135);  /* mean moon position */
-	t2=0.10976;
-	t1=mm+t2*sin(mm);
-	dv=0.01255*moon_dx*moon_dx*sin(t1)*(1.0+t2*cos(mm));
+	double mm=FixAngle(1.319238+time*0.228027135);  /* mean moon position */
+	double t2=0.10976;
+	double t1=mm+t2*sin(mm);
+	double dv=0.01255*moon.dx*moon.dx*sin(t1)*(1.0+t2*cos(mm));
 	dv=dv*4449.0;
 	t1=6378.0;
 	t2=384401.0;
-	t3=t1*t2*(cos(dec)*cos(n)*sin(h));
+	double t3=t1*t2*(cos(dec)*cos(n)*sin(h));
 	t3=t3/sqrt(t2*t2-t2*t1*sin(el));
 
-	//double moon_dv=dv+t3*0.0753125;
-	//double moon_dec=dec/M_PI/180.0;
-	double moon_ra=ra/M_PI/180.0;
-	double moon_gha=teg-moon_ra;
+	double moon_dv=dv+t3*0.0753125;
 
-	if (moon_gha<0.0) moon_gha+=360.0;
-
-	obs->azimuth = moon_az;
-	obs->elevation = moon_el;
-
+	obs->time = time;
+	obs->azimuth = az;
+	obs->elevation = el;
+	obs->range = moon.dx;
+	obs->range_rate = moon_dv;
 }
 
+double predict_moon_ra(predict_julian_date_t time)
+{
+	double ra, dec;
+	predict_moon_ra_dec(time, &ra, &dec);
+	return ra;
+}
+
+double predict_moon_declination(predict_julian_date_t time)
+{
+	double ra, dec;
+	predict_moon_ra_dec(time, &ra, &dec);
+	return dec;
+}
+
+double predict_moon_gha(predict_julian_date_t time)
+{
+	struct moon moon;
+	predict_moon(time, &moon);
+	double moon_gha=moon.teg-predict_moon_ra(time)*180.0/M_PI;
+
+	if (moon_gha<0.0) moon_gha+=360;
+	return moon_gha*M_PI/180.0;
+}

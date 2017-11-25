@@ -20,7 +20,13 @@ VER_0.1 {
 		predict_destroy_observer;
 		predict_observe_orbit;
 		predict_observe_moon;
+		predict_moon_ra;
+		predict_moon_declination;
+		predict_moon_gha;
 		predict_observe_sun;
+		predict_sun_ra;
+		predict_sun_declination;
+		predict_sun_gha;
 		predict_next_aos;
 		predict_next_los;
 		predict_at_max_elevation;
