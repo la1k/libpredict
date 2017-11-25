@@ -408,7 +408,7 @@ double predict_next_aos(const predict_observer_t *observer, const predict_orbita
 	predict_observe_orbit(observer, &orbit, &obs);
 
 	//check whether AOS can happen after specified start time
-	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geostationary(orbital_elements) && !orbit.decayed) {
+	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geosynchronous(orbital_elements) && !orbit.decayed) {
 		//TODO: Time steps have been found in FindAOS/LOS().
 		//Might be based on some pre-existing source, root-finding techniques
 		//or something. Find them, and improve readability of the code and so that
@@ -491,7 +491,7 @@ double predict_next_los(const predict_observer_t *observer, const predict_orbita
 	predict_observe_orbit(observer, &orbit, &obs);
 
 	//check whether AOS/LOS can happen after specified start time
-	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geostationary(orbital_elements) && !orbit.decayed) {
+	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geosynchronous(orbital_elements) && !orbit.decayed) {
 		//iteration algorithm from Predict, see comments in predict_next_aos().
 
 		//iterate until next satellite pass
@@ -587,7 +587,7 @@ struct predict_observation predict_at_max_elevation(const predict_observer_t *ob
 {
 	struct predict_observation ret_observation = {0};
 
-	if (predict_is_geostationary(orbital_elements)) {
+	if (predict_is_geosynchronous(orbital_elements)) {
 		return ret_observation;
 	}
 

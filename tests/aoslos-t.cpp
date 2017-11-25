@@ -87,7 +87,7 @@ int runtest(const char *filename)
 
 int aoslos_timepoint_consistency_test(predict_orbital_elements_t *orbital_elements, predict_observer_t *observer, double start_time)
 {
-	if (predict_is_geostationary(orbital_elements)) {
+	if (predict_is_geosynchronous(orbital_elements)) {
 		return 0;
 	}
 

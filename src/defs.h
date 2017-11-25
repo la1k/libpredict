@@ -1,6 +1,15 @@
 #ifndef _PREDICT_DEFS_H_
 #define _PREDICT_DEFS_H_
 
+//lower mean motion for geosynchronous satellites
+#define GEOSYNCHRONOUS_LOWER_MEAN_MOTION 0.9
+//upper mean motion for geosynchronous satellites
+#define GEOSYNCHRONOUS_UPPER_MEAN_MOTION 1.1
+//upper eccentricity for geosynchronous satellites
+#define GEOSYNCHRONOUS_ECCENTRICITY_THRESHOLD 0.2
+//upper inclination for geosynchronous satellites
+#define GEOSYNCHRONOUS_INCLINATION_THRESHOLD_DEGREES 70
+
 /* Constants used by SGP4/SDP4 code */
 #define	km2mi		0.621371		/* km to miles */
 #define deg2rad		1.745329251994330E-2	/* Degrees to radians */

@@ -71,7 +71,7 @@ int runtest(const char *filename)
 	//create orbit object
 	predict_orbital_elements_t *orbital_elements = predict_parse_tle(tle[0], tle[1]);
 
-	if (predict_is_geostationary(orbital_elements)) {
+	if (predict_is_geosynchronous(orbital_elements)) {
 		return 0;
 	}
 
