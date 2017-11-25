@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 		predict_julian_date_t curr_time = predict_to_julian(time(NULL));
 
 		// Predict ISS
-		struct predict_orbit iss_orbit;
+		struct predict_position iss_orbit;
 		predict_orbit(iss, &iss_orbit, curr_time);
 		printf("ISS: lat=%f, lon=%f, alt=%f\n", iss_orbit.latitude*180.0/M_PI, iss_orbit.longitude*180.0/M_PI, iss_orbit.altitude);
 

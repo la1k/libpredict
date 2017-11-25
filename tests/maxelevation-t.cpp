@@ -84,7 +84,7 @@ int runtest(const char *filename)
 	}
 
 	//test at a QTH that is located exactly on the satellite track, so that elevation should be 90 degrees (and thus potentially a bit problematic with the derivative)
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	struct predict_observation obs;
 	predict_orbit(orbital_elements, &orbit, start_time);
 	observer = predict_create_observer("problematic", orbit.latitude, orbit.longitude, 0);
@@ -154,7 +154,7 @@ int runtest(const char *filename)
 int test_max_elevation(double start_time, predict_observer_t *observer, predict_orbital_elements_t *orbital_elements)
 {
 	double orig_start_time = start_time;
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	struct predict_observation obs;
 
 	for (int i=0; i < NUM_PASSES; i++) {

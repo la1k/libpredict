@@ -140,7 +140,7 @@ void predict_destroy_orbital_elements(predict_orbital_elements_t *orbital_elemen
 /**
  * Predicted orbital values for satellite at a given time.
  **/
-struct predict_orbit {
+struct predict_position {
 	///Timestamp for last call to orbit_predict
 	predict_julian_date_t time;
 
@@ -185,7 +185,7 @@ struct predict_orbit {
  * \return 0 if everything went fine
  * \copyright GPLv2+
  **/
-int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct predict_orbit *x, predict_julian_date_t time);
+int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct predict_position *x, predict_julian_date_t time);
 
 /**
  * Find whether an orbit is geosynchronous.
@@ -304,7 +304,7 @@ void predict_destroy_observer(predict_observer_t *obs);
  * \param obs Return of object for position of the satellite relative to the observer.
  * \copyright GPLv2+
  **/
-void predict_observe_orbit(const predict_observer_t *observer, const struct predict_orbit *orbit, struct predict_observation *obs);
+void predict_observe_orbit(const predict_observer_t *observer, const struct predict_position *orbit, struct predict_observation *obs);
 
 /**
  * Estimate relative position of the moon.
@@ -430,7 +430,7 @@ double predict_doppler_shift(const struct predict_observation *observation, doub
  * \return Squint angle in radians. Will output nan if the satellite is not an SDP4 satellite
  * \copyright GPLv2+
  **/
-double predict_squint_angle(const predict_observer_t *observer, const struct predict_orbit *orbit, double alon, double alat);
+double predict_squint_angle(const predict_observer_t *observer, const struct predict_position *orbit, double alon, double alat);
 
 /*!
  * \brief Calculate refraction angle.

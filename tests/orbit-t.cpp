@@ -52,10 +52,10 @@ int runtest(const char *filename)
 	predict_orbital_elements_t *orbital_elements = predict_parse_tle(tle[0], tle[1]);
 
 	// Used in lower bound in value check
-	struct predict_orbit orbit_lower;
+	struct predict_position orbit_lower;
 
 	// Used in upper bound in value check
-	struct predict_orbit orbit_upper;
+	struct predict_position orbit_upper;
 
 	// Create observer object
 	predict_observer_t *obs = predict_create_observer("test", testcase.latitude()*M_PI/180.0, testcase.longitude()*M_PI/180.0, testcase.altitude());

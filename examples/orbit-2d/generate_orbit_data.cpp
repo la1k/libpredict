@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 		std::ofstream file(("sat_track_" + satellite.name + ".dat").c_str());
 
 		while (curr_time < end_time) {
-			struct predict_orbit orbit;
+			struct predict_position orbit;
 			predict_orbit(satellite.orbital_elements, &orbit, curr_time);
 			file << orbit.position[0] << " " << orbit.position[1] << " " << orbit.position[2] << std::endl;
 			curr_time += time_step;

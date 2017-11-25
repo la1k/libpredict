@@ -153,7 +153,7 @@ bool predict_aos_happens(const predict_orbital_elements_t *m, double latitude)
 
 /* This is the stuff we need to do repetitively while tracking. */
 /* This is the old Calc() function. */
-int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct predict_orbit *m, double utc)
+int predict_orbit(const predict_orbital_elements_t *orbital_elements, struct predict_position *m, double utc)
 {
 	/* Set time to now if now time is provided: */
 	if (utc == 0) utc = predict_to_julian(time(NULL));
@@ -261,7 +261,7 @@ bool is_eclipsed(const double pos[3], const double sol[3], double *depth)
 	else return false;
 }
 
-double predict_squint_angle(const predict_observer_t *observer, const struct predict_orbit *orbit, double alon, double alat)
+double predict_squint_angle(const predict_observer_t *observer, const struct predict_position *orbit, double alon, double alat)
 {
 	double bx = cos(alat)*cos(alon + orbit->argument_of_perigee);
 	double by = cos(alat)*sin(alon + orbit->argument_of_perigee);

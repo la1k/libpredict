@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 	los = predict_next_los(observer, orbital_elements, start_time);
 
 	//calculate properties between AOS and LOS
-	struct predict_orbit orbit;
+	struct predict_position orbit;
 	struct predict_observation observation;
 
 	double timestep = 1.0/(24.0*60.0*60);
