@@ -36,16 +36,17 @@ int main(int argc, char **argv)
 
 	//predict next AOS and LOS after defined time
 	predict_julian_date_t start_time = predict_to_julian(mktime(&timeval));
-	predict_julian_date_t aos_time = predict_next_aos(observer, orbital_elements, start_time);
-	predict_julian_date_t los_time = predict_next_los(observer, orbital_elements, start_time);
+	struct predict_observation aos, los;
+	aos = predict_next_aos(observer, orbital_elements, start_time);
+	los = predict_next_los(observer, orbital_elements, start_time);
 
 	//calculate properties between AOS and LOS
 	struct predict_orbit orbit;
 	struct predict_observation observation;
 
 	double timestep = 1.0/(24.0*60.0*60);
-	predict_julian_date_t curr_time = aos_time - 30*60*timestep;
-	predict_julian_date_t end_time = los_time + 30*60*timestep;
+	predict_julian_date_t curr_time = aos.time - 30*60*timestep;
+	predict_julian_date_t end_time = los.time + 30*60*timestep;
 
 	double freq = 1000;
 

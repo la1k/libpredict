@@ -106,8 +106,11 @@ int runtest(const char *filename)
 	}
 
 	//find AOS/LOS of pass with elevation 90 degrees
-	double next_aos = predict_next_aos(observer, orbital_elements, start_time);
-	double next_los = predict_next_los(observer, orbital_elements, next_aos);
+	struct predict_observation aos = predict_next_aos(observer, orbital_elements, start_time);
+	double next_aos = aos.time;
+
+	struct predict_observation los = predict_next_los(observer, orbital_elements, next_aos);
+	double next_los = los.time;
 	if (!((max_elevation_time > next_aos) && (max_elevation_time < next_los))) {
 		fprintf(stderr, "Error in preparing pass times.\n");
 		return -1;
@@ -165,7 +168,8 @@ int test_max_elevation(double start_time, predict_observer_t *observer, predict_
 
 		//skip to time where current elevation is less than 0 (i.e. skip ahead some time along the revolution around earth)
 		if (obs.elevation > 0) {
-			start_time = predict_next_los(observer, orbital_elements, start_time) + revolution_fraction;
+			struct predict_observation los = predict_next_los(observer, orbital_elements, start_time);
+			start_time = los.time + revolution_fraction;
 			while (obs.elevation > 0) {
 				start_time += revolution_fraction;
 				predict_orbit(orbital_elements, &orbit, start_time);
@@ -174,8 +178,10 @@ int test_max_elevation(double start_time, predict_observer_t *observer, predict_
 		}
 
 		//get times from next pass
-		predict_julian_date_t next_aos_time = predict_next_aos(observer, orbital_elements, start_time);
-		predict_julian_date_t next_los_time = predict_next_los(observer, orbital_elements, next_aos_time);
+		struct predict_observation aos = predict_next_aos(observer, orbital_elements, start_time);
+		predict_julian_date_t next_aos_time = aos.time;
+		struct predict_observation los = predict_next_los(observer, orbital_elements, next_aos_time);
+		predict_julian_date_t next_los_time = los.time;
 		struct predict_observation max_elevation_obs = predict_at_max_elevation(observer, orbital_elements, start_time);
 		double max_elevation = max_elevation_obs.elevation;
 

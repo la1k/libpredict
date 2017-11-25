@@ -332,10 +332,10 @@ void predict_observe_sun(const predict_observer_t *observer, predict_julian_date
  * \param observer Point of observation
  * \param orbital_elements Orbital elements
  * \param start_time Start time for AOS search
- * \return Time of AOS
+ * \return Observation of the AOS
  * \copyright GPLv2+
  **/
-predict_julian_date_t predict_next_aos(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time);
+struct predict_observation predict_next_aos(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time);
 
 /** 
  * Find next loss of signal (LOS) of satellite (when the satellite goes below the horizon). Finds LOS of the current pass if the satellite currently is in range, finds LOS of next pass if not.
@@ -343,10 +343,10 @@ predict_julian_date_t predict_next_aos(const predict_observer_t *observer, const
  * \param observer Point of observation
  * \param orbital_elements Orbital elements
  * \param start_time Start time for LOS search
- * \return Time of LOS
+ * \return Observation of the LOS
  * \copyright GPLv2+
  **/
-predict_julian_date_t predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time);
+struct predict_observation predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time);
 
 /**
  * Find maximum elevation of next or current pass.
