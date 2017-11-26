@@ -1,4 +1,4 @@
-VER_0.1 {
+VER_2.0 {
 	global:
 		predict_version_major;
 		predict_version_minor;
