@@ -1,0 +1,22 @@
+Source: libpredict2
+Priority: optional
+Maintainer: Norvald H. Ryeng <norvald@ryeng.name>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.8
+Section: libs
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: https://anonscm.debian.org/collab-maint/libpredict2.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/libpredict2.git
+
+Package: libpredict2-dev
+Section: libdevel
+Architecture: any
+Depends: libpredict2BROKEN (= ${binary:Version}), ${misc:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
+
+Package: libpredict2BROKEN
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
