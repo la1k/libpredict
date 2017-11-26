@@ -2,21 +2,23 @@ Source: libpredict2
 Priority: optional
 Maintainer: Norvald H. Ryeng <norvald@ryeng.name>
 Build-Depends: debhelper (>= 9)
-Standards-Version: 3.9.8
+Standards-Version: 4.1.1
 Section: libs
-Homepage: <insert the upstream URL, if relevant>
-#Vcs-Git: https://anonscm.debian.org/collab-maint/libpredict2.git
-#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/libpredict2.git
+Homepage: https://la1k.github.com/libpredict/
+Vcs-Git: https://github.com/la1k/libpredict.git
+Vcs-Browser: https://github.com/la1k/libpredict
 
 Package: libpredict2-dev
 Section: libdevel
 Architecture: any
-Depends: libpredict2BROKEN (= ${binary:Version}), ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
-
-Package: libpredict2BROKEN
+Depends: libpredict2 (= ${binary:Version}), ${misc:Depends}
+Description: Development files for libpredict2
+ Libpredict provides functions to calculate solar, lunar and satellite
+ positions from orbit parameters.
+ 
+Package: libpredict2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Satellite orbit prediction library
+ Libpredict provides functions to calculate solar, lunar and satellite
+ positions from orbit parameters.

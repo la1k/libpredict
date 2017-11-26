@@ -1,14 +1,16 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: libpredict2
-Source: <url://example.com>
+Source: https://github.com/la1k/libpredict
 
 Files: *
-Copyright: <years> <put author's name and email here>
-           <years> <likewise for another author>
+Copyright: 1991-2006 John A. Magliacane (KD2BD)
+           2013-2017 Akademisk radioklubb (LA1K) <la1k@la1k.no>
+	   2013-2015 Knut Magnus Kvamtrø (LA3DPA)
+	   2013-2015 Thomas Ingebretsen (LA9ERA)
 License: GPL-2.0+
 
 Files: debian/*
-Copyright: 2017 Norvald H. Ryeng <norvald@ryeng.name>
+Copyright: 2017 Akademisk radioklubb (LA1K) <la1k@la1k.no>
 License: GPL-2.0+
 
 License: GPL-2.0+
@@ -27,8 +29,3 @@ License: GPL-2.0+
  .
  On Debian systems, the complete text of the GNU General
  Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
-
-# Please also look if there are files or directories which have a
-# different copyright/license attached and list them here.
-# Please avoid picking licenses with terms that are more restrictive than the
-# packaged work, as it may make Debian's contributions unacceptable upstream.
