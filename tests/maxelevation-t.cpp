@@ -213,13 +213,6 @@ int test_max_elevation(double start_time, predict_observer_t *observer, predict_
 			}
 		}
 
-		//check that the difference between AOS/LOS time is larger than a threshold, and stop the rest of the tests if not (aos/los-functions will detect almost-passes very close to the horizon as actual passes, due to the set thresholds and behavior of the pass finding functions: See issue #18 in the git repository. This will be taken care of among the AOS/LOS tests once the issue is fixed). Predicted max elevation
-		//will not fail basic tests above (derivative, actual maximum), but will fail the more nasty tests below since they assume more perfect AOS/LOS timepoints. TODO:
-		//Remove this check once issue #18 is fixed, and we have new and more numerically stable aos/los functions.
-		if ((next_los_time - next_aos_time) < PASS_LENGTH_THRESHOLD) {
-			continue;
-		}
-
 		//check if elevation at max elevation is non-zero
 		if (max_elevation <= 0) {
 			fprintf(stderr, "Predicted max elevation is negative: %f\n", max_elevation);
