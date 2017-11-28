@@ -4,6 +4,7 @@
 #include <string.h>
 #include "defs.h"
 #include "sun.h"
+#include "aoslos.h"
 
 void observer_calculate(const predict_observer_t *observer, double time, const double pos[3], const double vel[3], struct predict_observation *result);
 
@@ -141,124 +142,6 @@ void observer_calculate(const predict_observer_t *observer, double time, const d
 	result->range_x = range[0];
 	result->range_y = range[1];
 	result->range_z = range[2];
-
-}
-
-struct predict_observation predict_next_aos(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double start_utc)
-{
-	double curr_time = start_utc;
-	struct predict_observation obs;
-	double time_step = 0;
-
-	struct predict_position orbit;
-	predict_orbit(orbital_elements, &orbit, curr_time);
-	predict_observe_orbit(observer, &orbit, &obs);
-
-	//check whether AOS can happen after specified start time
-	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geosynchronous(orbital_elements) && !orbit.decayed) {
-		//TODO: Time steps have been found in FindAOS/LOS().
-		//Might be based on some pre-existing source, root-finding techniques
-		//or something. Find them, and improve readability of the code and so that
-		//the mathematical stability of the iteration can be checked.
-		//Bisection method, Brent's algorithm? Given a coherent root finding algorithm,
-		//can rather have one function for iterating the orbit and then let get_next_aos/los
-		//specify bounding intervals for the root finding.
-
-		//skip the rest of the pass if the satellite is currently in range, since we want the _next_ AOS.
-		if (obs.elevation > 0.0) {
-			struct predict_observation los = predict_next_los(observer, orbital_elements, curr_time);
-			curr_time = los.time;
-			curr_time += 1.0/(MINUTES_PER_DAY*1.0)*20; //skip 20 minutes. LOS might still be within the elevation threshold. (rough quickfix from predict)
-			predict_orbit(orbital_elements, &orbit, curr_time);
-			predict_observe_orbit(observer, &orbit, &obs);
-		}
-
-		//iteration until the orbit is roughly in range again, before the satellite pass
-		while ((obs.elevation*180.0/M_PI < -1.0) || (obs.elevation_rate < 0)) {
-			time_step = 0.00035*(obs.elevation*180.0/M_PI*((orbit.altitude/8400.0)+0.46)-2.0);
-			curr_time -= time_step;
-			predict_orbit(orbital_elements, &orbit, curr_time);
-			predict_observe_orbit(observer, &orbit, &obs);
-		}
-
-		//fine tune the results until the elevation is within a low enough threshold
-		while (fabs(obs.elevation*180/M_PI) > AOSLOS_HORIZON_THRESHOLD) {
-			time_step = obs.elevation*180.0/M_PI*sqrt(orbit.altitude)/530000.0;
-			curr_time -= time_step;
-			predict_orbit(orbital_elements, &orbit, curr_time);
-			predict_observe_orbit(observer, &orbit, &obs);
-		}
-	}
-	return obs;
-}
-
-/**
- * Pass stepping direction used for pass stepping function below.
- **/
-enum step_pass_direction{POSITIVE_DIRECTION, NEGATIVE_DIRECTION};
-
-/**
- * Rough stepping through a pass. Uses weird time steps from Predict.
- *
- * \param observer Ground station
- * \param orbital_elements Orbital elements of satellite
- * \param curr_time Time from which to start stepping
- * \param direction Either POSITIVE_DIRECTION (step from current time to pass end) or NEGATIVE_DIRECTION (step from current time to start of pass). In case of the former, the pass will be stepped until either elevation is negative or the derivative of the elevation is negative
- * \return Time for when we have stepped out of the pass
- * \copyright GPLv2+
- **/
-double step_pass(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double curr_time, enum step_pass_direction direction) {
-	struct predict_position orbit;
-	struct predict_observation obs;
-	do {
-		predict_orbit(orbital_elements, &orbit, curr_time);
-		predict_observe_orbit(observer, &orbit, &obs);
-
-		//weird time stepping from Predict, but which magically works
-		double time_step = cos(obs.elevation - 1.0)*sqrt(orbit.altitude)/25000.0;
-		if (((direction == POSITIVE_DIRECTION) && time_step < 0) || ((direction == NEGATIVE_DIRECTION) && time_step > 0)) {
-			time_step = -time_step;
-		}
-
-		curr_time += time_step;
-	} while ((obs.elevation >= 0) || ((direction == POSITIVE_DIRECTION) && (obs.elevation_rate > 0.0)));
-	return curr_time;
-}
-
-struct predict_observation predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double start_utc)
-{
-	double curr_time = start_utc;
-	struct predict_observation obs;
-	double time_step = 0;
-
-	struct predict_position orbit;
-	predict_orbit(orbital_elements, &orbit, curr_time);
-	predict_observe_orbit(observer, &orbit, &obs);
-
-	//check whether AOS/LOS can happen after specified start time
-	if (predict_aos_happens(orbital_elements, observer->latitude) && !predict_is_geosynchronous(orbital_elements) && !orbit.decayed) {
-		//iteration algorithm from Predict, see comments in predict_next_aos().
-
-		//iterate until next satellite pass
-		if (obs.elevation < 0.0) {
-			struct predict_observation aos = predict_next_aos(observer, orbital_elements, curr_time);
-			curr_time = aos.time;
-			predict_orbit(orbital_elements, &orbit, curr_time);
-			predict_observe_orbit(observer, &orbit, &obs);
-		}
-
-		//step through the pass
-		curr_time = step_pass(observer, orbital_elements, curr_time, POSITIVE_DIRECTION);
-
-		//fine tune to elevation threshold
-		do {
-			time_step = obs.elevation*180.0/M_PI*sqrt(orbit.altitude)/502500.0;
-			curr_time += time_step;
-			predict_orbit(orbital_elements, &orbit, curr_time);
-			predict_observe_orbit(observer, &orbit, &obs);
-		} while (fabs(obs.elevation*180.0/M_PI) > AOSLOS_HORIZON_THRESHOLD);
-	}
-	return obs;
 }
 
 /**
