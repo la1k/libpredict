@@ -1,23 +1,20 @@
 # The minimum required version hasn't been tested. Feel free to adjust
 # downwards if necessary.
 cmake_minimum_required(VERSION 3.0)
+cmake_policy(VERSION 3.0.0)
+# Set VERSION variables based on project().
+cmake_policy(SET CMP0048 NEW)
 
+# The project version number is also the version of the library ABI:
+# major.minor.patch(.tweak)
+# major = bump on incompatible change
+# minor = bump on compatible change
+# patch = bump on any change
+# (tweak is not used by libpredict)
 project(libpredict VERSION 2.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x") #for tests written in C++
 
 include(GNUInstallDirs)
-
-# The project version number is also the version of the library ABI:
-# major = bump on incompatible change
-# minor = bump on compatible change
-# patch = bump on any change
-
-set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-set(LIBPREDICT_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
-set(LIBPREDICT_VERSION_MINOR ${PROJECT_VERSION_MINOR})
-set(LIBPREDICT_VERSION_PATCH ${PROJECT_VERSION_MINOR})
-#LIBPREDICT_VERSION_TWEAK isn't used
-set(LIBPREDICT_VERSION ${PROJECT_VERSION})
 
 set(LIBPREDICT_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 include_directories(AFTER ${LIBPREDICT_INCLUDE_DIR})
