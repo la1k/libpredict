@@ -11,7 +11,7 @@ cmake_policy(SET CMP0048 NEW)
 # minor = bump on compatible change
 # patch = bump on any change
 # (tweak is not used by libpredict)
-project(libpredict VERSION 2.0.0 LANGUAGES C CXX)
+project(libpredict VERSION 3.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x") #for tests written in C++
 
 include(GNUInstallDirs)
