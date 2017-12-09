@@ -1,5 +1,5 @@
-libpredict2 (2.0.0-1) UNRELEASED; urgency=medium
+libpredict3 (3.0.0-1) UNRELEASED; urgency=medium
 
   * Initial release
 
- -- Norvald H. Ryeng <norvald@ryeng.name>  Sun, 26 Nov 2017 09:14:03 +0100
+ -- Norvald H. Ryeng <norvald@ryeng.name>  Sat, 09 Dec 2017 15:06:40 +0100

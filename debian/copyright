@@ -1,5 +1,5 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: libpredict2
+Upstream-Name: libpredict3
 Source: https://github.com/la1k/libpredict
 
 Files: *

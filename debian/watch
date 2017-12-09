@@ -7,6 +7,6 @@
 version=4
 
 # GitHub hosted projects
-opts="filenamemangle=s%(?:.*?)?v?(\d[\d.]*)\.tar\.gz%libpredict2-$1.tar.gz%" \
+opts="filenamemangle=s%(?:.*?)?v?(\d[\d.]*)\.tar\.gz%libpredict3-$1.tar.gz%" \
    https://github.com/la1k/libpredict/tags \
    (?:.*?/)?v?(\d[\d.]*)\.tar\.gz debian uupdate
