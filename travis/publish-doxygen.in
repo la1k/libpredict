@@ -11,6 +11,8 @@ if [ "XX$TRAVIS_BRANCH" == "XXmaster" -a "XX$CC" == "XXgcc" ]; then
 elif [ "XX$TRAVIS_BRANCH" != "XXv@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@" -o "XX$CC" != "XXgcc" ]; then
     (>&2 echo "Skipping documentation build for all except gcc builds on master and")
     (>&2 echo "branches named v<major>.<minor>.")
+    (>&2 echo "Branch name: $TRAVIS_BRANCH")
+    (>&2 echo "<major>.<minor>: @PROJECT_VERSOIN_MAJOR@.@PROJECT_VERSION_MINOR@")
     exit
 else
     API_DOC_RELATIVE_PATH=api/master
