@@ -12,10 +12,10 @@ elif [ "XX$TRAVIS_BRANCH" != "XXv@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@
     (>&2 echo "Skipping documentation build for all except gcc builds on master and")
     (>&2 echo "branches named v<major>.<minor>.")
     (>&2 echo "Branch name: $TRAVIS_BRANCH")
-    (>&2 echo "<major>.<minor>: @PROJECT_VERSOIN_MAJOR@.@PROJECT_VERSION_MINOR@")
+    (>&2 echo "<major>.<minor>: @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@")
     exit
 else
-    API_DOC_RELATIVE_PATH=api/master
+    API_DOC_RELATIVE_PATH=api/@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@
 fi
 
 set -x
