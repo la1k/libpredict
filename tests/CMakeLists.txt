@@ -43,6 +43,24 @@ foreach(file ${files})
 	add_test(NAME ${testname} COMMAND moon-t ${file})
 endforeach()
 
+#test against venus data
+add_executable(venus-t venus-t.cpp testcase_reader.cpp)
+target_link_libraries(venus-t predict)
+file(GLOB files "${LIBPREDICT_TEST_DATA_DIR}/venus_*.test")
+foreach(file ${files})
+	get_filename_component(testname ${file} NAME_WE)
+	add_test(NAME ${testname} COMMAND venus-t ${file})
+endforeach()
+
+#test against jupiter data
+add_executable(jupiter-t jupiter-t.cpp testcase_reader.cpp)
+target_link_libraries(jupiter-t predict)
+file(GLOB files "${LIBPREDICT_TEST_DATA_DIR}/jupiter_*.test")
+foreach(file ${files})
+	get_filename_component(testname ${file} NAME_WE)
+	add_test(NAME ${testname} COMMAND jupiter-t ${file})
+endforeach()
+
 #test max elevation function
 add_executable(maxelevation-t maxelevation-t.cpp testcase_reader.cpp)
 target_link_libraries(maxelevation-t predict)
