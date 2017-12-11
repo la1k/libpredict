@@ -2,8 +2,11 @@
 #include "unsorted.h"
 #include <stdlib.h>
 #include <string.h>
+#include "body.h"
+#include "coordinates.h"
 #include "defs.h"
 #include "sun.h"
+#include "time.h"
 
 void observer_calculate(const predict_observer_t *observer, double time, const double pos[3], const double vel[3], struct predict_observation *result);
 
@@ -130,17 +133,97 @@ void observer_calculate(const predict_observer_t *observer, double time, const d
 	// Elevation rate
 	double x_dot = (top_z_dot*range_length - range_rate_length*top_z) / (range_length * range_length);
 	double el_dot = x_dot / sqrt( 1 - x*x );
-	
+
 	result->azimuth = az;
 	result->azimuth_rate = az_dot;
 	result->elevation = el;
 	result->elevation_rate = el_dot;
 	result->range = range_length;
-	result->range_rate = range_rate_length; 
+	result->range_rate = range_rate_length;
 	result->range_x = range[0];
 	result->range_y = range[1];
 	result->range_z = range[2];
 
+}
+
+
+/**
+ * Calculate az,el coordinates of Venus with respect to an observer
+ *
+ * \param observer Observer in Geographic Coordinate System (WGS84) (Latitude, Longitude, Altitude)
+ * \param time Observation time (libpredict julian date)
+ * \param obs Observation in Horizontal Coordinate System (HCS) (Azimuth, Elevation)
+ */
+void predict_observe_venus(const predict_observer_t *observer, predict_time_t time, struct predict_observation *obs)
+{
+	predict_julian_day_t JD = predict_time_to_julian_day(time);
+	predict_julian_ephimeris_day_t JDE = predict_julian_day_to_ephimeris_day(JD);
+
+	/* calculate ecliptic coordinates of Venus and Earth (heliocentric) */
+	predict_pos_t venus, earth;
+	predict_body_calc_pos(JDE, VENUS, &venus);
+	predict_body_calc_pos(JDE, EARTH, &earth); // XXX: Earth Moon Barycenter
+
+	/* calculate ecliptic coordinates of Venus (geocentric) */
+	predict_helio_to_geo(&venus, &earth);
+
+	/* ecliptic - rectangular to spheric */
+	predict_cart_to_sph(&venus);
+
+	// correcting for effect of light time
+	double time_offset = 0.0057755183 * venus.coords[0]; // in days
+	predict_body_calc_pos(JDE-time_offset, VENUS, &venus);
+	predict_helio_to_geo(&venus, &earth);
+	predict_cart_to_sph(&venus);
+
+	/* ecliptic to equatorial - J2000.0 */
+	predict_ecliptic_to_equatorial(JDE, &venus);
+
+	/* equatorial to horizontal */
+	predict_equatorial_to_horizontal(JD, &venus, observer);
+
+	obs->azimuth = venus.coords[2];
+	obs->elevation = venus.coords[1];
+}
+
+/**
+ * Calculate az,el coordinates of Jupiter with respect to an observer
+ *
+ * \param observer Observer in GCS (Latitude, Longitude, Altitude)
+ * \param time Observation time TODO: which reference
+ * \param obs Observation in HCS (Azimuth, Elevation)
+ */
+void predict_observe_jupiter(const predict_observer_t *observer, predict_time_t time, struct predict_observation *obs)
+{
+	predict_julian_day_t JD = predict_time_to_julian_day(time);
+	predict_julian_ephimeris_day_t JDE = predict_julian_day_to_ephimeris_day(JD);
+
+	/* calculate ecliptic coordinates of Jupiter and Earth (heliocentric) */
+	predict_pos_t jupiter, earth;
+	predict_body_calc_pos(JDE, JUPITER, &jupiter);
+	predict_body_calc_pos(JDE, EARTH, &earth);
+
+	/* calculate ecliptic coordinates of Jupiter (geocentric) */
+	predict_helio_to_geo(&jupiter, &earth);
+
+	/* ecliptic - rectangular to spheric */
+	predict_cart_to_sph(&jupiter);
+
+	// correcting for effect of light time
+	double time_offset = 0.0057755183 * jupiter.coords[0]; // in days
+
+	predict_body_calc_pos(JDE-time_offset, JUPITER, &jupiter);
+	predict_helio_to_geo(&jupiter, &earth);
+	predict_cart_to_sph(&jupiter);
+
+	/* ecliptic to equatorial - J2000.0 */
+	predict_ecliptic_to_equatorial(JDE, &jupiter);
+
+	/* equatorial to horizontal */
+	predict_equatorial_to_horizontal(JD, &jupiter, observer);
+
+	obs->azimuth = jupiter.coords[2];
+	obs->elevation = jupiter.coords[1];
 }
 
 struct predict_observation predict_next_aos(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double start_utc)

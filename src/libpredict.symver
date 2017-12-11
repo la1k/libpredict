@@ -27,6 +27,8 @@ VER_2.0 {
 		predict_sun_ra;
 		predict_sun_declination;
 		predict_sun_gha;
+		predict_observe_venus;
+		predict_observe_jupiter;
 		predict_next_aos;
 		predict_next_los;
 		predict_at_max_elevation;

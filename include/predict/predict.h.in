@@ -378,6 +378,11 @@ double predict_sun_declination(predict_julian_date_t time);
  **/
 double predict_sun_gha(predict_julian_date_t time);
 
+// TODO: documentation
+void predict_observe_venus(const predict_observer_t *observer, predict_julian_date_t time, struct predict_observation *obs);
+
+void predict_observe_jupiter(const predict_observer_t *observer, predict_julian_date_t time, struct predict_observation *obs);
+
 /** 
  * Find next acquisition of signal (AOS) of satellite (when the satellite rises above the horizon). Ignores previous AOS of current pass if the satellite is in range at the start time. 
  *
