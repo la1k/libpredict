@@ -39,7 +39,6 @@ void predict_destroy_observer(predict_observer_t *obs)
 void predict_observe_orbit(const predict_observer_t *observer, const struct predict_position *orbit, struct predict_observation *obs)
 {
 	if (obs == NULL) return;
-	
 	double julTime = orbit->time + JULIAN_TIME_DIFF;
 
 	observer_calculate(observer, julTime, orbit->position, orbit->velocity, obs);
@@ -56,7 +55,7 @@ void predict_observe_orbit(const predict_observer_t *observer, const struct pred
 
 void observer_calculate(const predict_observer_t *observer, double time, const double pos[3], const double vel[3], struct predict_observation *result)
 {
-	
+
 		/* The procedures Calculate_Obs and Calculate_RADec calculate         */
 	/* the *topocentric* coordinates of the object with ECI position,     */
 	/* {pos}, and velocity, {vel}, from location {geodetic} at {time}.    */
@@ -78,7 +77,7 @@ void observer_calculate(const predict_observer_t *observer, double time, const d
 	double obs_vel[3];
 	double range[3];
 	double rgvel[3];
-	
+
 	geodetic_t geodetic;
 	geodetic.lat = observer->latitude;
 	geodetic.lon = observer->longitude;
@@ -88,7 +87,7 @@ void observer_calculate(const predict_observer_t *observer, double time, const d
 
 	vec3_sub(pos, obs_pos, range);
 	vec3_sub(vel, obs_vel, rgvel);
-	
+
 	double range_length = vec3_length(range);
 	double range_rate_length = vec3_dot(range, rgvel) / range_length;
 
@@ -97,22 +96,22 @@ void observer_calculate(const predict_observer_t *observer, double time, const d
 	double cos_lat = cos(geodetic.lat);
 	double sin_theta = sin(geodetic.theta);
 	double cos_theta = cos(geodetic.theta);
-	
+
 	double top_s = sin_lat*cos_theta*range[0] + sin_lat*sin_theta*range[1] - cos_lat*range[2];
 	double top_e = -sin_theta*range[0] + cos_theta*range[1];
 	double top_z = cos_lat*cos_theta*range[0] + cos_lat*sin_theta*range[1] + sin_lat*range[2];
 
 
-	double top_s_dot = sin_lat*(cos_theta*rgvel[0] - sin_theta*range[0]*theta_dot) + 
+	double top_s_dot = sin_lat*(cos_theta*rgvel[0] - sin_theta*range[0]*theta_dot) +
 						sin_lat*(sin_theta*rgvel[1] + cos_theta*range[1]*theta_dot) -
 						cos_lat*rgvel[2];
-	double top_e_dot = - (sin_theta*rgvel[0] + cos_theta*range[0]*theta_dot) + 
+	double top_e_dot = - (sin_theta*rgvel[0] + cos_theta*range[0]*theta_dot) +
 						(cos_theta*rgvel[1] - sin_theta*range[1]*theta_dot);
 
-	double top_z_dot = cos_lat * ( cos_theta*(rgvel[0] + range[1]*theta_dot) + 
+	double top_z_dot = cos_lat * ( cos_theta*(rgvel[0] + range[1]*theta_dot) +
 								sin_theta*(rgvel[1] - range[0]*theta_dot) ) +
 								sin_lat*rgvel[2];
-	
+
 	// Azimut
 	double y = -top_e / top_s;
 	double az = atan(-top_e / top_s);
