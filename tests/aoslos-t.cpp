@@ -43,6 +43,8 @@ int main(int argc, char **argv)
  **/
 int aoslos_timepoint_consistency_test(predict_orbital_elements_t *orbital_elements, predict_observer_t *observer, double start_time);
 
+int step_until_pass_test(predict_orbital_elements_t *orbital_elements, predict_observer_t *observer, double start_time);
+
 int runtest(const char *filename)
 {
 	// Load testcase
@@ -69,6 +71,22 @@ int runtest(const char *filename)
 
 	// Use first available time as start time for AOS/LOS finding
 	double start_time = predict_to_julian(testcase.data()[0][0]);
+
+	if (predict_is_geosynchronous(orbital_elements)) {
+		if (predict_next_aos(obs, orbital_elements, start_time).time != 0.0) {
+			fprintf(stderr, "Did not return expected value for geosynchronous orbit.");
+			return -1;
+		}
+
+		if (predict_next_los(obs, orbital_elements, start_time).time != 0.0) {
+			fprintf(stderr, "Did not return expected value for geosynchronous orbit.");
+			return -1;
+		}
+	}
+
+	if (step_until_pass_test(orbital_elements, obs, start_time) != 0) {
+		return -1;
+	}
 
 	//check whether the pass makes sense wrt elevation and/or elevation rate at start, end and middle of pass
 	if (aoslos_timepoint_consistency_test(orbital_elements, obs, start_time) != 0) {
@@ -158,6 +176,63 @@ int aoslos_timepoint_consistency_test(predict_orbital_elements_t *orbital_elemen
 			}
 			curr_time += timestep;
 		}
+	}
+
+	return 0;
+}
+
+extern "C" {
+#include "pass_utils.h"
+}
+
+int step_until_pass_test(predict_orbital_elements_t *orbital_elements, predict_observer_t *observer, double start_time)
+{
+	if (predict_is_geosynchronous(orbital_elements)) {
+		return 0;
+	}
+
+	struct predict_observation observation;
+	struct predict_position orbit;
+
+	predict_orbit(orbital_elements, &orbit, start_time);
+	predict_observe_orbit(observer, &orbit, &observation);
+
+	const int NUM_PASSES = 10;
+
+	for (int i=0; i < NUM_PASSES; i++) {
+		predict_julian_date_t new_time;
+		if (observation.elevation >= 0) {
+			new_time = step_pass(observer, orbital_elements, start_time, POSITIVE_DIRECTION, STEP_UNTIL_PASS);
+			if (new_time != start_time) {
+				fprintf(stderr, "Step until pass on a pass does not yield the same time.\n");
+				return -1;
+			}
+
+			new_time = step_pass(observer, orbital_elements, start_time, POSITIVE_DIRECTION, STEP_OUT_OF_PASS);
+			predict_orbit(orbital_elements, &orbit, new_time);
+			predict_observe_orbit(observer, &orbit, &observation);
+
+			if (observation.elevation >= 0) {
+				fprintf(stderr, "Step pass did not step out of the pass.\n");
+				return -1;
+			}
+		} else {
+			new_time = step_pass(observer, orbital_elements, start_time, POSITIVE_DIRECTION, STEP_OUT_OF_PASS);
+			if (new_time != start_time) {
+				fprintf(stderr, "Step pass on a non-pass does not yield the same time.\n");
+				return -1;
+			}
+
+			new_time = step_pass(observer, orbital_elements, start_time, POSITIVE_DIRECTION, STEP_UNTIL_PASS);
+			predict_orbit(orbital_elements, &orbit, new_time);
+			predict_observe_orbit(observer, &orbit, &observation);
+
+			if (observation.elevation < 0) {
+				fprintf(stderr, "Step until pass did not yield a pass.\n");
+				return -1;
+			}
+		}
+		start_time = new_time;
 	}
 
 	return 0;

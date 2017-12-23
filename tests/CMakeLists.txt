@@ -1,4 +1,5 @@
 link_directories(${LIBPREDICT_LIBRARY_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/src)
 
 add_executable(dummy-t dummy-t.c)
 add_test(NAME dummy COMMAND dummy-t)
@@ -17,7 +18,7 @@ foreach(file ${files})
 endforeach()
 
 #test aos/los on satellite data
-add_executable(aoslos-t aoslos-t.cpp testcase_reader.cpp)
+add_executable(aoslos-t aoslos-t.cpp testcase_reader.cpp ${CMAKE_SOURCE_DIR}/src/pass_utils.c)
 target_link_libraries(aoslos-t predict)
 file(GLOB files "${LIBPREDICT_TEST_DATA_DIR}/sat_*.test")
 foreach(file ${files})
