@@ -4,7 +4,7 @@
 #include <string.h>
 #include "defs.h"
 #include "sun.h"
-#include "aoslos.h"
+#include "pass_utils.h"
 
 void observer_calculate(const predict_observer_t *observer, double time, const double pos[3], const double vel[3], struct predict_observation *result);
 
