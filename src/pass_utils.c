@@ -31,7 +31,7 @@ predict_julian_date_t step_pass(const predict_observer_t *observer, const predic
 	// the periods, readjust starting time and then predict at one fourths again. Use this to efficiently iterate until pass start.
 	// See commit 1a6da2f402c40cb71d7b79edf8087d9d01f4db7d for starting point for this.
 
-	double step = fabs(mean_period/8.0);
+	double step = fabs(mean_period/100.0);
 	if (direction == NEGATIVE_DIRECTION) {
 		step = -step;
 	}
