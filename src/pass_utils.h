@@ -19,4 +19,14 @@ enum step_pass_direction{POSITIVE_DIRECTION, NEGATIVE_DIRECTION};
  **/
 predict_julian_date_t step_pass(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t curr_time, enum step_pass_direction direction);
 
+predict_julian_date_t step_until_pass(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t curr_time, enum step_pass_direction direction);
+
+
+enum aos_los_search {
+	AOS_SEARCH,
+	LOS_SEARCH
+};
+
+struct predict_observation next_aos_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_utc, enum aos_los_search search_type);
+
 #endif

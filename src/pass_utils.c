@@ -53,11 +53,6 @@ bool aoslos_is_feasible(const predict_observer_t *observer, const predict_orbita
 	return !predict_is_geosynchronous(orbital_elements) && predict_aos_happens(orbital_elements, observer->latitude) && !orbit.decayed;
 }
 
-enum aos_los_search {
-	AOS_SEARCH,
-	LOS_SEARCH
-};
-
 struct predict_observation next_aos_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_utc, enum aos_los_search search_type)
 {
 	struct predict_observation observation = {0};
@@ -93,15 +88,4 @@ struct predict_observation next_aos_los(const predict_observer_t *observer, cons
 	predict_observe_orbit(observer, &orbit, &observation);
 
 	return observation;
-}
-
-struct predict_observation predict_next_aos(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_utc)
-{
-	return next_aos_los(observer, orbital_elements, start_utc, AOS_SEARCH);
-}
-
-
-struct predict_observation predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_utc)
-{
-	return next_aos_los(observer, orbital_elements, start_utc, LOS_SEARCH);
 }

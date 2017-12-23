@@ -254,3 +254,14 @@ double predict_doppler_shift(const struct predict_observation *obs, double frequ
 	double sat_range_rate = obs->range_rate*1000.0; //convert to m/s
 	return -frequency*sat_range_rate/SPEED_OF_LIGHT; //assumes that sat_range <<<<< speed of light, which is very ok
 }
+
+struct predict_observation predict_next_aos(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_utc)
+{
+	return next_aos_los(observer, orbital_elements, start_utc, AOS_SEARCH);
+}
+
+
+struct predict_observation predict_next_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_utc)
+{
+	return next_aos_los(observer, orbital_elements, start_utc, LOS_SEARCH);
+}
