@@ -225,7 +225,7 @@ struct predict_observation predict_at_max_elevation(const predict_observer_t *ob
 		struct predict_observation aos = predict_next_aos(observer, orbital_elements, start_time);
 		lower_time = aos.time;
 	} else {
-		lower_time = step_pass(observer, orbital_elements, lower_time, NEGATIVE_DIRECTION);
+		lower_time = step_pass(observer, orbital_elements, lower_time, NEGATIVE_DIRECTION, STEP_OUT_OF_PASS);
 	}
 	struct predict_observation los = predict_next_los(observer, orbital_elements, lower_time);
 	upper_time = los.time;
