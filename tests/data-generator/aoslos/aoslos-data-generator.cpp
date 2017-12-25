@@ -35,6 +35,39 @@ void print_progress_bar(std::string action, long last_progress, long progress, l
 	}
 }
 
+void observe_orbit_at(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t curr_time, struct predict_observation *observation)
+{
+	struct predict_position position;
+	predict_orbit(orbital_elements, &position, curr_time);
+	predict_observe_orbit(observer, &position, observation);
+}
+
+predict_julian_date_t bisection_method(predict_orbital_elements_t *orbital_elements, predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket)
+{
+	const double AOSLOS_TIME_EQUALITY_THRESHOLD = FLT_EPSILON;
+	const int AOSLOS_MAX_NUM_ITERATIONS = 1000;
+	struct predict_observation lower, upper, candidate;
+	predict_julian_date_t time_candidate;
+	int iteration = 0;
+	while ((fabs(lower_bracket - upper_bracket) > AOSLOS_TIME_EQUALITY_THRESHOLD) && (iteration < AOSLOS_MAX_NUM_ITERATIONS)) {
+		time_candidate = (upper_bracket + lower_bracket)/2.0;
+
+		observe_orbit_at(observer, orbital_elements, time_candidate, &candidate);
+		observe_orbit_at(observer, orbital_elements, lower_bracket, &lower);
+		observe_orbit_at(observer, orbital_elements, upper_bracket, &upper);
+
+		if (candidate.elevation*lower.elevation < 0) {
+			upper_bracket = time_candidate;
+		} else if (candidate.elevation*upper.elevation < 0) {
+			lower_bracket = time_candidate;
+		} else {
+			break;
+		}
+		iteration++;
+	}
+	return time_candidate;
+}
+
 int main(int argc, char **argv)
 {
 	if (argc < 2) {
@@ -94,12 +127,12 @@ int main(int argc, char **argv)
 
 			predict_orbit(satellite.elements, &orbit, time);
 			predict_observe_orbit(observer, &orbit, &observation);
-			double prev_elevation = observation.elevation;
+			struct predict_observation prev = observation;
 
-			bool in_beginning_pass = (prev_elevation >= 0);
+			bool in_beginning_pass = (prev.elevation >= 0);
 
-			std::vector<time_t> aos_timepoints;
-			std::vector<time_t> los_timepoints;
+			std::vector<double> aos_timepoints;
+			std::vector<double> los_timepoints;
 
 			long tot_iterations = (end_time - start_time)/time_step;
 			long iterations = 0;
@@ -112,11 +145,18 @@ int main(int argc, char **argv)
 				predict_observe_orbit(observer, &orbit, &observation);
 				double print_time = time - start_time;
 
-				if ((prev_elevation < 0) && (observation.elevation >= 0) && !in_beginning_pass) {
-					aos_timepoints.push_back(time);
+				predict_julian_date_t root_time = -1;
+
+				if (prev.elevation*observation.elevation < 0) {
+					//this is a root: fine-tune using bisection method
+					root_time = bisection_method(satellite.elements, observer, prev.time, observation.time);
+				}
+
+				if ((prev.elevation < 0) && (observation.elevation >= 0) && !in_beginning_pass) {
+					aos_timepoints.push_back(root_time);
 					event_file << print_time << " " << observation.elevation << std::endl;
-				} else if ((prev_elevation >= 0) && (observation.elevation < 0) && !in_beginning_pass) {
-					los_timepoints.push_back(time);
+				} else if ((prev.elevation >= 0) && (observation.elevation < 0) && !in_beginning_pass) {
+					los_timepoints.push_back(root_time);
 					event_file << print_time << " " << observation.elevation << std::endl;
 				}
 				elevation_file << print_time << " " << observation.elevation << std::endl;
@@ -125,7 +165,7 @@ int main(int argc, char **argv)
 					in_beginning_pass = false;
 				}
 
-				prev_elevation = observation.elevation;
+				prev = observation;
 
 				print_progress_bar(satellite.name + ", " + std::string(observer->name), iterations-1, iterations, tot_iterations);
 				time += time_step;
@@ -136,9 +176,10 @@ int main(int argc, char **argv)
 
 			//output as testcase data to file
 			std::ofstream output_file("aoslos_" + satellite.name + "_qth_" + std::string(observer->name) + ".test");
+			output_file.precision(10);
 			output_file << "[tle]" << std::endl
-				    << satellite.tle_line_1 << std::endl
-				    << satellite.tle_line_2 << std::endl << std::endl
+				    << satellite.tle_line_1
+				    << satellite.tle_line_2 << std::endl
 				    << "[qth]" << std::endl
 				    << "lat=" << observer->latitude*180.0/M_PI << std::endl
 				    << "lon=" << observer->longitude*180.0/M_PI << std::endl
