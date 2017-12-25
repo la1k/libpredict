@@ -1,6 +1,7 @@
 #include "pass_utils.h"
 #include <math.h>
 #include <float.h>
+#include "defs.h"
 
 void observe_orbit_at(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t curr_time, struct predict_observation *observation)
 {
@@ -25,28 +26,52 @@ predict_julian_date_t step_pass(const predict_observer_t *observer, const predic
 		return curr_time;
 	}
 
-	double mean_period = 1.0/orbital_elements->mean_motion;
+	double mean_period = 1.0/(orbital_elements->mean_motion);
 
-	// TODO: Predict orbits at one fourth of the mean period. Calculate rough estimate of the local maximas and minimas along
-	// the periods, readjust starting time and then predict at one fourths again. Use this to efficiently iterate until pass start.
-	// See commit 1a6da2f402c40cb71d7b79edf8087d9d01f4db7d for starting point for this.
+	//if the mean period is larger than the earth rotational period, then the periods in the elevation curve will be
+	//governed by earth's rotation
+	if (mean_period > 1.0) {
+		mean_period = 1.0;
+	}
 
-	double step = fabs(mean_period/100.0);
+	double step = fabs(mean_period/4.0);
 	if (direction == NEGATIVE_DIRECTION) {
 		step = -step;
 	}
 
 	bool found_pass = false;
 
+	struct predict_observation obs;
+	struct predict_observation prev_obs = observation;
+	predict_julian_date_t prev_time = curr_time;
+
 	while (!found_pass) {
 		curr_time += step;
-		observe_orbit_at(observer, orbital_elements, curr_time, &observation);
+		observe_orbit_at(observer, orbital_elements, curr_time, &obs);
+		observation = obs;
+
+		if (prev_obs.elevation_rate * obs.elevation_rate < 0) {
+			//there is a local minima or maxima between obs_1 and obs_2
+			//find approximate location by extrapolating from the two points using straight lines
+			double b_1 = prev_obs.elevation - prev_obs.elevation_rate*prev_time*SECONDS_PER_DAY;
+			double b_2 = obs.elevation - obs.elevation_rate*curr_time*SECONDS_PER_DAY;
+
+			//candidate at approximate location of extremum
+			predict_julian_date_t candidate_time = (b_2 - b_1)/(prev_obs.elevation_rate - obs.elevation_rate)/SECONDS_PER_DAY;
+			observe_orbit_at(observer, orbital_elements, candidate_time, &observation);
+
+			//adjust current time point with respect to position of the extremum
+			curr_time = candidate_time + step;
+			observe_orbit_at(observer, orbital_elements, curr_time, &obs);
+		}
+
 		if (observation.elevation*elevation_sign > 0) {
 			found_pass = true;
 		}
+		prev_obs = obs;
+		prev_time = curr_time;
 	}
-
-	return curr_time;
+	return observation.time;
 }
 
 bool aoslos_is_feasible(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_utc)
