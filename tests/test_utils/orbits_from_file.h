@@ -10,6 +10,10 @@ typedef struct {
 	std::string name;
 	///Orbital elements
 	predict_orbital_elements_t *elements;
+	///TLE line 1
+	std::string tle_line_1;
+	///TLE line 2
+	std::string tle_line_2;
 } satellite_t;
 
 /**

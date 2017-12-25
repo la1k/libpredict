@@ -28,6 +28,8 @@ std::vector<satellite_t> orbital_elements_from_file(const char *tle_file)
 		predict_orbital_elements_t *temp_elements = predict_parse_tle(line1, line2);
 		satellite.elements = temp_elements;
 		satellite.name = std::string(name);
+		satellite.tle_line_1 = std::string(line1);
+		satellite.tle_line_2 = std::string(line2);
 
 		//trim name
 		std::stringstream stream(satellite.name);
