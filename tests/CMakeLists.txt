@@ -26,6 +26,15 @@ foreach(file ${files})
 	add_test(NAME aoslos-${testname} COMMAND aoslos-t ${file})
 endforeach()
 
+#test aos/los against pre-found AOS/LOS times
+add_executable(aoslos-known-timepoints-t aoslos-known-timepoints-t.cpp testcase_reader.cpp ${CMAKE_SOURCE_DIR}/src/pass_utils.c)
+target_link_libraries(aoslos-known-timepoints-t predict)
+file(GLOB files "${LIBPREDICT_TEST_DATA_DIR}/aoslos_*.test")
+foreach(file ${files})
+	get_filename_component(testname ${file} NAME_WE)
+	add_test(NAME aoslos-known-timepoints-${testname} COMMAND aoslos-known-timepoints-t ${file})
+endforeach()
+
 #test against sun data
 add_executable(sun-t sun-t.cpp testcase_reader.cpp)
 target_link_libraries(sun-t predict)
