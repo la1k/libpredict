@@ -54,7 +54,7 @@ foreach(file ${files})
 endforeach()
 
 #test predict_is_geostationary
-add_executable(geostationary-t geostationary-t.cpp testcase_reader.cpp)
+add_executable(geostationary-t geostationary-t.cpp testcase_reader.cpp test_utils/orbits_from_file.cpp)
 target_link_libraries(geostationary-t predict)
 file(GLOB files "${LIBPREDICT_TEST_DATA_DIR}/sat_*.test")
 add_test(NAME geostationary-celestrak-geostationary COMMAND geostationary-t ${LIBPREDICT_TEST_DATA_DIR}/geostationary.tle)
