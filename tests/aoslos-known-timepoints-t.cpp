@@ -85,6 +85,47 @@ bool check_is_los(predict_orbital_elements_t *orbital_elements, predict_observer
 	}
 }
 
+bool check_pass_stepping_ability(predict_orbital_elements_t *orbital_elements, predict_observer_t *observer, double start_time, double lower_valid, double upper_valid, enum step_pass_type type)
+{
+	const char *step_type;
+	int elevation_sign = 1;
+	if (type == STEP_OUT_OF_PASS) {
+		elevation_sign = -1;
+		step_type = "Stepping out of a pass";
+	} else {
+		elevation_sign = 1;
+		step_type = "Stepping into a pass";
+	}
+	predict_julian_date_t stepped_time = step_pass(observer, orbital_elements, start_time, POSITIVE_DIRECTION, type);
+
+	//check that the center of the provided range has correct sign of the elevation
+	struct predict_position orbit;
+	struct predict_observation observation;
+	predict_julian_date_t center_time = (lower_valid + upper_valid)/2.0;
+	predict_orbit(orbital_elements, &orbit, center_time);
+	predict_observe_orbit(observer, &orbit, &observation);
+	if (observation.elevation*elevation_sign < 0) {
+		fprintf(stderr, "%s. Elevation in the center of the provided range does not have expected sign: %f\n", step_type, observation.elevation);
+		return false;
+	}
+
+	//check that stepped time produces elevation with correct sign
+	predict_orbit(orbital_elements, &orbit, stepped_time);
+	predict_observe_orbit(observer, &orbit, &observation);
+	if (observation.elevation*elevation_sign < 0) {
+		fprintf(stderr, "%s. Elevation at stepped pass does not have correct sign: %f\n", step_type, observation.elevation);
+		return false;
+	}
+
+	//check that stepped time falls within valid range
+	if ((stepped_time < lower_valid) || (stepped_time > upper_valid)) {
+		fprintf(stderr, "%s. Stepped time fell outside valid range.\n", step_type);
+		fprintf(stderr, "Returned time = %f, valid range = [%f, %f]\n", stepped_time, lower_valid, upper_valid);
+		return false;
+	}
+	return true;
+}
+
 int runtest(const char *filename)
 {
 	//load testcase data
@@ -112,6 +153,7 @@ int runtest(const char *filename)
 		predict_julian_date_t before_pass;
 
 		if (line_number == 0) {
+			//first datapoint, so shifting one second before the pass in order to have something to test from
 			before_pass = aos_time - DAYS_PER_SECOND;
 		} else {
 			before_pass = prev_los_time + DAYS_PER_SECOND;
@@ -134,41 +176,28 @@ int runtest(const char *filename)
 			return -1;
 		}
 
-		/*
+		//from different starting points: try to either step into or out of the pass
 		const int NUM_STARTING_POINTS = 10;
 		for (int i=0; i < NUM_STARTING_POINTS; i++) {
 			predict_julian_date_t start_time = i*(aos_time - before_pass)/NUM_STARTING_POINTS + before_pass;
 
 			//try to step into the pass
-			predict_julian_date_t pass_time = step_pass(observer, orbital_elements, start_time, POSITIVE_DIRECTION, STEP_UNTIL_PASS);
-			if (pass_time < aos_time) {
-				fprintf(stderr, "Did not step into the pass at line %d, starting point %d\n", line_number, i);
+			if (!check_pass_stepping_ability(orbital_elements, observer, start_time, aos_time, los_time, STEP_UNTIL_PASS)) {
 				return -1;
 			}
-			if (pass_time > los_time) {
-				fprintf(stderr, "Stepped over the pass at line %d, starting point %d\n", line_number, i);
-				return -1;
-			}
+
 
 			//try to step out of the pass
-			if (line_number < testcase.data().size()) {
+			if (line_number < testcase.data().size()-1) {
 				std::vector<double> next_line = testcase.data()[line_number+1];
-				predict_julian_date_t start_time = i*(los_time - aos_time)/NUM_STARTING_POINTS + aos_time;
+				predict_julian_date_t next_aos_time = next_line[0];
+				predict_julian_date_t start_time = i*(next_aos_time - los_time)/NUM_STARTING_POINTS + next_aos_time;
 
-				predict_julian_date_t out_of_pass_time = step_pass(observer, orbital_elements, start_time, POSITIVE_DIRECTION, STEP_OUT_OF_PASS);
-
-				predict_julian_date_t next_aos_time = predict_to_julian(next_line[0]);
-				if (out_of_pass_time < los_time) {
-					fprintf(stderr, "Did not step out of the pass at line %d, starting point %d\n", line_number, i);
-					return -1;
-				}
-
-				if (out_of_pass_time > next_aos_time) {
-					fprintf(stderr, "Stepped out of the pass, but stepped over the next pass. Line %d, starting point %d\n", line_number, i);
+				if (!check_pass_stepping_ability(orbital_elements, observer, start_time, los_time, next_aos_time, STEP_OUT_OF_PASS)) {
 					return -1;
 				}
 			}
-		}*/
+		}
 
 		line_number++;
 		prev_los_time = los_time;
