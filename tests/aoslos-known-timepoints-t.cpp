@@ -98,22 +98,39 @@ bool check_pass_stepping_ability(predict_orbital_elements_t *orbital_elements, p
 	}
 	predict_julian_date_t stepped_time = step_pass(observer, orbital_elements, start_time, POSITIVE_DIRECTION, type);
 
-	//check that the center of the provided range has correct sign of the elevation
+	//check that starting point has the opposite elevation sign
 	struct predict_position orbit;
-	struct predict_observation observation;
+	struct predict_observation start_observation;
+	predict_orbit(orbital_elements, &orbit, start_time);
+	predict_observe_orbit(observer, &orbit, &start_observation);
+	if (start_observation.elevation*elevation_sign > 0) {
+		fprintf(stderr, "%s. Elevation at the start time already has the correct sign, not expected: %f\n", step_type, start_observation.elevation);
+		fprintf(stderr, "Start time was %f, expected output range is [%f, %f]\n", start_time, lower_valid, upper_valid);
+		return false;
+	}
+
+	//check that the center of the provided range has correct sign of the elevation
+	struct predict_observation center_observation;
 	predict_julian_date_t center_time = (lower_valid + upper_valid)/2.0;
 	predict_orbit(orbital_elements, &orbit, center_time);
-	predict_observe_orbit(observer, &orbit, &observation);
-	if (observation.elevation*elevation_sign < 0) {
-		fprintf(stderr, "%s. Elevation in the center of the provided range does not have expected sign: %f\n", step_type, observation.elevation);
+	predict_observe_orbit(observer, &orbit, &center_observation);
+	if (center_observation.elevation*elevation_sign < 0) {
+		fprintf(stderr, "%s. Elevation in the center of the provided range does not have expected sign: %f\n", step_type, center_observation.elevation);
+		return false;
+	}
+
+	//check time input validity
+	if ((upper_valid < lower_valid) || (start_time >= lower_valid)) {
+		fprintf(stderr, "%s. Input times are not valid: Should be start < lower < upper, but is %f, %f, %f\n", step_type, start_time, lower_valid, upper_valid);
 		return false;
 	}
 
 	//check that stepped time produces elevation with correct sign
+	struct predict_observation stepped_observation;
 	predict_orbit(orbital_elements, &orbit, stepped_time);
-	predict_observe_orbit(observer, &orbit, &observation);
-	if (observation.elevation*elevation_sign < 0) {
-		fprintf(stderr, "%s. Elevation at stepped pass does not have correct sign: %f\n", step_type, observation.elevation);
+	predict_observe_orbit(observer, &orbit, &stepped_observation);
+	if (stepped_observation.elevation*elevation_sign < 0) {
+		fprintf(stderr, "%s. Elevation at stepped pass does not have correct sign: %f\n", step_type, stepped_observation.elevation);
 		return false;
 	}
 
@@ -121,6 +138,7 @@ bool check_pass_stepping_ability(predict_orbital_elements_t *orbital_elements, p
 	if ((stepped_time < lower_valid) || (stepped_time > upper_valid)) {
 		fprintf(stderr, "%s. Stepped time fell outside valid range.\n", step_type);
 		fprintf(stderr, "Returned time = %f, valid range = [%f, %f]\n", stepped_time, lower_valid, upper_valid);
+		fprintf(stderr, "Input time = %f, at elevations %f and %f\n", start_time, start_observation.elevation, stepped_observation.elevation);
 		return false;
 	}
 	return true;
@@ -179,10 +197,11 @@ int runtest(const char *filename)
 		//from different starting points: try to either step into or out of the pass
 		const int NUM_STARTING_POINTS = 10;
 		for (int i=0; i < NUM_STARTING_POINTS; i++) {
-			predict_julian_date_t start_time = i*(aos_time - before_pass)/NUM_STARTING_POINTS + before_pass;
+			predict_julian_date_t start_time = i*(aos_time - before_pass)/(NUM_STARTING_POINTS+1) + before_pass;
 
 			//try to step into the pass
 			if (!check_pass_stepping_ability(orbital_elements, observer, start_time, aos_time, los_time, STEP_UNTIL_PASS)) {
+				fprintf(stderr, "Data line %d, starting point %d\n", line_number, i);
 				return -1;
 			}
 
@@ -191,9 +210,10 @@ int runtest(const char *filename)
 			if (line_number < testcase.data().size()-1) {
 				std::vector<double> next_line = testcase.data()[line_number+1];
 				predict_julian_date_t next_aos_time = next_line[0];
-				predict_julian_date_t start_time = i*(next_aos_time - los_time)/NUM_STARTING_POINTS + next_aos_time;
+				predict_julian_date_t start_time = i*(los_time - aos_time)/(NUM_STARTING_POINTS+1) + aos_time + DAYS_PER_SECOND;
 
 				if (!check_pass_stepping_ability(orbital_elements, observer, start_time, los_time, next_aos_time, STEP_OUT_OF_PASS)) {
+					fprintf(stderr, "Data line %d, starting point %d\n", line_number, i);
 					return -1;
 				}
 			}
