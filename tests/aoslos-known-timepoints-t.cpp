@@ -33,9 +33,11 @@ int main(int argc, char **argv)
 	return retval;
 }
 
+const double DAYS_PER_SECOND = 1.0/(24.0*60.0*60.0);
+
 bool check_is_root(predict_orbital_elements_t *orbital_elements, predict_observer_t *observer, predict_julian_date_t root_candidate)
 {
-	const double PRECISION = 1.0/(24.0*60.0*60.0);
+	const double PRECISION = DAYS_PER_SECOND;
 	predict_julian_date_t lower = root_candidate - PRECISION;
 	predict_julian_date_t upper = root_candidate + PRECISION;
 
@@ -47,8 +49,8 @@ bool check_is_root(predict_orbital_elements_t *orbital_elements, predict_observe
 	predict_orbit(orbital_elements, &position, upper);
 	predict_observe_orbit(observer, &position, &upper_observation);
 
-	if (lower * upper > 0) {
-		fprintf(stderr, "Root %f is not valid within %f seconds precision.\n", root_candidate, 24*60*60*PRECISION);
+	if (lower_observation.elevation * upper_observation.elevation > 0) {
+		fprintf(stderr, "Root %f is not valid within %f seconds precision: yielded elevations %f and %f\n", root_candidate, 24*60*60*PRECISION, lower_observation.elevation*180.0/M_PI, upper_observation.elevation*180/M_PI);
 		return false;
 	}
 	return true;
@@ -101,6 +103,7 @@ int runtest(const char *filename)
 
 	predict_julian_date_t prev_los_time = 0;
 
+	//use the AOS/LOS times in the testcase data files to test the pass stepping methods
 	for (unsigned int line_number = 0; line_number < testcase.data().size(); line_number++) {
 		std::vector<double> line = testcase.data()[line_number];
 
@@ -109,9 +112,9 @@ int runtest(const char *filename)
 		predict_julian_date_t before_pass;
 
 		if (line_number == 0) {
-			before_pass = aos_time - 1.0/(24.0*60.0)*20.0;
+			before_pass = aos_time - DAYS_PER_SECOND;
 		} else {
-			before_pass = prev_los_time;
+			before_pass = prev_los_time + DAYS_PER_SECOND;
 		}
 
 		//check that time before current pass is a valid non-pass timepoint
@@ -121,13 +124,13 @@ int runtest(const char *filename)
 		predict_observe_orbit(observer, &orbit, &before_pass_observation);
 
 		if (before_pass_observation.elevation >= 0) {
-			fprintf(stderr, "Observation before pass is not valid. Line %d.\n", line_number);
+			fprintf(stderr, "Observation before pass is not valid, elevation %f. Data line %d.\n", before_pass_observation.elevation, line_number);
 			return -1;
 		}
 
 		//check that testdata AOS and LOS times are valid according to the requirements
 		if (!check_is_aos(orbital_elements, observer, aos_time) || !check_is_los(orbital_elements, observer, los_time)) {
-			fprintf(stderr, "Failed at line %d\n", line_number);
+			fprintf(stderr, "Failed testcase data check at line %d: testcase data is not valid\n", line_number);
 			return -1;
 		}
 
