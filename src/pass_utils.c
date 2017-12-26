@@ -108,42 +108,28 @@ struct predict_observation next_aos_los(const predict_observer_t *observer, cons
 		upper_bracket = step_pass(observer, orbital_elements, lower_bracket, POSITIVE_DIRECTION, STEP_OUT_OF_PASS);
 	}
 
-	const double AOSLOS_TIME_EQUALITY_THRESHOLD = FLT_EPSILON;
-	const int AOSLOS_MAX_NUM_ITERATIONS = 1000;
-	int iteration = 0;
-
-	predict_julian_date_t time_candidate;
-	struct predict_observation candidate, lower, upper;
-
-	while ((fabs(lower_bracket - upper_bracket) > AOSLOS_TIME_EQUALITY_THRESHOLD) && (iteration < AOSLOS_MAX_NUM_ITERATIONS)) {
-		time_candidate = (upper_bracket + lower_bracket)/2.0;
-
-		observe_orbit_at(observer, orbital_elements, time_candidate, &candidate);
-		observe_orbit_at(observer, orbital_elements, lower_bracket, &lower);
-		observe_orbit_at(observer, orbital_elements, upper_bracket, &upper);
-
-		if (candidate.elevation*lower.elevation < 0) {
-			upper_bracket = time_candidate;
-		} else if (candidate.elevation*upper.elevation < 0) {
-			lower_bracket = time_candidate;
-		} else {
-			break;
-		}
-		iteration++;
-	}
-
-	observe_orbit_at(observer, orbital_elements, (upper_bracket + lower_bracket)/2.0, &candidate);
-	return candidate;
+	//find solution
+	return find_elevation_root(orbital_elements, observer, lower_bracket, upper_bracket);
 }
 
-predict_julian_date_t bisection_method(predict_orbital_elements_t *orbital_elements, predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket)
+struct predict_observation find_elevation_root(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket)
 {
-	const double AOSLOS_TIME_EQUALITY_THRESHOLD = FLT_EPSILON;
-	const int AOSLOS_MAX_NUM_ITERATIONS = 1000;
+	return bisection_method(orbital_elements, observer, lower_bracket, upper_bracket, ELEVATION_ROOT);
+}
+
+struct predict_observation find_elevation_derivative_root(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket)
+{
+	return bisection_method(orbital_elements, observer, lower_bracket, upper_bracket, ELEVATION_DERIVATIVE_ROOT);
+}
+
+struct predict_observation bisection_method(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket, enum bisection_type type)
+{
+	const double EQUALITY_THRESHOLD = FLT_EPSILON;
+	const int MAX_NUM_ITERATIONS = 1000;
 	struct predict_observation lower, upper, candidate;
 	predict_julian_date_t time_candidate;
 	int iteration = 0;
-	while ((fabs(lower_bracket - upper_bracket) > AOSLOS_TIME_EQUALITY_THRESHOLD) && (iteration < AOSLOS_MAX_NUM_ITERATIONS)) {
+	while ((fabs(lower_bracket - upper_bracket) > EQUALITY_THRESHOLD) && (iteration < MAX_NUM_ITERATIONS)) {
 		time_candidate = (upper_bracket + lower_bracket)/2.0;
 
 		observe_orbit_at(observer, orbital_elements, time_candidate, &candidate);
@@ -159,5 +145,6 @@ predict_julian_date_t bisection_method(predict_orbital_elements_t *orbital_eleme
 		}
 		iteration++;
 	}
-	return time_candidate;
+	observe_orbit_at(observer, orbital_elements, (lower_bracket + upper_bracket)/2.0, &candidate);
+	return candidate;
 }

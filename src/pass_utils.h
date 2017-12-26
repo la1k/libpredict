@@ -19,6 +19,15 @@ enum aos_los_search {
 
 struct predict_observation next_aos_los(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_utc, enum aos_los_search search_type);
 
-predict_julian_date_t bisection_method(predict_orbital_elements_t *orbital_elements, predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket);
+enum bisection_type {
+	ELEVATION_ROOT,
+	ELEVATION_DERIVATIVE_ROOT
+};
+
+struct predict_observation bisection_method(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket, enum bisection_type type);
+
+struct predict_observation find_elevation_root(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket);
+
+struct predict_observation find_elevation_derivative_root(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket);
 
 #endif
