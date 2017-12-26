@@ -130,6 +130,7 @@ int main(int argc, char **argv)
 			struct predict_observation prev = observation;
 
 			bool in_beginning_pass = (prev.elevation >= 0);
+			double non_pass_time_before_pass = start_time;
 
 			std::vector<double> aos_timepoints;
 			std::vector<double> los_timepoints;
@@ -163,6 +164,7 @@ int main(int argc, char **argv)
 
 				if (in_beginning_pass && observation.elevation < 0) {
 					in_beginning_pass = false;
+					non_pass_time_before_pass = time;
 				}
 
 				prev = observation;
@@ -176,7 +178,7 @@ int main(int argc, char **argv)
 
 			//output as testcase data to file
 			std::ofstream output_file("aoslos_" + satellite.name + "_qth_" + std::string(observer->name) + ".test");
-			output_file.precision(10);
+			output_file.precision(20);
 			output_file << "[tle]" << std::endl
 				    << satellite.tle_line_1
 				    << satellite.tle_line_2 << std::endl
@@ -184,7 +186,8 @@ int main(int argc, char **argv)
 				    << "lat=" << observer->latitude*180.0/M_PI << std::endl
 				    << "lon=" << observer->longitude*180.0/M_PI << std::endl
 				    << "alt=" << observer->altitude*180.0/M_PI << std::endl << std::endl
-				    << "[data]" << std::endl;
+				    << "[data]" << std::endl
+				    << non_pass_time_before_pass << std::endl;
 
 			for (int data_ind=0; data_ind < aos_timepoints.size(); data_ind++) {
 				output_file << aos_timepoints[data_ind] << "," << los_timepoints[data_ind] << std::endl;
