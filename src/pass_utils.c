@@ -30,11 +30,9 @@ predict_julian_date_t step_pass(const predict_observer_t *observer, const predic
 
 	//if the mean period is larger than the earth rotational period, then the periods in the elevation curve will be
 	//governed by earth's rotation
-	if (mean_period > 1.0) {
-		mean_period = 1.0;
-	}
+	mean_period = fmin(mean_period, 1.0/EARTH_ROTATIONS_PER_SIDERIAL_DAY);
 
-	double step = fabs(mean_period/4.0);
+	double step = fabs(mean_period/60.0);
 	if (direction == NEGATIVE_DIRECTION) {
 		step = -step;
 	}
@@ -42,15 +40,15 @@ predict_julian_date_t step_pass(const predict_observer_t *observer, const predic
 	bool found_pass = false;
 
 	struct predict_observation obs;
-	struct predict_observation prev_obs = observation;
-	predict_julian_date_t prev_time = curr_time;
+//	struct predict_observation prev_obs = observation;
+//	predict_julian_date_t prev_time = curr_time;
 
 	while (!found_pass) {
 		curr_time += step;
 		observe_orbit_at(observer, orbital_elements, curr_time, &obs);
 		observation = obs;
 
-		if (prev_obs.elevation_rate * obs.elevation_rate < 0) {
+/*		if (prev_obs.elevation_rate * obs.elevation_rate < 0) {
 			//there is a local minima or maxima between obs_1 and obs_2
 			//find approximate location by extrapolating from the two points using straight lines
 			double b_1 = prev_obs.elevation - prev_obs.elevation_rate*prev_time*SECONDS_PER_DAY;
@@ -64,12 +62,12 @@ predict_julian_date_t step_pass(const predict_observer_t *observer, const predic
 			curr_time = candidate_time + step;
 			observe_orbit_at(observer, orbital_elements, curr_time, &obs);
 		}
-
+*/
 		if (observation.elevation*elevation_sign > 0) {
 			found_pass = true;
 		}
-		prev_obs = obs;
-		prev_time = curr_time;
+//		prev_obs = obs;
+//		prev_time = curr_time;
 	}
 	return observation.time;
 }
