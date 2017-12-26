@@ -138,7 +138,7 @@ bool check_pass_stepping_ability(predict_orbital_elements_t *orbital_elements, p
 	if ((stepped_time < lower_valid) || (stepped_time > upper_valid)) {
 		fprintf(stderr, "%s. Stepped time fell outside valid range.\n", step_type);
 		fprintf(stderr, "Returned time = %f, valid range = [%f, %f]\n", stepped_time, lower_valid, upper_valid);
-		fprintf(stderr, "Input time = %f, at elevations %f and %f\n", start_time, start_observation.elevation, stepped_observation.elevation);
+		fprintf(stderr, "Start time = %f, at elevations start = %f and stepped = %f\n", start_time, start_observation.elevation, stepped_observation.elevation);
 		return false;
 	}
 	return true;
@@ -163,29 +163,21 @@ int runtest(const char *filename)
 	predict_julian_date_t prev_los_time = 0;
 
 	//use the AOS/LOS times in the testcase data files to test the pass stepping methods
-	for (unsigned int line_number = 0; line_number < testcase.data().size(); line_number++) {
+
+	predict_julian_date_t first_timepoint_before_pass = testcase.data()[0][0];
+
+	for (unsigned int line_number = 1; line_number < testcase.data().size(); line_number++) {
 		std::vector<double> line = testcase.data()[line_number];
 
 		predict_julian_date_t aos_time = line[0];
 		predict_julian_date_t los_time = line[1];
 		predict_julian_date_t before_pass;
 
-		if (line_number == 0) {
+		if (line_number == 1) {
 			//first datapoint, so shifting one second before the pass in order to have something to test from
-			before_pass = aos_time - DAYS_PER_SECOND;
+			before_pass = first_timepoint_before_pass;
 		} else {
 			before_pass = prev_los_time + DAYS_PER_SECOND;
-		}
-
-		//check that time before current pass is a valid non-pass timepoint
-		struct predict_position orbit;
-		struct predict_observation before_pass_observation;
-		predict_orbit(orbital_elements, &orbit, before_pass);
-		predict_observe_orbit(observer, &orbit, &before_pass_observation);
-
-		if (before_pass_observation.elevation >= 0) {
-			fprintf(stderr, "Observation before pass is not valid, elevation %f. Data line %d.\n", before_pass_observation.elevation, line_number);
-			return -1;
 		}
 
 		//check that testdata AOS and LOS times are valid according to the requirements
@@ -205,7 +197,6 @@ int runtest(const char *filename)
 				return -1;
 			}
 
-
 			//try to step out of the pass
 			if (line_number < testcase.data().size()-1) {
 				std::vector<double> next_line = testcase.data()[line_number+1];
@@ -218,8 +209,6 @@ int runtest(const char *filename)
 				}
 			}
 		}
-
-		line_number++;
 		prev_los_time = los_time;
 	}
 
