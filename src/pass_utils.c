@@ -122,6 +122,16 @@ struct predict_observation find_elevation_derivative_root(const predict_orbital_
 	return bisection_method(orbital_elements, observer, lower_bracket, upper_bracket, ELEVATION_DERIVATIVE_ROOT);
 }
 
+double bisection_measure(enum bisection_type type, const struct predict_observation *observation)
+{
+	if (type == ELEVATION_ROOT) {
+		return observation->elevation;
+	} else if (type == ELEVATION_DERIVATIVE_ROOT) {
+		return observation->elevation_rate;
+	}
+	return 0;
+}
+
 struct predict_observation bisection_method(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket, enum bisection_type type)
 {
 	const double EQUALITY_THRESHOLD = FLT_EPSILON;
@@ -136,9 +146,9 @@ struct predict_observation bisection_method(const predict_orbital_elements_t *or
 		observe_orbit_at(observer, orbital_elements, lower_bracket, &lower);
 		observe_orbit_at(observer, orbital_elements, upper_bracket, &upper);
 
-		if (candidate.elevation*lower.elevation < 0) {
+		if (bisection_measure(type, &candidate)*bisection_measure(type, &lower) < 0) {
 			upper_bracket = time_candidate;
-		} else if (candidate.elevation*upper.elevation < 0) {
+		} else if (bisection_measure(type, &candidate)*bisection_measure(type, &upper) < 0) {
 			lower_bracket = time_candidate;
 		} else {
 			break;
