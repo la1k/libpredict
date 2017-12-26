@@ -109,17 +109,17 @@ struct predict_observation next_aos_los(const predict_observer_t *observer, cons
 	}
 
 	//find solution
-	return find_elevation_root(orbital_elements, observer, lower_bracket, upper_bracket);
+	return find_elevation_root(observer, orbital_elements, lower_bracket, upper_bracket);
 }
 
-struct predict_observation find_elevation_root(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket)
+struct predict_observation find_elevation_root(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket)
 {
-	return bisection_method(orbital_elements, observer, lower_bracket, upper_bracket, ELEVATION_ROOT);
+	return bisection_method(observer, orbital_elements, lower_bracket, upper_bracket, ELEVATION_ROOT);
 }
 
-struct predict_observation find_elevation_derivative_root(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket)
+struct predict_observation find_elevation_derivative_root(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket)
 {
-	return bisection_method(orbital_elements, observer, lower_bracket, upper_bracket, ELEVATION_DERIVATIVE_ROOT);
+	return bisection_method(observer, orbital_elements, lower_bracket, upper_bracket, ELEVATION_DERIVATIVE_ROOT);
 }
 
 double bisection_measure(enum bisection_type type, const struct predict_observation *observation)
@@ -132,7 +132,7 @@ double bisection_measure(enum bisection_type type, const struct predict_observat
 	return 0;
 }
 
-struct predict_observation bisection_method(const predict_orbital_elements_t *orbital_elements, const predict_observer_t *observer, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket, enum bisection_type type)
+struct predict_observation bisection_method(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t lower_bracket, predict_julian_date_t upper_bracket, enum bisection_type type)
 {
 	const double EQUALITY_THRESHOLD = FLT_EPSILON;
 	const int MAX_NUM_ITERATIONS = 1000;

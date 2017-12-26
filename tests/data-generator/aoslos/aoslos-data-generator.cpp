@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 
 				if (prev.elevation*observation.elevation < 0) {
 					//this is a root: fine-tune using bisection method
-					root_time = find_elevation_root(satellite.elements, observer, prev.time, observation.time).time;
+					root_time = find_elevation_root(observer, satellite.elements, prev.time, observation.time).time;
 				}
 
 				if ((prev.elevation < 0) && (observation.elevation >= 0) && !in_beginning_pass) {
