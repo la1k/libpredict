@@ -144,63 +144,6 @@ void observer_calculate(const predict_observer_t *observer, double time, const d
 	result->range_z = range[2];
 }
 
-/**
- * Convenience function for calculation of derivative of elevation at specific time.
- *
- * \param observer Ground station
- * \param orbital_elements Orbital elements for satellite
- * \param time Time
- * \return Derivative of elevation at input time
- **/
-double elevation_derivative(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double time)
-{
-	struct predict_position orbit;
-	struct predict_observation observation;
-	predict_orbit(orbital_elements, &orbit, time);
-	predict_observe_orbit(observer, &orbit, &observation);
-	return observation.elevation_rate;
-}
-
-/**
- * Find maximum elevation bracketed by input lower and upper time.
- *
- * \param observer Ground station
- * \param orbital_elements Orbital elements of satellite
- * \param lower_time Lower time bracket
- * \param upper_time Upper time bracket
- * \return Observation of satellite for maximum elevation between lower and upper time brackets
- **/
-struct predict_observation find_max_elevation(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, double lower_time, double upper_time)
-{
-	double max_ele_time_candidate = (upper_time + lower_time)/2.0;
-	int iteration = 0;
-	while ((fabs(lower_time - upper_time) > MAXELE_TIME_EQUALITY_THRESHOLD) && (iteration < MAXELE_MAX_NUM_ITERATIONS)) {
-		max_ele_time_candidate = (upper_time + lower_time)/2.0;
-
-		//calculate derivatives for lower, upper and candidate
-		double candidate_deriv = elevation_derivative(observer, orbital_elements, max_ele_time_candidate);
-		double lower_deriv = elevation_derivative(observer, orbital_elements, lower_time);
-		double upper_deriv = elevation_derivative(observer, orbital_elements, upper_time);
-
-		//check whether derivative has changed sign
-		if (candidate_deriv*lower_deriv < 0) {
-			upper_time = max_ele_time_candidate;
-		} else if (candidate_deriv*upper_deriv < 0) {
-			lower_time = max_ele_time_candidate;
-		} else {
-			break;
-		}
-		iteration++;
-	}
-
-	//prepare output
-	struct predict_position orbit;
-	struct predict_observation observation;
-	predict_orbit(orbital_elements, &orbit, max_ele_time_candidate);
-	predict_observe_orbit(observer, &orbit, &observation);
-	return observation;
-}
-
 struct predict_observation predict_at_max_elevation(const predict_observer_t *observer, const predict_orbital_elements_t *orbital_elements, predict_julian_date_t start_time)
 {
 	struct predict_observation ret_observation = {0};
@@ -233,11 +176,11 @@ struct predict_observation predict_at_max_elevation(const predict_observer_t *ob
 	//assume that we can only have two potential local maxima along the elevation curve, and be content with that. For most cases, we will only have one, unless it is a satellite in deep space with long passes and weird effects.
 
 	//bracket by AOS/LOS
-	struct predict_observation candidate_center = find_max_elevation(observer, orbital_elements, lower_time, upper_time);
+	struct predict_observation candidate_center = find_elevation_derivative_root(observer, orbital_elements, lower_time, upper_time);
 
 	//bracket by a combination of the found candidate above and either AOS or LOS (will thus cover solutions within [aos, candidate] and [candidate, los])
-	struct predict_observation candidate_lower = find_max_elevation(observer, orbital_elements, candidate_center.time - MAXELE_TIME_EQUALITY_THRESHOLD, upper_time);
-	struct predict_observation candidate_upper = find_max_elevation(observer, orbital_elements, lower_time, candidate_center.time + MAXELE_TIME_EQUALITY_THRESHOLD);
+	struct predict_observation candidate_lower = find_elevation_derivative_root(observer, orbital_elements, candidate_center.time - MAXELE_TIME_EQUALITY_THRESHOLD, upper_time);
+	struct predict_observation candidate_upper = find_elevation_derivative_root(observer, orbital_elements, lower_time, candidate_center.time + MAXELE_TIME_EQUALITY_THRESHOLD);
 
 	//return the best candidate
 	if ((candidate_center.elevation > candidate_lower.elevation) && (candidate_center.elevation > candidate_upper.elevation)) {
