@@ -70,8 +70,6 @@ License
  Copyright 2013- Akademisk radioklubb (LA1K)
  
  Copyright 2013-2015 Knut Magnus Kvamtrø (LA3DPA)
- 
- Copyright 2013-2015 Thomas Ingebretsen (LA9ERA)
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
