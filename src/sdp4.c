@@ -1,7 +1,8 @@
-#define _XOPEN_SOURCE 600
+#include "sdp4.h"
+
 #include <math.h>
 #include <stdbool.h>
-#include "sdp4.h"
+
 #include "defs.h"
 #include "unsorted.h"
 

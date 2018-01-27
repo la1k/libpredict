@@ -1,5 +1,5 @@
-#define _XOPEN_SOURCE 600
 #include "unsorted.h"
+
 #include "defs.h"
 
 void vec3_set(double v[3], double x, double y, double z)
