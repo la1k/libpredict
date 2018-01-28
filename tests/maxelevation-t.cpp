@@ -157,7 +157,7 @@ int test_max_elevation(double start_time, predict_observer_t *observer, predict_
 	struct predict_observation obs;
 
 	for (int i=0; i < NUM_PASSES; i++) {
-		start_time += i*TIME_DIFF;
+		start_time += TIME_DIFF;
 
 		predict_orbit(orbital_elements, &orbit, start_time);
 		predict_observe_orbit(observer, &orbit, &obs);
