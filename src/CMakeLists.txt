@@ -31,8 +31,10 @@ target_link_libraries(predict_static m)
 
 # Tell the linker to use the symbol version script
 get_property(predict_link_flags TARGET predict PROPERTY LINK_FLAGS)
-set(predict_link_flags "${predict_link_flags} -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libpredict.symver")
-set_target_properties(predict PROPERTIES LINK_FLAGS ${predict_link_flags})
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+  set(predict_link_flags "${predict_link_flags} -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libpredict.symver")
+  set_target_properties(predict PROPERTIES LINK_FLAGS ${predict_link_flags})
+endif ()
 
 install(TARGETS predict predict_static
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
