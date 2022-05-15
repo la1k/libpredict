@@ -29,10 +29,14 @@ set_target_properties(predict PROPERTIES PUBLIC_HEADER "${predict_public_header}
 target_link_libraries(predict m)
 target_link_libraries(predict_static m)
 
-# Tell the linker to use the symbol version script
+# Tell the linker to use the symbol version script, or export list if symbol versions aren't supported
 get_property(predict_link_flags TARGET predict PROPERTY LINK_FLAGS)
-set(predict_link_flags "${predict_link_flags} -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libpredict.symver")
-set_target_properties(predict PROPERTIES LINK_FLAGS ${predict_link_flags})
+if (${HAS_LINKER_VERSION_SCRIPT})
+  set(predict_link_flags "${predict_link_flags} -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libpredict.symver")
+elseif(${HAS_LINKER_EXPORTED_SYMBOLS_LIST})
+  set(predict_link_flags "${predict_link_flags} -Wl,-exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/libpredict.symbols")
+endif()
+set_target_properties(predict PROPERTIES LINK_FLAGS "${predict_link_flags}")
 
 install(TARGETS predict predict_static
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

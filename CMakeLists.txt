@@ -16,6 +16,7 @@ add_definitions(-D_XOPEN_SOURCE=700)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x") #for tests written in C++
 
 include(GNUInstallDirs)
+include(CheckCXXSourceCompiles)
 
 set(LIBPREDICT_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 include_directories(AFTER ${LIBPREDICT_INCLUDE_DIR})
@@ -28,6 +29,11 @@ set(LIBPREDICT_TEST_DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests/data)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
+
+set(CMAKE_REQUIRED_FLAGS "-Wno-unused-command-line-argument -Wl,--version-script ${CMAKE_CURRENT_SOURCE_DIR}/has_linker_version_script.symver")
+check_cxx_source_compiles("int main(){return 0;}" HAS_LINKER_VERSION_SCRIPT)
+set(CMAKE_REQUIRED_FLAGS "-Wno-unused-command-line-argument -Wl,-exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/has_linker_exported_symbols_list.symbols")
+check_cxx_source_compiles("int main(){return 0;}" HAS_LINKER_EXPORTED_SYMBOLS_LIST)
 
 add_subdirectory(include)
 add_subdirectory(src)

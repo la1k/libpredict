@@ -1,0 +1,2 @@
+# Dummy symbol list to check if the linker supports the -exported_symbols_list option.
+*

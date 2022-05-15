@@ -1,0 +1,2 @@
+/* Dummy symbol version script to check if the linker supports the --version-script option. */
+DUMMY { global: *; };
