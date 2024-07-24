@@ -43,6 +43,8 @@
 #define SECONDS_PER_DAY	8.6400E4
 ///Difference between libpredict's predict_julian_date_t and the julian time format used in some of the internal functions
 #define JULIAN_TIME_DIFF 2444238.5
+///Unix timeststamp of 1979-12-31 00:00:00
+#define JULIAN_START_DAY 315446400
 ///@}
 
 /** \name Physical properties
